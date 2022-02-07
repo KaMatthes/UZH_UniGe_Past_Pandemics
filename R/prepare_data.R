@@ -172,7 +172,7 @@ alldata.2010 <- rbind(alldata.2010,alldata.2010.total,alldata.2010.sex) %>%
                 age_group=as.factor(age_group))
 
 # merge all data
-all.data <- rbind(alldata.2010,alldata.hist) %>%
+data_total <- rbind(alldata.2010,alldata.hist) %>%
   dplyr::mutate(MapName=recode(MapName,"Aarberg"="Seeland",
                         "Aarwangen" = "Oberaargau",
                         "Aelen" ="Aigle",
@@ -335,7 +335,9 @@ all.data <- rbind(alldata.2010,alldata.hist) %>%
 
 
 # save
-save(all.data,file=paste0("data/data_total.RData"))
-write.xlsx(all.data,file=paste0("data/data_total.xlsx"),row.names=FALSE, overwrite = TRUE)
+save(data_total ,file=paste0("data/data_total.RData"))
+write.xlsx(data_total,file=paste0("data/data_total.xlsx"),row.names=FALSE, overwrite = TRUE)
+
+
 })
 

@@ -1,16 +1,18 @@
-# load population total
+function_population <- function() {
 
-Bezirke_nr <- all.data %>%
-  select(MapName, Bezirk) %>%
+# load population total
+load(paste0("data/data_total.RData"))
+Bezirke_nr <- data_total %>%
+  dplyr::select(MapName, Bezirk) %>%
   distinct(Bezirk, .keep_all=TRUE)
 
-pop_1880_1920 <- readxl::read_excel(paste0("data_raw/",population1860))%>%
-  select(-`1860`, -`1870`,-`1930`,-`1941`,-`1970`,
+pop_1880_1920 <- readxl::read_excel(paste0("data_raw/",population1860_1920))%>%
+  dplyr::select(-`1860`, -`1870`,-`1930`,-`1941`,-`1970`,
          -`1980`,-`1990`,-`2001`,-`2005`,-`2008`) %>%
-  gather(., Year, population, `1880`:`1930`, factor_key=TRUE) %>%
-  rename(MapName_tmp = MapName) %>%
-  mutate(Bezirk=as.character(Bezirk),
-         Bezirk= recode(Bezirk,
+  gather(., Year, population, `1880`:`1920`, factor_key=TRUE) %>%
+  rename(MapName = MapName) %>%
+  dplyr::mutate(Bezirk=as.character(Bezirk)) %>%
+  dplyr::mutate(Bezirk= recode(Bezirk,
          "2401" = "2400",
          "2402"= "2400",
          "2403"= "2400",
@@ -45,18 +47,20 @@ pop_1880_1920 <- readxl::read_excel(paste0("data_raw/",population1860))%>%
          "226" = "505",
          "301" = "316",
          "302" = "313",
-         "303" = "311",
          "304" = "314",
          "305" = "315",
-         "1101" = "1109",
-         "1102" = "1109",
-         "1103" = "1109",
-         "1104" = "1109",
-         "1105" = "1109",
-         "1106" = "1109",
-         "1107" = "1109", 
-         "1108" = "1109",
-         "1110" = "1109",
+         "111" = "113",
+         "112" = "113",
+         "1101" = "1116",
+         "1102" = "1116",
+         "1103" = "1112",
+         "1104" = "1113",
+         "1105" = "1114",
+         "1106" = "1112",
+         "1107" = "1115", 
+         "1108" = "1114",
+         "1109" = "1115",
+         "1110" = "1113",
          "1401" = "1400",
          "1402" = "1400",
          "1403" = "1400",
@@ -105,7 +109,6 @@ pop_1880_1920 <- readxl::read_excel(paste0("data_raw/",population1860))%>%
          "2204" = "2227",
          "2205" = "2223",
          "2206" = "2224",
-         "2207" = "2225",
          "2208" = "2226",
          "2209" = "2227",
          "2210" = "2223",
@@ -117,8 +120,26 @@ pop_1880_1920 <- readxl::read_excel(paste0("data_raw/",population1860))%>%
          "2216" = "2228",
          "2217" = "2224",
          "2218" = "2230",
-         "2219" = "2224"))%>%
-  left_join(Bezirke_nr)
+         "2219" = "2224")) %>%
+  dplyr::select(-MapName) %>%
+  dplyr::group_by(Bezirk,Year) %>%
+  dplyr::summarise(population = sum(population)) %>%
+  dplyr::ungroup() %>%
+  filter(!is.na(population))%>%
+  mutate(Year=as.character(Year),
+         Year = as.numeric(Year))
+
+pop_extrapolate <- pop_1880_1920 %>%
+  mutate(Year = as.character(Year),
+         Year = as.numeric(Year)) %>%
+  complete(Year = seq(1880,1920, by=1)) %>%
+  complete(Year, nesting(Bezirk)) %>%
+  group_by(Bezirk) %>%
+  arrange(Bezirk, Year) %>%
+  mutate(population = round(zoo::na.approx(population, na.rm=FALSE),0))   
+
+
+# write.xlsx(pop_extrapolate ,file=paste0("data/pop_1880_1920.xlsx"),row.names=FALSE, overwrite = TRUE)
 
 
 pop_2014_2020 <- readxl::read_excel(paste0("data_raw/",population2014_2020)) %>%
@@ -128,7 +149,7 @@ pop_2014_2020 <- readxl::read_excel(paste0("data_raw/",population2014_2020)) %>%
                         "d'Hérens" = "Hérens",
                         "bernois" = "Jura bernois",
                         "Biel/Bienne" = "Biel",
-                        "lausannois" = "Ouest lausannois",
+                        "lausannois" = "Lausanne",
                         "Innerrhoden" = "Appenzell Innerrhoden",
                         "Müstair" = "Engiadina Bassa / Val Müstair",
                         "vaudois" = "Jura-Nord vaudois", 
@@ -247,35 +268,39 @@ pop_2014_2020 <- readxl::read_excel(paste0("data_raw/",population2014_2020)) %>%
                  "Vorderrhein"	= "Surselva",
                  "Wangen"	= "Oberaargau",
                  "Wifflisburg" = "Broye-Vully",
-                 "Wyl" = "Wil",
-                 "Schleitheim"	= "Schaffhausen",
-                 "Stein"	= "Schaffhausen",
-                 "Bucheggberg-Kriegstetten" = "Solothurn",
-                 "Dorneck-Thierstein" = "Solothurn",
-                 "Olten-Gösgen"	= "Solothurn",
-                 "Solothurn-Lebern"	= "Solothurn",
-                 "Gäu"	= "Solothurn",
-                 "Thal"	= "Solothurn",
-                 "Bucheggberg"	= "Solothurn",
-                 "Dorneck"	= "Solothurn",
-                 "Gösgen"	= "Solothurn",
-                 "Wasseramt"	= "Solothurn",
-                 "Lebern" = 	"Solothurn",
-                 "Olten" = "Solothurn",
-                 "Thierstein" = 	"Solothurn",
+                 "Schleitheim"	= "Kanton Schaffhausen",
+                 "Schaffhausen"	= "Kanton Schaffhausen",
+                 "Stein"	= "Kanton Schaffhausen",
+                 "Bucheggberg-Kriegstetten" = "Bucheggberg-Wasseramt",
+                 "Dorneck-Thierstein" = "Dorneck-Thierstein",
+                 "Olten-Gösgen"	= "Olten-Gösgen",
+                 "Solothurn-Lebern"	= "Solothurn-Lebern",
+                 "Solothurn"	= "Solothurn-Lebern",
+                 "Gäu"	= "Thal-Gäu",
+                 "Thal"	= "Thal-Gäu",
+                 "Bucheggberg"	= "Bucheggberg-Wasseramt",
+                 "Dorneck"	= "Dorneck-Thierstein",
+                 "Gösgen"	= "Olten-Gösgen",
+                 "Wasseramt"	= "Bucheggberg-Wasseramt",
+                 "Lebern" = 	"Solothurn-Lebern",
+                 "Olten" = "Olten-Gösgen",
+                 "Thierstein" = 	"Dorneck-Thierstein",
                  "Büren" = "Seeland",
                  "Davos" = "Prättigau / Davos",
-                 "Ouest lausannois" = "Lausanne")) %>%
-  left_join(Bezirke_nr)
+                 "Zürich" = "Bezirk Zürich",
+                 "Dietikon" = "Bezirk Zürich")) %>%
+  left_join(Bezirke_nr) %>%
+  dplyr::group_by(Bezirk,Year) %>%
+  dplyr::summarise(population = sum(population)) %>%
+  dplyr::ungroup() %>%
+  filter(!is.na(population)) %>%
+  mutate(Year=as.character(Year),
+         Year = as.numeric(Year))
 
+# write.xlsx(pop_2014_2020,file=paste0("data/pop_2014_2020.xlsx"),row.names=FALSE, overwrite = TRUE)
 
-write.xlsx(pop_2014_2020,file=paste0("data/pop_2014_2020.xlsx"),row.names=FALSE, overwrite = TRUE)
-
-a <- pop_total %>%
-  distinct(Bezirk) 
-a <- a$Bezirk
-
-d <- Bezirke_nr %>%
-  filter(!Bezirk %in% a)
-
+pop_total <- rbind(pop_extrapolate, pop_2014_2020)
+save(pop_total,file=paste0("data/pop_total.RData"))
 write.xlsx(pop_total,file=paste0("data/pop_total.xlsx"),row.names=FALSE, overwrite = TRUE)
+
+}
