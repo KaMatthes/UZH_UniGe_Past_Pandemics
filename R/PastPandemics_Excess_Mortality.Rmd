@@ -23,9 +23,15 @@ knitr::opts_chunk$set(echo = FALSE)
 
 # Data
 
+* Collected and digitalized from Kaspar Staub's team
+* Russian flu: 1879 - 1895
+* Spanish fl:  1908 - 1925
+* Covid19 : 2020
+
+
 ## Age
 
-* Age groups aggregated so that there are the same in all years (and for death and population data)
+* Age groups aggregated so that there are the same in all years  (for death and population data)
 * 1879 - 1885 only larger age groups and not separated by sex
 * But total by sex available
 
