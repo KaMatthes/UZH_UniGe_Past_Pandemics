@@ -13,8 +13,7 @@ pandemic_year <- 1890
 dat.excess <- data_mortality_rate %>%
   filter(Year <1896) %>%
   mutate(Bezirk= as.numeric(Bezirk)) %>%
-  arrange(Bezirk, Year) %>%
-  filter(Bezirk==2500 | Bezirk == 1400)
+  arrange(Bezirk, Year) 
 
 
 Bezirk_vec <- dat.excess %>%

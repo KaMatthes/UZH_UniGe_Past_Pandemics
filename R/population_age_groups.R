@@ -6,6 +6,9 @@ Bezirke_nr <- data_total %>%
   dplyr::select(MapName, Bezirk) %>%
   distinct(Bezirk, .keep_all=TRUE)
 
+load(paste0("data/pop_total.RData"))
+pop_hist <- pop_total %>%
+  filter(Year < 1921)
 
 pop_1888_age <- readxl::read_excel(paste0("data_raw/Data1890/Population_Age1888.xlsx")) %>%
   mutate(Year= "1888")
@@ -85,6 +88,7 @@ pop_age <- rbind(pop_1888_age,pop_1910_age) %>%
                                "Landbezirk"= "Basel-Stadt",
                                "La Chaux-de-Fonds"= "Neuchâtel",
                                "LaVallée" = "Jura-Nord vaudois",
+                               "La Vallée" = "Jura-Nord vaudois",
                                "Lavaux" = "Lavaux-Oron",
                                "Lauis"	= "Lugano",
                                "Laupen"= "Bern-Mittelland",
@@ -186,13 +190,21 @@ pop_age <- rbind(pop_1888_age,pop_1910_age) %>%
                                "Stein"	= "Kanton Schaffhausen",
                                "St-Maurice"	= "Saint-Maurice",
                                "Yverdon"	= "Jura-Nord vaudois",
+                               "Rive droite"	= "Genève",
+                               "Rive gauche"	= "Genève",
+                               "Ville de Genève"	= "Genève",
+                               "Raron, östlich"	= "Raron",
+                               "Raron, westlich"	= "Raron",
                                "Bucheggberg-Kriegstetten" = "Bucheggberg-Wasseramt",
+                               "Kriegstetten" = "Bucheggberg-Wasseramt",
                                "Dorneck-Thierstein" = "Dorneck-Thierstein",
                                "Dornegg-Thierstein" = "Dorneck-Thierstein",
                                "Olten-Gösgen"	= "Olten-Gösgen",
                                "Solothurn-Lebern"	= "Solothurn-Lebern",
                                "Balsthal" = "Solothurn-Lebern",
                                "Solothurn"	= "Solothurn-Lebern",
+                               "Balsthal-Gäu" =  "Thal-Gäu",
+                               "Balthal-Thal" =  "Thal-Gäu",
                                "Gäu"	= "Thal-Gäu",
                                "Thal"	= "Thal-Gäu",
                                "Bucheggberg"	= "Bucheggberg-Wasseramt",
@@ -213,146 +225,65 @@ pop_age <- rbind(pop_1888_age,pop_1910_age) %>%
   dplyr::ungroup() %>%
   filter(!sex=="both") %>%
   dplyr::group_by(MapName, Year) %>%
-  mutate(prop= ((population / sum(population))*100)) %>%
-dplyr::ungroup()
+  mutate(prop= population / sum(population)) %>%
+  dplyr::ungroup()
 
-write.xlsx(pop_age ,file=paste0("data/pop_age.xlsx"),row.names=FALSE, overwrite = TRUE)
+pop_age_tmp1 <- pop_age %>%
+  filter(Year==1888) %>%
+  select(Bezirk, prop, sex,age_group)
 
+pop_age_extrapolate_tmp1 <- pop_hist %>%
+  filter(Year < 1901) %>%
+  left_join(pop_age_tmp) %>%
+  mutate(pop_age=round(population*prop))
 
-  
-  dplyr::mutate(Bezirk=as.character(Bezirk)) %>%
-  dplyr::mutate(Bezirk= recode(Bezirk,
-         "2401" = "2400",
-         "2402"= "2400",
-         "2403"= "2400",
-         "2404"= "2400",
-         "2405"= "2400",
-         "2406"= "2400",
-         "201" = "243",
-         "202" = "244",
-         "203" = "246",
-         "204" = "242",
-         "205" = "243",
-         "206" = "245",
-         "207" = "241",
-         "208" = "243",
-         "209" = "246",
-         "210" = "249",
-         "211" = "250",
-         "212" = "246",
-         "213" = "246",
-         "214" = "241",
-         "215" = "241",
-         "216" = "242",
-         "217" = "249",
-         "218" = "250",
-         "219" = "248",
-         "220" = "248",
-         "221" = "246",
-         "222" = "247",
-         "223" = "245",
-         "224" = "247",
-         "225" = "245",
-         "226" = "505",
-         "301" = "316",
-         "302" = "313",
-         "304" = "314",
-         "305" = "315",
-         "111" = "113",
-         "112" = "113",
-         "1101" = "1116",
-         "1102" = "1116",
-         "1103" = "1112",
-         "1104" = "1113",
-         "1105" = "1114",
-         "1106" = "1112",
-         "1107" = "1115", 
-         "1108" = "1114",
-         "1109" = "1115",
-         "1110" = "1113",
-         "1401" = "1400",
-         "1402" = "1400",
-         "1403" = "1400",
-         "1404" = "1400",
-         "1405" = "1400",
-         "1406" = "1400",
-         "1701" = "1721",
-         "1702" = "1722",
-         "1703" = "1723",
-         "1704" = "1723",
-         "1705" = "1724",
-         "1706" = "1725",
-         "1707" = "1726",
-         "1708" = "1726",
-         "1709" = "1727",
-         "1710" = "1727",
-         "1711" = "1727",
-         "1712" = "1727",
-         "1713" = "1728",
-         "1714" = "1721",
-         "1801" = "1841",
-         "1802" = "1842",
-         "1803" = "1850",
-         "1804" = "1851",
-         "1805" = "1851",
-         "1806" = "1844",
-         "1807" = "1843",
-         "1808" = "1846",
-         "1809" = "1847",
-         "1810" = "1843",
-         "1811" = "1849",
-         "1812" = "1848",
-         "1813" = "1845",
-         "1814" = "1850",
-         "2001"  = "2011",
-         "2002" = "2015",
-         "2003" = "2012",
-         "2004" = "2012",
-         "2005" = "2013",
-         "2006" = "2014",
-         "2007" = "2012",
-         "2008" = "2015",
-         "2201" = "2221",
-         "2202" = "2227",
-         "2203" = "2222",
-         "2204" = "2227",
-         "2205" = "2223",
-         "2206" = "2224",
-         "2208" = "2226",
-         "2209" = "2227",
-         "2210" = "2223",
-         "2211" = "2228",
-         "2212" = "2224",
-         "2213" = "2226",
-         "2214" = "2222", 
-         "2215" = "2230",
-         "2216" = "2228",
-         "2217" = "2224",
-         "2218" = "2230",
-         "2219" = "2224")) %>%
-  dplyr::select(-MapName) %>%
-  dplyr::group_by(Bezirk,Year) %>%
-  dplyr::summarise(population = sum(population)) %>%
-  dplyr::ungroup() %>%
-  filter(!is.na(population))%>%
-  mutate(Year=as.character(Year),
-         Year = as.numeric(Year))
+pop_age_tmp2 <- pop_age %>%
+  filter(Year==1910) %>%
+  select(Bezirk, prop, sex,age_group)
 
-pop_extrapolate <- pop_1880_1920 %>%
-  mutate(Year = as.character(Year),
-         Year = as.numeric(Year)) %>%
-  complete(Year = seq(1880,1920, by=1)) %>%
-  complete(Year, nesting(Bezirk)) %>%
-  group_by(Bezirk) %>%
-  arrange(Bezirk, Year) %>%
-  mutate(population = round(zoo::na.approx(population, na.rm=FALSE),0))   
+pop_age_extrapolate_tmp2 <- pop_hist %>%
+  filter(Year > 1900) %>%
+  left_join(pop_age_tmp2) %>%
+  mutate(pop_age=round(population*prop))
 
 
-# write.xlsx(pop_extrapolate ,file=paste0("data/pop_1880_1920.xlsx"),row.names=FALSE, overwrite = TRUE)
+pop_extrapolate_age <- rbind(pop_age_extrapolate_tmp1,pop_age_extrapolate_tmp2) %>%
+  select(-population) %>%
+  rename(population=pop_age)
+# 
+# write.xlsx(pop_age ,file=paste0("data/pop_age.xlsx"),row.names=FALSE, overwrite = TRUE)
 
 
-pop_2014_2020 <- readxl::read_excel(paste0("data_raw/",population2014_2020)) %>%
-  mutate(MapName=word(MapName ,-1)) %>%
+pop_2014_2020_age <- readxl::read_excel(paste0("data_raw/Data2020/Population_Age2014_2020.xlsx")) %>%
+  gather(.,age_group, population, `0-4 Jahre`:`100 Jahre`, factor_key=TRUE) %>%
+  rename(Year= Jahr,
+         MapName = Bezirk,
+         sex =  Geschlecht) %>%
+  mutate(MapName=word(MapName ,-1),
+         age_group=word(age_group ,1),
+         sex=replace(sex,sex=="Mann", "m"),
+         sex=replace(sex,sex=="Frau", "f")) %>%
+  mutate(age_group = replace(age_group, age_group=="0-4","0_19"),
+         age_group = replace(age_group, age_group=="5-9","0_19"),
+         age_group = replace(age_group, age_group=="10-14","0_19"),
+         age_group = replace(age_group, age_group=="15-19","0_19"),
+         age_group = replace(age_group, age_group=="20-24","20_29"),
+         age_group = replace(age_group, age_group=="25-29","20_29"),
+         age_group = replace(age_group, age_group=="30-34","30_39"),
+         age_group = replace(age_group, age_group=="35-39","30_39"),
+         age_group = replace(age_group, age_group=="40-44","40_49"),
+         age_group = replace(age_group, age_group=="45-49","40_49"),
+         age_group = replace(age_group, age_group=="50-54","50_59"),
+         age_group = replace(age_group, age_group=="55-59","50_59"),
+         age_group = replace(age_group, age_group=="60-64","60_69"),
+         age_group = replace(age_group, age_group=="65-69","60_69"),
+         age_group = replace(age_group, age_group=="70-74",">70"),
+         age_group = replace(age_group, age_group=="75-79",">70"),
+         age_group = replace(age_group, age_group=="80-84",">70"),
+         age_group = replace(age_group, age_group=="85-89",">70"),
+         age_group = replace(age_group, age_group=="90-94",">70"),
+         age_group = replace(age_group, age_group=="95-99",">70"),
+         age_group = replace(age_group, age_group=="100",">70")) %>%
   mutate(MapName=recode(MapName, "d'Aigle"  = "Aigle",
                         "d'Entremont" = "Entremont",
                         "d'Hérens" = "Hérens",
@@ -408,6 +339,7 @@ pop_2014_2020 <- readxl::read_excel(paste0("data_raw/",population2014_2020)) %>%
                  "Landbezirk"= "Basel-Stadt",
                  "La Chaux-de-Fonds"= "Neuchâtel",
                  "LaVallée" = "Jura-Nord vaudois",
+                 "La Vallée" = "Jura-Nord vaudois",
                  "Lavaux" = "Lavaux-Oron",
                  "Lauis"	= "Lugano",
                  "Laupen"= "Bern-Mittelland",
@@ -521,18 +453,16 @@ pop_2014_2020 <- readxl::read_excel(paste0("data_raw/",population2014_2020)) %>%
                  "Zürich" = "Bezirk Zürich",
                  "Dietikon" = "Bezirk Zürich")) %>%
   left_join(Bezirke_nr) %>%
-  dplyr::group_by(Bezirk,Year) %>%
+  dplyr::group_by(Bezirk,Year,sex, age_group) %>%
   dplyr::summarise(population = sum(population)) %>%
-  dplyr::ungroup() %>%
-  filter(!is.na(population)) %>%
-  mutate(Year=as.character(Year),
-         Year = as.numeric(Year))
+  dplyr::ungroup()
+# write.xlsx(pop_2014_2020_age ,file=paste0("data/pop_2014_2020_age.xlsx"),row.names=FALSE, overwrite = TRUE)
 
-# write.xlsx(pop_2014_2020,file=paste0("data/pop_2014_2020.xlsx"),row.names=FALSE, overwrite = TRUE)
-
-pop_total <- rbind(pop_extrapolate, pop_2014_2020)
-save(pop_total,file=paste0("data/pop_total.RData"))
-write.xlsx(pop_total,file=paste0("data/pop_total.xlsx"),row.names=FALSE, overwrite = TRUE)
+pop_total_age <- rbind(pop_extrapolate_age, pop_2014_2020_age) %>%
+  select(-prop) %>%
+  filter(!is.na(population))
+save(pop_total_age,file=paste0("data/pop_total_age.RData"))
+write.xlsx(pop_total_age,file=paste0("data/pop_total_age.xlsx"),row.names=FALSE, overwrite = TRUE)
 
 
 
