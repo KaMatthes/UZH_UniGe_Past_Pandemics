@@ -230,16 +230,16 @@ pop_age <- rbind(pop_1888_age,pop_1910_age) %>%
 
 pop_age_tmp1 <- pop_age %>%
   filter(Year==1888) %>%
-  select(Bezirk, prop, sex,age_group)
+  select(Bezirk, prop, sex,age_group, MapName)
 
 pop_age_extrapolate_tmp1 <- pop_hist %>%
   filter(Year < 1901) %>%
-  left_join(pop_age_tmp) %>%
+  left_join(pop_age_tmp1) %>%
   mutate(pop_age=round(population*prop))
 
 pop_age_tmp2 <- pop_age %>%
   filter(Year==1910) %>%
-  select(Bezirk, prop, sex,age_group)
+  select(Bezirk, prop, sex,age_group,MapName)
 
 pop_age_extrapolate_tmp2 <- pop_hist %>%
   filter(Year > 1900) %>%
@@ -453,7 +453,7 @@ pop_2014_2020_age <- readxl::read_excel(paste0("data_raw/Data2020/Population_Age
                  "Zürich" = "Bezirk Zürich",
                  "Dietikon" = "Bezirk Zürich")) %>%
   left_join(Bezirke_nr) %>%
-  dplyr::group_by(Bezirk,Year,sex, age_group) %>%
+  dplyr::group_by(Bezirk,Year,sex, MapName,age_group) %>%
   dplyr::summarise(population = sum(population)) %>%
   dplyr::ungroup()
 # write.xlsx(pop_2014_2020_age ,file=paste0("data/pop_2014_2020_age.xlsx"),row.names=FALSE, overwrite = TRUE)
