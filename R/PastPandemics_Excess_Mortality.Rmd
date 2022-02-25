@@ -169,15 +169,15 @@ cowplot::plot_grid(function_lisa_age(1890, "0_69"),function_lisa_age(1890, ">70"
                    nrow =3 ,ncol = 2)
 ```
 
-# Next steps, points to doscuess
+# Next steps, Points to be discussed
 
 1. Bayesian approaches in hierarchical modelling (INLA)
   * Lot of zeros, especially for age groups
   * Bayesian approaches in hierarchical modelling (INLA) to investigate the spatial pattern of excess mortality per district
 2. Groups
- * Too many age groups leads to many zeros -> too many zeros are also an issue with INLA
+ * Too many age groups lead to too many zeros -> too many zeros are also a problem with INLA
  * Maybe only 0-69 and >70 or 0-40, 41-69, >70
- * Its is not possible to stratify by age and sex -> to many zeros
+ * It is not possible to stratify by age and gender -> too many zeros
  * We can estimate excess mortality for age groups and sex, but not by age groups for each sex
 2. Further Co-factors (I have to discuss with Kaspar):
  * Urbanization
