@@ -1,49 +1,49 @@
-function_lisa <- function(VarYear){
+function_lisa_age <- function(VarYear, Age){
 
-  R1 <- read_excel(paste0("../data/Expected_death_Russian_ZH_101.xlsx"))
-  R2 <- read_excel(paste0("../data/Expected_death_Russian_ZH_102.xlsx"))
-  R3 <- read_excel(paste0("../data/Expected_death_Russian_ZH_103.xlsx"))
-  R4 <- read_excel(paste0("../data/Expected_death_Russian_ZH_104.xlsx"))
-  R5 <- read_excel(paste0("../data/Expected_death_Russian_ZH_105.xlsx"))
-  R6 <- read_excel(paste0("../data/Expected_death_Russian_ZH_106.xlsx"))
-  R7 <- read_excel(paste0("../data/Expected_death_Russian_ZH_107.xlsx"))
-  R8 <- read_excel(paste0("../data/Expected_death_Russian_ZH_108.xlsx"))
-  R9 <- read_excel(paste0("../data/Expected_death_Russian_ZH_109.xlsx"))
-  R10 <- read_excel(paste0("../data/Expected_death_Russian_ZH_110.xlsx"))
-  R13 <- read_excel(paste0("../data/Expected_death_Russian_ZH_113.xlsx"))
+  load(paste0("../data/expected_death_0_69_1890.RData"))
+  death_1890_0_69 <- expected_deaths
 
-  load(paste0("../data/Expected_death_Russian.RData"))
-  Expected_death_Russian <- rbind(alldata,R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R13)
-  load(paste0("../data/Expected_death_Spanish.RData"))
-  Expected_death_Spanish <- alldata
-  load(paste0("../data/Expected_death_Covid.RData"))
-  Expected_death_Covid <- alldata
+  load(paste0("../data/expected_death_0_69_1918.RData"))
+  death_1918_0_69 <- expected_deaths
 
-# 
-#   R1 <- read_excel(paste0("data/Expected_death_Russian_ZH_101.xlsx"))
-#   R2 <- read_excel(paste0("data/Expected_death_Russian_ZH_102.xlsx"))
-#   R3 <- read_excel(paste0("data/Expected_death_Russian_ZH_103.xlsx"))
-#   R4 <- read_excel(paste0("data/Expected_death_Russian_ZH_104.xlsx"))
-#   R5 <- read_excel(paste0("data/Expected_death_Russian_ZH_105.xlsx"))
-#   R6 <- read_excel(paste0("data/Expected_death_Russian_ZH_106.xlsx"))
-#   R7 <- read_excel(paste0("data/Expected_death_Russian_ZH_107.xlsx"))
-#   R8 <- read_excel(paste0("data/Expected_death_Russian_ZH_108.xlsx"))
-#   R9 <- read_excel(paste0("data/Expected_death_Russian_ZH_109.xlsx"))
-#   R10 <- read_excel(paste0("data/Expected_death_Russian_ZH_110.xlsx"))
-#   R13 <- read_excel(paste0("data/Expected_death_Russian_ZH_113.xlsx"))
-# 
-#   load(paste0("data/Expected_death_Russian.RData"))
-#   Expected_death_Russian <- rbind(alldata,R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R13)
-#   load(paste0("data/Expected_death_Spanish.RData"))
-#   Expected_death_Spanish <- alldata
-#   load(paste0("data/Expected_death_Covid.RData"))
-#   # Expected_death_Covid <- alldata
+  load(paste0("../data/expected_death_0_69_2020.RData"))
+  death_2020_0_69<- expected_deaths
 
-  data_excess <- rbind(Expected_death_Russian, Expected_death_Spanish, Expected_death_Covid) 
+  load(paste0("../data/expected_death_70_1890.RData"))
+  death_1890_70 <- expected_deaths
+
+  load(paste0("../data/expected_death_70_1918.RData"))
+  death_1918_70 <- expected_deaths
+
+  load(paste0("../data/expected_death_70_2020.RData"))
+  death_2020_70<- expected_deaths
+
   
   
-  # save(data_excess ,file=paste0("data/data_excess.RData"))
-  # write.xlsx(data_excess,file=paste0("data/data_excess.xlsx"),row.names=FALSE, overwrite = TRUE)
+  
+  # load(paste0("data/expected_death_0_69_1890.RData"))
+  # death_1890_0_69 <- expected_deaths
+  # 
+  # load(paste0("data/expected_death_0_69_1918.RData"))
+  # death_1918_0_69 <- expected_deaths
+  # 
+  # load(paste0("data/expected_death_0_69_2020.RData"))
+  # death_2020_0_69<- expected_deaths
+  # 
+  # 
+  # load(paste0("data/expected_death_70_1890.RData"))
+  # death_1890_70 <- expected_deaths
+  # 
+  # load(paste0("data/expected_death_70_1918.RData"))
+  # death_1918_70 <- expected_deaths
+  # 
+  # load(paste0("data/expected_death_70_2020.RData"))
+  # death_2020_70<- expected_deaths
+  
+  data_excess <- rbind(death_1890_0_69,death_1918_0_69, death_2020_0_69,
+                       death_1890_70,death_1918_70, death_2020_70)%>%
+    select(-column_label)
+  
   
   data_excess <- data_excess %>%
     mutate(excess_death = death - fit,
@@ -65,7 +65,8 @@ function_lisa <- function(VarYear){
   # plot_list = list()
   # for (YEAR in c(1889, 1890, 1918,1919,2020)) {
     dataLISA <- bezirk_geo %>%
-      filter(Year==VarYear)
+      filter(Year==VarYear) %>%
+      filter(age_group==Age)
     
     neighbours <- poly2nb(dataLISA$geometry)
     listw <- nb2listw(neighbours)
@@ -97,7 +98,7 @@ function_lisa <- function(VarYear){
     
     plot_excess <- ggplot(data=dataLISA)+
       geom_sf(mapping = aes(fill =colors[findInterval(quadrant,brks,all.inside=FALSE)])) +
-      facet_wrap(~Year, ncol = 1) +
+      ggtitle(paste0(VarYear,"-",Age))+
       scale_fill_manual("LISA Cluster map",
                         breaks=c("white", "blue","red","#0000FF66","#FF000066"),
                         labels=c("no significant","low-low","high-high","low-high","high-low"),

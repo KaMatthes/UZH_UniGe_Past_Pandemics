@@ -304,5 +304,4 @@ save(pop_total,file=paste0("data/pop_total.RData"))
 write.xlsx(pop_total,file=paste0("data/pop_total.xlsx"),row.names=FALSE, overwrite = TRUE)
 
 
-
 }

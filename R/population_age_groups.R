@@ -29,17 +29,24 @@ pop_age <- rbind(pop_1888_age,pop_1910_age) %>%
          age_group = replace(age_group, age_group=="15-19","0_19"),
          age_group = replace(age_group, age_group=="20-24","20_29"),
          age_group = replace(age_group, age_group=="25-29","20_29"),
+         age_group = replace(age_group, age_group=="20-29","20_29"),
          age_group = replace(age_group, age_group=="30-34","30_39"),
          age_group = replace(age_group, age_group=="35-39","30_39"),
+         age_group = replace(age_group, age_group=="30-39","30_39"),
          age_group = replace(age_group, age_group=="40-44","40_49"),
          age_group = replace(age_group, age_group=="45-49","40_49"),
+         age_group = replace(age_group, age_group=="40-49","40_49"),
          age_group = replace(age_group, age_group=="50-54","50_59"),
          age_group = replace(age_group, age_group=="55-59","50_59"),
+         age_group = replace(age_group, age_group=="50-59","50_59"),
          age_group = replace(age_group, age_group=="60-64","60_69"),
          age_group = replace(age_group, age_group=="65-69","60_69"),
+         age_group = replace(age_group, age_group=="60-69","60_69"),
+         age_group = replace(age_group, age_group=="70-79",">70"),
          age_group = replace(age_group, age_group=="70-74",">70"),
          age_group = replace(age_group, age_group=="75-79",">70"),
          age_group = replace(age_group, age_group=="80-84",">70"),
+         age_group = replace(age_group, age_group==">=80",">70"),
          age_group = replace(age_group, age_group=="85-89",">70"),
          age_group = replace(age_group, age_group=="90-95",">70"),
          age_group = replace(age_group, age_group==">=95",">70")) %>%
@@ -269,16 +276,22 @@ pop_2014_2020_age <- readxl::read_excel(paste0("data_raw/Data2020/Population_Age
          age_group = replace(age_group, age_group=="15-19","0_19"),
          age_group = replace(age_group, age_group=="20-24","20_29"),
          age_group = replace(age_group, age_group=="25-29","20_29"),
+         age_group = replace(age_group, age_group=="20-29","20_29"),
          age_group = replace(age_group, age_group=="30-34","30_39"),
          age_group = replace(age_group, age_group=="35-39","30_39"),
+         age_group = replace(age_group, age_group=="30-39","30_39"),
          age_group = replace(age_group, age_group=="40-44","40_49"),
          age_group = replace(age_group, age_group=="45-49","40_49"),
+         age_group = replace(age_group, age_group=="40-49","40_49"),
          age_group = replace(age_group, age_group=="50-54","50_59"),
          age_group = replace(age_group, age_group=="55-59","50_59"),
+         age_group = replace(age_group, age_group=="50-59","50_59"),
          age_group = replace(age_group, age_group=="60-64","60_69"),
          age_group = replace(age_group, age_group=="65-69","60_69"),
+         age_group = replace(age_group, age_group=="60-69","60_69"),
          age_group = replace(age_group, age_group=="70-74",">70"),
          age_group = replace(age_group, age_group=="75-79",">70"),
+         age_group = replace(age_group, age_group=="70-79",">70"),
          age_group = replace(age_group, age_group=="80-84",">70"),
          age_group = replace(age_group, age_group=="85-89",">70"),
          age_group = replace(age_group, age_group=="90-94",">70"),
@@ -463,7 +476,6 @@ pop_total_age <- rbind(pop_extrapolate_age, pop_2014_2020_age) %>%
   filter(!is.na(population))
 save(pop_total_age,file=paste0("data/pop_total_age.RData"))
 write.xlsx(pop_total_age,file=paste0("data/pop_total_age.xlsx"),row.names=FALSE, overwrite = TRUE)
-
 
 
 }

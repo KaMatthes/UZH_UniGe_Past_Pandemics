@@ -1,5 +1,5 @@
-function_excess_mortaliy <- function(Year_Pan, Year_max, Year_min) {
-load(paste0("data/data_mortality_rate.RData"))
+function_excess_mortaliy_sex <- function(Year_Pan, Year_max, Year_min, Sex) {
+load(paste0("data/data_mortality_rate_sex.RData"))
 
   
   # year_max <- 1895
@@ -8,9 +8,10 @@ load(paste0("data/data_mortality_rate.RData"))
   # pandemic_year <- 1890
   pandemic_year <- Year_Pan
   
-  dat.excess <- data_mortality_rate %>%
+  dat.excess <- data_mortality_rate_sex %>%
     # filter(Year <1896) %>%
     filter(Year >=Year_min & Year <=Year_max ) %>%
+    filter(sex==Sex) %>%
     mutate(Bezirk= as.numeric(Bezirk),
            death = ifelse(death < 0, 0, death),
            death = ifelse(is.na(death), 0, death)) %>%
@@ -102,12 +103,17 @@ for (BEZIRK in  Bezirk_vec) {
 expected_deaths <- expected_deaths %>%
   bind_rows(., .id = "column_label")
 
-write.xlsx(expected_deaths,paste0("data/expected_death4_",Year_Pan,".xlsx"), row.names=FALSE, overwrite = TRUE)
-save(expected_deaths,file=paste0("data/expected_death4_",Year_Pan,".RData"))
+write.xlsx(expected_deaths,paste0("data/expected_death_",Sex,"_",Year_Pan,"test.xlsx"), row.names=FALSE, overwrite = TRUE)
+save(expected_deaths,file=paste0("data/expected_death_",Sex,"_",Year_Pan,".RData"))
 
 }
 
 
-function_excess_mortaliy(Year_Pan=1890, Year_max=1895, Year_min=1886)
-function_excess_mortaliy(Year_Pan=1918, Year_max=1920, Year_min=1908)
-function_excess_mortaliy(Year_Pan=2020, Year_max=2020, Year_min=2014)
+# function_excess_mortaliy_sex(Year_Pan=1890, Year_max=1895, Year_min=1886, Sex="f")
+# function_excess_mortaliy_sex(Year_Pan=1890, Year_max=1895, Year_min=1886, Sex="m")
+# 
+# function_excess_mortaliy_sex(Year_Pan=1918, Year_max=1920, Year_min=1908, Sex="f")
+# function_excess_mortaliy_sex(Year_Pan=1918, Year_max=1920, Year_min=1908, Sex="m")
+# 
+# function_excess_mortaliy_sex(Year_Pan=2020, Year_max=2020, Year_min=2014, Sex="f")
+# function_excess_mortaliy_sex(Year_Pan=2020, Year_max=2020, Year_min=2014, Sex="m")

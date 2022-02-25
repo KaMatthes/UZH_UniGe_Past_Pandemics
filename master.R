@@ -42,14 +42,23 @@ col_5_groups2 <- c("#ca0020","#f4a582","#ffffbf","#abd9e9","#2c7bb6")
 col_5_groups2_trans <- c("#2c7bb6","#abd9e9","#ffffbf","#f4a582","#ca0020")
 col_5_groups_green_trans <- c("#1a9641","#a6d96a","#ffffbf","#fdae61","#d7191c")
 
+
+col_11_groups_green_trans <- c("#006d2c","#31a354","#74c476","#bae4b3","#edf8e9",
+                               "#fee5d9","#fcbba1","#fc9272","#fb6a4a","#de2d26","#a50f15")
 # load functions
 # source("R/prepare_data.R")
 # source("R/population.R")
 # source("R/mortality_rate.R")
 
-source("R/maps.R")
 source("R/PerYear.R")
+source("R/PerYear_sex.R")
+source("R/PerYear_age.R")
+source("R/maps.R")
+source("R/maps_sex.R")
+source("R/maps_age2groups.R")
 source("R/lisa.R")
+source("R/lisa_sex.R")
+source("R/lisa_age.R")
 # functios
 # function_prepare_data()
 # function_population()

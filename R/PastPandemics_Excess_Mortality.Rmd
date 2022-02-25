@@ -29,41 +29,42 @@ knitr::opts_chunk$set(echo = FALSE)
 * Covid19 : 2020
 
 
-## Age
+<!-- ## Age -->
 
-* Age groups aggregated so that there are the same in all years  (for death and population data)
-* 1879 - 1885 only larger age groups and not separated by sex
-* But total by sex available
+<!-- * Age groups aggregated so that there are the same in all years  (for death and population data) -->
+<!-- * 1879 - 1885 only larger age groups and not separated by sex -->
+<!-- * But total by sex available -->
 
-```{r}
-load(paste0("../data/data_total.RData")) 
-dat.age <- data_total %>%
-  mutate(Year = as.character(Year),
-    Year = as.numeric(Year))%>%
-  arrange(Year)
+<!-- ```{r} -->
+<!-- load(paste0("../data/data_total.RData"))  -->
+<!-- dat.age <- data_total %>% -->
+<!--   mutate(Year = as.character(Year), -->
+<!--     Year = as.numeric(Year))%>% -->
+<!--   arrange(Year) -->
 
-dat.tab.age <- as.data.frame.matrix(table(data_total$Year, data_total$age_group)) %>%
-  mutate(Year = row.names(.)) %>%
-  mutate_if(is.integer, ~ if_else(.>0,"1", "0")) %>%
-  mutate(Year = as.numeric(Year)) %>%
-  arrange(Year) %>%
-  select(Year, `0_4`, `5_14`:`>60`, `0_19`:`60_69`, `>70`)
+<!-- dat.tab.age <- as.data.frame.matrix(table(data_total$Year, data_total$age_group)) %>% -->
+<!--   mutate(Year = row.names(.)) %>% -->
+<!--   mutate_if(is.integer, ~ if_else(.>0,"1", "0")) %>% -->
+<!--   mutate(Year = as.numeric(Year)) %>% -->
+<!--   arrange(Year) %>% -->
+<!--   select(Year, `0_4`, `5_14`:`>60`, `0_19`:`60_69`, `>70`) -->
 
-dat.tab.age %>%
-  kbl(row.names = F) %>%
-  kable_material(c("striped", "hover"),full_width = F,position = "left")
-```
+<!-- dat.tab.age %>% -->
+<!--   kbl(row.names = F) %>% -->
+<!--   kable_material(c("striped", "hover"),full_width = F,position = "left") -->
+<!-- ``` -->
 
 ## Population
 
 * Modern data population for all districts and all age groups and sex available
 * Census 1888 and 1910 population data for all districts and age groups and sex, but 1900 and 1920 are not collect ->  might a problem
-* Census 1888, 1900, 1910, 1920  census data for all districts
+* Census 1880, 1888, 1900, 1910, 1920  census data for all districts
 <br />
 <br />
 Estimation:
-* Interpolation for total and each districts (census 1888, 1900, 1910, 1920)
-* Take this slope for each district (from interpolation) and age distribution from 1888 to interpolate data until 1909. Take slope from 1910 to 1920 and age distribution from 1910 to interpolate to 1920
+* Interpolation for total and each districts (census 1880, 1888, 1900, 1910, 1920)
+* Calculation of age distribution for 1888 and 1910
+* Take age distribution of 1888 to interpolate population between 1880 to 1900 and age distribution from 1910 to interpolate population between 1900 and 1920
 * Maybe a student from Kaspar will also collect detailed census data from 1900 and 1920, would be a bit more precise then
 
 ## Maps
@@ -75,50 +76,110 @@ Estimation:
 * New shapefiles created via QGIS to have one map for all years (to make them comparable).
 
 # Preliminary Methods
-* Only all data (no age groups, no sex)
-* Estimation of expected mortality using Poisson GLM
+* Estimation of expected mortality using Poisson GLM for total, sex and age groups
 * Only yearly data available, therefor no seasonal effects etc can be taken into account
-* Excess mortality is based on the trend in the previous 5 years
-* Pandemic years 1890, 1918 and 2020 are excluded to estimate expected values 
-* Bootstrapping to address the uncertainty in observed death counts and to provide a prediction interval (PI) for the predicted mortality(resampled N = 1000) 
-* Excess mortality is given shown relatively in percentage (excess mortality = (pandemic year -baseline mortality)/baseline mortality
-* Yearly numbers of excess deaths 
-* One maps shows for 5 groups (0-20%, 20%-40%, 60%-80%, 80%-100%) to see difference between the pandemics
-* To compare the districts the percentages are normalised, meaning for each year the quantiles are estimated, to see for example if same district have high excess mortaly between the pandemics
+* Excess mortality is based on the trend in the previous 4 years (sind for 1890 only 4 years available)
+* Pandemic years 1890, 1918 and 2020 are excluded to estimate expected values
+* Bootstrapping to address the uncertainty in observed death counts and to provide a prediction interval (PI) for the predicted mortality(resampled N = 1000)
+* Excess mortality is shown relatively in percentage (excess mortality = (pandemic year -baseline mortality)/baseline mortality
+* To compare the districts the percentages are normalised, meaning for each year the quantiles are estimated, to see for example if same district have high excess mortality between the pandemics
 * To find pattern and clusters: Moran’s I statistics ( LISA: Local Indicators of Spatial Association) were user mapping statistically significant local clusters.
 
 
 # Preliminary Results
 
-## Relative yearly numbers of excess deaths
+## Total
+
+### Relative yearly numbers of excess deaths
 ```{r, echo=FALSE,message=FALSE,fig.height = 30,  fig.width = 10}
 function_year()
 ```
 
-## Maps
-
-```{r, echo=FALSE,message=FALSE,fig.height = 12,  fig.width = 10}
-function_maps("excess_perc_groups")
-```
-
+### Maps
 ```{r, echo=FALSE,message=FALSE,fig.height = 12,  fig.width = 10}
 function_maps("excess_per_quant2")
 ```
 
-## LISA (Local Indicators of Spatial Association)
-
+### LISA (Local Indicators of Spatial Association)
 ```{r, echo=FALSE,message=FALSE,fig.height = 12,  fig.width = 10}
-cowplot::plot_grid(function_lisa(1889),function_lisa(1890),function_lisa(1918),function_lisa(1919),function_lisa(2020),
+cowplot::plot_grid(function_lisa(1890),function_lisa(1918),function_lisa(2020),
+                   nrow =2 ,ncol = 2)
+```
+
+## Sex
+
+<!-- ### Women -Relative yearly numbers of excess deaths -->
+<!-- ```{r, echo=FALSE,message=FALSE,fig.height = 30,  fig.width = 10} -->
+<!-- function_year_sex(Sex="f") -->
+<!-- ``` -->
+
+<!-- ### Men -Relative yearly numbers of excess deaths -->
+<!-- ```{r, echo=FALSE,message=FALSE,fig.height = 30,  fig.width = 10} -->
+<!-- function_year_sex(Sex="m") -->
+<!-- ``` -->
+
+### Maps
+```{r, echo=FALSE,message=FALSE,fig.height = 12,  fig.width = 10}
+function_maps_sex("excess_per_quant2")
+```
+
+### LISA (Local Indicators of Spatial Association)
+```{r, echo=FALSE,message=FALSE,fig.height = 12,  fig.width = 10}
+cowplot::plot_grid(function_lisa_sex(1890, "f"),function_lisa_sex(1890, "m"),
+                   function_lisa_sex(1918, "f"),function_lisa_sex(1918, "m"),
+                   function_lisa_sex(2020, "f"),function_lisa_sex(2020, "m"),
                    nrow =3 ,ncol = 2)
 ```
 
-# Next steps
-1. Estimate population for age groups and sex
-2. Estimate excess mortality for age groups and sex
-  * Which methods? Sample size will be small and often zero, especially for younger age. 
+## Age
+* Only two age groups 0-69 and >=70.
+* More precise age groups would lead to a lot of zeros in small districts
+* Even with two age groups, zeros in some districts
+
+<!-- ### 0-19 - Relative yearly numbers of excess deaths -->
+<!-- ```{r, echo=FALSE,message=FALSE,fig.height = 30,  fig.width = 10} -->
+<!-- function_year_age(Age="0_19") -->
+<!-- ``` -->
+
+<!-- ### 20-49 - Relative yearly numbers of excess deaths -->
+<!-- ```{r, echo=FALSE,message=FALSE,fig.height = 30,  fig.width = 10} -->
+<!-- function_year_age(Age="20_49") -->
+<!-- ``` -->
+
+<!-- ### 50-69 - Relative yearly numbers of excess deaths -->
+<!-- ```{r, echo=FALSE,message=FALSE,fig.height = 30,  fig.width = 10} -->
+<!-- function_year_age(Age="50_69") -->
+<!-- ``` -->
+
+<!-- ### >=70 - Relative yearly numbers of excess deaths -->
+<!-- ```{r, echo=FALSE,message=FALSE,fig.height = 30,  fig.width = 10} -->
+<!-- function_year_age(Age=">70") -->
+<!-- ``` -->
+
+### Maps
+```{r, echo=FALSE,message=FALSE,fig.height = 12,  fig.width = 10}
+function_maps_age2("excess_perc_year_quant2")
+```
+
+### LISA (Local Indicators of Spatial Association)
+```{r, echo=FALSE,message=FALSE,fig.height = 12,  fig.width = 10}
+cowplot::plot_grid(function_lisa_age(1890, "0_69"),function_lisa_age(1890, ">70"),
+                   function_lisa_age(1918, "0_69"),function_lisa_age(1918, ">70"),
+                   function_lisa_age(2020, "0_69"),function_lisa_age(2020, ">70"),
+                   nrow =3 ,ncol = 2)
+```
+
+# Next steps, points to doscuess
+
+1. Bayesian approaches in hierarchical modelling (INLA)
+  * Lot of zeros, especially for age groups
   * Bayesian approaches in hierarchical modelling (INLA) to investigate the spatial pattern of excess mortality per district
-  * Which years included? Age groups by sex only available since 1886. So maybe estimation of baseline mortality for the last 4 years?      * Sensitivity Analyses for 1918 and 2020 between 4 years and 5 years baseline mortality
-3. Further Co-factors (I have to discuss with Kaspar):
+2. Groups
+ * Too many age groups leads to many zeros -> too many zeros are also an issue with INLA
+ * Maybe only 0-69 and >70 or 0-40, 41-69, >70
+ * Its is not possible to stratify by age and sex -> to many zeros
+ * We can estimate excess mortality for age groups and sex, but not by age groups for each sex
+2. Further Co-factors (I have to discuss with Kaspar):
  * Urbanization
  * Infant mortality rates as a proxy for health index
  * Public health intervention for each district (canton)
