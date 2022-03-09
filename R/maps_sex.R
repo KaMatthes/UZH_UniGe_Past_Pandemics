@@ -19,24 +19,23 @@ function_maps_sex <- function(var){
   load(paste0("../data/expected_death_m_2020.RData"))
   death_2020_m <- expected_deaths
 
-
-
-  # load(paste0("data/expected_death_f_1890.RData"))
-  # death_1890_f <- expected_deaths
-  # load(paste0("data/expected_death_f_1918.RData"))
-  # death_1918_f <- expected_deaths
-  # 
-  # load(paste0("data/expected_death_f_2020.RData"))
-  # death_2020_f <- expected_deaths
-  # 
-  # load(paste0("data/expected_death_m_1890.RData"))
-  # death_1890_m <- expected_deaths
-  # 
-  # load(paste0("data/expected_death_m_1918.RData"))
-  # death_1918_m <- expected_deaths
-  # 
-  # load(paste0("data/expected_death_m_2020.RData"))
-  # death_2020_m <- expected_deaths
+# 
+#   load(paste0("data/expected_death_f_1890.RData"))
+#   death_1890_f <- expected_deaths
+#   load(paste0("data/expected_death_f_1918.RData"))
+#   death_1918_f <- expected_deaths
+# 
+#   load(paste0("data/expected_death_f_2020.RData"))
+#   death_2020_f <- expected_deaths
+# 
+#   load(paste0("data/expected_death_m_1890.RData"))
+#   death_1890_m <- expected_deaths
+# 
+#   load(paste0("data/expected_death_m_1918.RData"))
+#   death_1918_m <- expected_deaths
+# 
+#   load(paste0("data/expected_death_m_2020.RData"))
+#   death_2020_m <- expected_deaths
 
   data_excess <- rbind(death_1890_m,death_1918_m, death_2020_m,
                        death_1890_f,death_1918_f, death_2020_f )%>%
@@ -177,9 +176,9 @@ plot_excess <- ggplot(data=bezirk_geo)+
 }
 
 
-else if (var==" excess_perc_year_quant2") {
+else if (var=="excess_perc_year_quant2") {
 plot_excess <- ggplot(data=bezirk_geo)+
-  geom_sf(mapping = aes(fill =   excess_perc_year_quant2)) +
+  geom_sf(mapping = aes(fill =excess_perc_year_quant2)) +
   facet_wrap(Year~sex, ncol = 2) +
   scale_fill_manual("Quantile:",
     values = col_5_groups_green_trans)+

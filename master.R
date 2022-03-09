@@ -1,4 +1,4 @@
-.libPaths(c("H:/Documents/R/win-library/4.0", "C:/Program Files/R/R-4.0.5/library"))
+.libPaths(c("H:/Documents/R/win-library/4.1", "C:/Program Files/R/R-4.1.2/library"))
 
 library(plyr)
 library(readxl)
@@ -56,9 +56,11 @@ source("R/PerYear_age.R")
 source("R/maps.R")
 source("R/maps_sex.R")
 source("R/maps_age2groups.R")
+source("R/maps_age2groups_sex.R")
 source("R/lisa.R")
 source("R/lisa_sex.R")
 source("R/lisa_age.R")
+source("R/lisa_age_sex.R")
 # functios
 # function_prepare_data()
 # function_population()

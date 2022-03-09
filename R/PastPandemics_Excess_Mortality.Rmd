@@ -78,7 +78,7 @@ Estimation:
 # Preliminary Methods
 * Estimation of expected mortality using Poisson GLM for total, sex and age groups
 * Only yearly data available, therefor no seasonal effects etc can be taken into account
-* Excess mortality is based on the trend in the previous 4 years (sind for 1890 only 4 years available)
+* Excess mortality is based on the trend in the previous 4 years  (for 1890 only 4 years available)
 * Pandemic years 1890, 1918 and 2020 are excluded to estimate expected values
 * Bootstrapping to address the uncertainty in observed death counts and to provide a prediction interval (PI) for the predicted mortality(resampled N = 1000)
 * Excess mortality is shown relatively in percentage (excess mortality = (pandemic year -baseline mortality)/baseline mortality
@@ -120,7 +120,7 @@ cowplot::plot_grid(function_lisa(1890),function_lisa(1918),function_lisa(2020),
 
 ### Maps
 ```{r, echo=FALSE,message=FALSE,fig.height = 12,  fig.width = 10}
-function_maps_sex("excess_per_quant2")
+function_maps_sex("excess_perc_year_quant2")
 ```
 
 ### LISA (Local Indicators of Spatial Association)
@@ -169,6 +169,42 @@ cowplot::plot_grid(function_lisa_age(1890, "0_69"),function_lisa_age(1890, ">70"
                    nrow =3 ,ncol = 2)
 ```
 
+
+## Sex and Age
+* Interpretation with caution
+
+### Maps
+Age 0 - 69 year
+
+```{r, echo=FALSE,message=FALSE,fig.height = 12,  fig.width = 10}
+function_maps_age2_sex(var="excess_perc_year_quant2",Age="0_69")
+```
+
+Age >=70 year
+
+```{r, echo=FALSE,message=FALSE,fig.height = 12,  fig.width = 10}
+function_maps_age2_sex(var="excess_perc_year_quant2", Age=">70")
+```
+
+### LISA (Local Indicators of Spatial Association)
+Age 0 - 69 year
+```{r, echo=FALSE,message=FALSE,fig.height = 12,  fig.width = 10}
+cowplot::plot_grid(
+                   function_lisa_age_sex(VarYear=1890, Age="0_69", Sex="f"),function_lisa_age_sex(VarYear=1890, Age="0_69", Sex="m"),
+                   function_lisa_age_sex(VarYear=1918, Age="0_69", Sex="f"),function_lisa_age_sex(VarYear=1918, Age="0_69", Sex="m"),
+                   function_lisa_age_sex(VarYear=2020, Age="0_69", Sex="f"),function_lisa_age_sex(VarYear=2020, Age="0_69", Sex="m"),
+                   nrow =3 ,ncol = 2)
+```
+
+Age >=70 year
+```{r, echo=FALSE,message=FALSE,fig.height = 12,  fig.width = 10}
+cowplot::plot_grid(
+                   function_lisa_age_sex(VarYear=1890, Age=">70", Sex="f"),function_lisa_age_sex(VarYear=1890, Age=">70", Sex="m"),
+                   function_lisa_age_sex(VarYear=1918, Age=">70", Sex="f"),function_lisa_age_sex(VarYear=1918, Age=">70", Sex="m"),
+                   function_lisa_age_sex(VarYear=2020, Age=">70", Sex="f"),function_lisa_age_sex(VarYear=2020, Age=">70", Sex="m"),
+                   nrow =3 ,ncol = 2)
+```
+
 # Next steps, Points to be discussed
 
 1. Bayesian approaches in hierarchical modelling (INLA)
@@ -177,8 +213,6 @@ cowplot::plot_grid(function_lisa_age(1890, "0_69"),function_lisa_age(1890, ">70"
 2. Groups
  * Too many age groups lead to too many zeros -> too many zeros are also a problem with INLA
  * Maybe only 0-69 and >70 or 0-40, 41-69, >70
- * It is not possible to stratify by age and gender -> too many zeros
- * We can estimate excess mortality for age groups and sex, but not by age groups for each sex
 2. Further Co-factors (I have to discuss with Kaspar):
  * Urbanization
  * Infant mortality rates as a proxy for health index
