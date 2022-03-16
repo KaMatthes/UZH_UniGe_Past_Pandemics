@@ -1,43 +1,10 @@
 function_lisa <- function(VarYear){
-
-  R1 <- read_excel(paste0("../data/Expected_death_Russian_ZH_101.xlsx"))
-  R2 <- read_excel(paste0("../data/Expected_death_Russian_ZH_102.xlsx"))
-  R3 <- read_excel(paste0("../data/Expected_death_Russian_ZH_103.xlsx"))
-  R4 <- read_excel(paste0("../data/Expected_death_Russian_ZH_104.xlsx"))
-  R5 <- read_excel(paste0("../data/Expected_death_Russian_ZH_105.xlsx"))
-  R6 <- read_excel(paste0("../data/Expected_death_Russian_ZH_106.xlsx"))
-  R7 <- read_excel(paste0("../data/Expected_death_Russian_ZH_107.xlsx"))
-  R8 <- read_excel(paste0("../data/Expected_death_Russian_ZH_108.xlsx"))
-  R9 <- read_excel(paste0("../data/Expected_death_Russian_ZH_109.xlsx"))
-  R10 <- read_excel(paste0("../data/Expected_death_Russian_ZH_110.xlsx"))
-  R13 <- read_excel(paste0("../data/Expected_death_Russian_ZH_113.xlsx"))
-
-  load(paste0("../data/Expected_death_Russian.RData"))
-  Expected_death_Russian <- rbind(alldata,R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R13)
-  load(paste0("../data/Expected_death_Spanish.RData"))
-  Expected_death_Spanish <- alldata
-  load(paste0("../data/Expected_death_Covid.RData"))
-  Expected_death_Covid <- alldata
-
-# 
-#   R1 <- read_excel(paste0("data/Expected_death_Russian_ZH_101.xlsx"))
-#   R2 <- read_excel(paste0("data/Expected_death_Russian_ZH_102.xlsx"))
-#   R3 <- read_excel(paste0("data/Expected_death_Russian_ZH_103.xlsx"))
-#   R4 <- read_excel(paste0("data/Expected_death_Russian_ZH_104.xlsx"))
-#   R5 <- read_excel(paste0("data/Expected_death_Russian_ZH_105.xlsx"))
-#   R6 <- read_excel(paste0("data/Expected_death_Russian_ZH_106.xlsx"))
-#   R7 <- read_excel(paste0("data/Expected_death_Russian_ZH_107.xlsx"))
-#   R8 <- read_excel(paste0("data/Expected_death_Russian_ZH_108.xlsx"))
-#   R9 <- read_excel(paste0("data/Expected_death_Russian_ZH_109.xlsx"))
-#   R10 <- read_excel(paste0("data/Expected_death_Russian_ZH_110.xlsx"))
-#   R13 <- read_excel(paste0("data/Expected_death_Russian_ZH_113.xlsx"))
-# 
-#   load(paste0("data/Expected_death_Russian.RData"))
-#   Expected_death_Russian <- rbind(alldata,R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R13)
-#   load(paste0("data/Expected_death_Spanish.RData"))
-#   Expected_death_Spanish <- alldata
-#   load(paste0("data/Expected_death_Covid.RData"))
-#   # Expected_death_Covid <- alldata
+  load(paste0("../data/expected_death_1890.RData"))
+  Expected_death_Russian <-expected_deaths
+  load(paste0("../data/expected_death_1918.RData"))
+  Expected_death_Spanish <- expected_deaths
+  load(paste0("../data/expected_death_2020.RData"))
+  Expected_death_Covid <- expected_deaths
 
   data_excess <- rbind(Expected_death_Russian, Expected_death_Spanish, Expected_death_Covid) 
   

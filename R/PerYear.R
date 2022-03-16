@@ -1,5 +1,15 @@
 function_year <- function (){
-load(paste0("../data/data_excess.RData"))
+  
+  load(paste0("../data/expected_death_1890.RData"))
+  Expected_death_Russian <-expected_deaths
+  load(paste0("../data/expected_death_1918.RData"))
+  Expected_death_Spanish <- expected_deaths
+  load(paste0("../data/expected_death_2020.RData"))
+  Expected_death_Covid <- expected_deaths
+  
+  
+  data_excess <- rbind(Expected_death_Russian, Expected_death_Spanish, Expected_death_Covid) 
+  
 load(paste0("../data/data_total.RData"))
 
 NameBezirk <- data_total %>%

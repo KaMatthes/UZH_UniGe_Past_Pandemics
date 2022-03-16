@@ -157,13 +157,13 @@ bezirk_geo <- read_sf("../data_raw/Map_2020/Maps_dissolved/Maps_dissolved_2020.s
 
 
   # filter(!is.na(Bezirk))
-if(var=="excess_per_quant2") {
+if(var=="excess_rate_group") {
 plot_excess <- ggplot(data=bezirk_geo)+
-  geom_sf(mapping = aes(fill =excess_per_quant2)) +
+  geom_sf(mapping = aes(fill =excess_rate_group)) +
   facet_wrap(Year~sex, ncol = 2) +
-  scale_fill_manual("Percentages:",
+  scale_fill_manual("Quantile:",
     values = col_5_groups_green_trans)+
-  ggtitle("Excess Mortality Percentage")+
+  ggtitle("Excess Mortality")+
   theme(
     panel.grid.major=element_blank(),
     axis.title=element_blank(),
@@ -182,7 +182,7 @@ plot_excess <- ggplot(data=bezirk_geo)+
   facet_wrap(Year~sex, ncol = 2) +
   scale_fill_manual("Quantile:",
     values = col_5_groups_green_trans)+
-  ggtitle("Excess Mortality Percentage normalised")+
+  ggtitle("Excess Mortality normalised")+
   theme(
     panel.grid.major=element_blank(),
     axis.title=element_blank(),

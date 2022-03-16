@@ -29,13 +29,12 @@ Bezirk_vec <- Bezirk_vec$Bezirk
 
 
 # function bootstrapping
+set.seed(20220316)
 boot_pi <- function(model, pdata, n, p) {
   odata <- model$data
   lp <- (1 - p) / 2
   up <- 1 - lp
-  seeds <- round(runif(n, 1, 1000), 0)
   boot_y <- foreach(i = 1:n, .combine = rbind) %dopar% {
-    set.seed(seeds[i])
     bdata <- odata[sample(seq(nrow(odata)), size = nrow(odata), replace = TRUE), ]
     bpred <- predict(update(model, data = bdata), type = "response", newdata = pdata)
     rpois(length(bpred), lambda = bpred)
@@ -44,6 +43,7 @@ boot_pi <- function(model, pdata, n, p) {
   return(data.frame(pred = predict(model, newdata = pdata, type = "response"), 
                     lower = boot_ci[, 1], upper = boot_ci[, 2]))
 }
+
 
 
 
@@ -102,12 +102,12 @@ for (BEZIRK in  Bezirk_vec) {
 expected_deaths <- expected_deaths %>%
   bind_rows(., .id = "column_label")
 
-write.xlsx(expected_deaths,paste0("data/expected_death4_",Year_Pan,".xlsx"), row.names=FALSE, overwrite = TRUE)
-save(expected_deaths,file=paste0("data/expected_death4_",Year_Pan,".RData"))
+write.xlsx(expected_deaths,paste0("data/expected_death_",Year_Pan,".xlsx"), row.names=FALSE, overwrite = TRUE)
+save(expected_deaths,file=paste0("data/expected_death_",Year_Pan,".RData"))
 
 }
 
 
-function_excess_mortaliy(Year_Pan=1890, Year_max=1895, Year_min=1886)
+function_excess_mortaliy(Year_Pan=1890, Year_max=1895, Year_min=1882)
 function_excess_mortaliy(Year_Pan=1918, Year_max=1920, Year_min=1908)
-function_excess_mortaliy(Year_Pan=2020, Year_max=2020, Year_min=2014)
+function_excess_mortaliy(Year_Pan=2020, Year_max=2020, Year_min=2013)

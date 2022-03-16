@@ -30,13 +30,12 @@ Bezirk_vec <- Bezirk_vec$Bezirk
 
 
 # function bootstrapping
+set.seed(20220316)
 boot_pi <- function(model, pdata, n, p) {
   odata <- model$data
   lp <- (1 - p) / 2
   up <- 1 - lp
-  seeds <- round(runif(n, 1, 1000), 0)
   boot_y <- foreach(i = 1:n, .combine = rbind) %dopar% {
-    set.seed(seeds[i])
     bdata <- odata[sample(seq(nrow(odata)), size = nrow(odata), replace = TRUE), ]
     bpred <- predict(update(model, data = bdata), type = "response", newdata = pdata)
     rpois(length(bpred), lambda = bpred)
@@ -109,11 +108,11 @@ save(expected_deaths,file=paste0("data/expected_death_",Sex,"_",Year_Pan,".RData
 }
 
 
-# function_excess_mortaliy_sex(Year_Pan=1890, Year_max=1895, Year_min=1886, Sex="f")
-# function_excess_mortaliy_sex(Year_Pan=1890, Year_max=1895, Year_min=1886, Sex="m")
-# 
-# function_excess_mortaliy_sex(Year_Pan=1918, Year_max=1920, Year_min=1908, Sex="f")
-# function_excess_mortaliy_sex(Year_Pan=1918, Year_max=1920, Year_min=1908, Sex="m")
-# 
-# function_excess_mortaliy_sex(Year_Pan=2020, Year_max=2020, Year_min=2014, Sex="f")
-# function_excess_mortaliy_sex(Year_Pan=2020, Year_max=2020, Year_min=2014, Sex="m")
+function_excess_mortaliy_sex(Year_Pan=1890, Year_max=1895, Year_min=1882, Sex="f")
+function_excess_mortaliy_sex(Year_Pan=1890, Year_max=1895, Year_min=1882, Sex="m")
+
+function_excess_mortaliy_sex(Year_Pan=1918, Year_max=1920, Year_min=1908, Sex="f")
+function_excess_mortaliy_sex(Year_Pan=1918, Year_max=1920, Year_min=1908, Sex="m")
+
+function_excess_mortaliy_sex(Year_Pan=2020, Year_max=2020, Year_min=2014, Sex="f")
+function_excess_mortaliy_sex(Year_Pan=2020, Year_max=2020, Year_min=2014, Sex="m")

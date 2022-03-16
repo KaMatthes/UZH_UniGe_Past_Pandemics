@@ -16,6 +16,6 @@ data_mortality_rate <- data_total %>%
 
 
 save(data_mortality_rate ,file=paste0("data/data_mortality_rate.RData"))
-write.xlsx(data_mortality_rate,file=paste0("data/data_mortality_rate.xlsx"),row.names=FALSE, overwrite = TRUE)
+write.xlsx(data_mortality_rate,file=paste0("data/data_mortality_rate.xlsx"),rowNames=FALSE, overwrite = TRUE)
 
 }

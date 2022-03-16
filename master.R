@@ -7,7 +7,6 @@ library(lubridate)
 library(tidyverse)
 library(ggplot2)
 library(rgdal)
-library(sf)
 library(zoo)
 library(foreach)
 library(arsenal)
@@ -23,6 +22,7 @@ library(tmaptools)
 library(spgwr)
 library(grid)
 library(gridExtra)
+library(ggpattern)
 
 
 

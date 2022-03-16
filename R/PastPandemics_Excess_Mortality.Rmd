@@ -17,9 +17,11 @@ knitr::opts_chunk$set(echo = FALSE)
 
 # Research question
 
+* Are patterns of pandemic spread, its determinants, and effects of public health interventions are similar across pandemics?
 * Estimate excess mortality for pandemics in 1890, 1918 and 2020 per district, age groups and sex
 * Comparing of spatial pattern between the pandemics
-* Investigate the determinants of spread in the context of different co-factors ( Urbanization, GIP per capita, etc-)
+* Investigate the determinants of spread in the context of different co-factors ( Urbanization, GIP per capita etc.)
+
 
 # Data
 
@@ -76,15 +78,16 @@ Estimation:
 * New shapefiles created via QGIS to have one map for all years (to make them comparable).
 
 # Preliminary Methods
-* Estimation of expected mortality using Poisson GLM for total, sex and age groups
-* Only yearly data available, therefor no seasonal effects etc can be taken into account
-* Excess mortality is based on the trend in the previous 4 years  (for 1890 only 4 years available)
-* Pandemic years 1890, 1918 and 2020 are excluded to estimate expected values
+* Estimation of the expected death counts for each district, sex and age
+* Poisson Regression
+* Natural logarithm of the population in each district (sex, age) was used as the model's offset term
+* Estimation based on the mortality trend of the previous 4 years (1890 only 4 years possible)
+* Pandemic years 1890, 1918 and 2020 are excluded to estimate expected mortality (high mortalities in these years, what would be observed without a pandemic?)
 * Bootstrapping to address the uncertainty in observed death counts and to provide a prediction interval (PI) for the predicted mortality(resampled N = 1000)
-* Excess mortality is shown relatively in percentage (excess mortality = (pandemic year -baseline mortality)/baseline mortality
-* To compare the districts the percentages are normalised, meaning for each year the quantiles are estimated, to see for example if same district have high excess mortality between the pandemics
-* To find pattern and clusters: Moran’s I statistics ( LISA: Local Indicators of Spatial Association) were user mapping statistically significant local clusters.
-
+* Excess mortality = observed death counts – expected death counts
+* Excess mortality is shown relatively in percentage (Excess mortality/expected death counts)
+* To compare the districts of each pandemic year the relative excess mortality was normalized
+* To find pattern and clusters: Moran’s I statistics ( LISA: Local Indicators of Spatial Association) were used for mapping statistically significant local clusters 
 
 # Preliminary Results
 
@@ -96,6 +99,10 @@ function_year()
 ```
 
 ### Maps
+```{r, echo=FALSE,message=FALSE,fig.height = 12,  fig.width = 10}
+function_maps("excess_rate_group")
+```
+
 ```{r, echo=FALSE,message=FALSE,fig.height = 12,  fig.width = 10}
 function_maps("excess_per_quant2")
 ```
@@ -170,40 +177,40 @@ cowplot::plot_grid(function_lisa_age(1890, "0_69"),function_lisa_age(1890, ">70"
 ```
 
 
-## Sex and Age
-* Interpretation with caution
+<!-- ## Sex and Age -->
+<!-- * Interpretation with caution -->
 
-### Maps
-Age 0 - 69 year
+<!-- ### Maps -->
+<!-- Age 0 - 69 year -->
 
-```{r, echo=FALSE,message=FALSE,fig.height = 12,  fig.width = 10}
-function_maps_age2_sex(var="excess_perc_year_quant2",Age="0_69")
-```
+<!-- ```{r, echo=FALSE,message=FALSE,fig.height = 12,  fig.width = 10} -->
+<!-- function_maps_age2_sex(var="excess_perc_year_quant2",Age="0_69") -->
+<!-- ``` -->
 
-Age >=70 year
+<!-- Age >=70 year -->
 
-```{r, echo=FALSE,message=FALSE,fig.height = 12,  fig.width = 10}
-function_maps_age2_sex(var="excess_perc_year_quant2", Age=">70")
-```
+<!-- ```{r, echo=FALSE,message=FALSE,fig.height = 12,  fig.width = 10} -->
+<!-- function_maps_age2_sex(var="excess_perc_year_quant2", Age=">70") -->
+<!-- ``` -->
 
-### LISA (Local Indicators of Spatial Association)
-Age 0 - 69 year
-```{r, echo=FALSE,message=FALSE,fig.height = 12,  fig.width = 10}
-cowplot::plot_grid(
-                   function_lisa_age_sex(VarYear=1890, Age="0_69", Sex="f"),function_lisa_age_sex(VarYear=1890, Age="0_69", Sex="m"),
-                   function_lisa_age_sex(VarYear=1918, Age="0_69", Sex="f"),function_lisa_age_sex(VarYear=1918, Age="0_69", Sex="m"),
-                   function_lisa_age_sex(VarYear=2020, Age="0_69", Sex="f"),function_lisa_age_sex(VarYear=2020, Age="0_69", Sex="m"),
-                   nrow =3 ,ncol = 2)
-```
+<!-- ### LISA (Local Indicators of Spatial Association) -->
+<!-- Age 0 - 69 year -->
+<!-- ```{r, echo=FALSE,message=FALSE,fig.height = 12,  fig.width = 10} -->
+<!-- cowplot::plot_grid( -->
+<!--                    function_lisa_age_sex(VarYear=1890, Age="0_69", Sex="f"),function_lisa_age_sex(VarYear=1890, Age="0_69", Sex="m"), -->
+<!--                    function_lisa_age_sex(VarYear=1918, Age="0_69", Sex="f"),function_lisa_age_sex(VarYear=1918, Age="0_69", Sex="m"), -->
+<!--                    function_lisa_age_sex(VarYear=2020, Age="0_69", Sex="f"),function_lisa_age_sex(VarYear=2020, Age="0_69", Sex="m"), -->
+<!--                    nrow =3 ,ncol = 2) -->
+<!-- ``` -->
 
-Age >=70 year
-```{r, echo=FALSE,message=FALSE,fig.height = 12,  fig.width = 10}
-cowplot::plot_grid(
-                   function_lisa_age_sex(VarYear=1890, Age=">70", Sex="f"),function_lisa_age_sex(VarYear=1890, Age=">70", Sex="m"),
-                   function_lisa_age_sex(VarYear=1918, Age=">70", Sex="f"),function_lisa_age_sex(VarYear=1918, Age=">70", Sex="m"),
-                   function_lisa_age_sex(VarYear=2020, Age=">70", Sex="f"),function_lisa_age_sex(VarYear=2020, Age=">70", Sex="m"),
-                   nrow =3 ,ncol = 2)
-```
+<!-- Age >=70 year -->
+<!-- ```{r, echo=FALSE,message=FALSE,fig.height = 12,  fig.width = 10} -->
+<!-- cowplot::plot_grid( -->
+<!--                    function_lisa_age_sex(VarYear=1890, Age=">70", Sex="f"),function_lisa_age_sex(VarYear=1890, Age=">70", Sex="m"), -->
+<!--                    function_lisa_age_sex(VarYear=1918, Age=">70", Sex="f"),function_lisa_age_sex(VarYear=1918, Age=">70", Sex="m"), -->
+<!--                    function_lisa_age_sex(VarYear=2020, Age=">70", Sex="f"),function_lisa_age_sex(VarYear=2020, Age=">70", Sex="m"), -->
+<!--                    nrow =3 ,ncol = 2) -->
+<!-- ``` -->
 
 # Next steps, Points to be discussed
 
