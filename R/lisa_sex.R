@@ -1,40 +1,40 @@
 function_lisa_sex <- function(VarYear, Sex){
 
-  load(paste0("../data/expected_death_f_1890.RData"))
+  load(paste0("../data/expected_death_inlaf_1890.RData"))
   death_1890_f <- expected_deaths
 
-  load(paste0("../data/expected_death_f_1918.RData"))
+  load(paste0("../data/expected_death_inlaf_1918.RData"))
   death_1918_f <- expected_deaths
 
-  load(paste0("../data/expected_death_f_2020.RData"))
+  load(paste0("../data/expected_death_inlaf_2020.RData"))
   death_2020_f <- expected_deaths
 
-  load(paste0("../data/expected_death_m_1890.RData"))
+  load(paste0("../data/expected_death_inlam_1890.RData"))
   death_1890_m <- expected_deaths
 
-  load(paste0("../data/expected_death_m_1918.RData"))
+  load(paste0("../data/expected_death_inlam_1918.RData"))
   death_1918_m <- expected_deaths
 
-  load(paste0("../data/expected_death_m_2020.RData"))
+  load(paste0("../data/expected_death_inlam_2020.RData"))
   death_2020_m <- expected_deaths
 
 
   
-  # load(paste0("data/expected_death_f_1890.RData"))
+  # load(paste0("data/expected_death_inlaf_1890.RData"))
   # death_1890_f <- expected_deaths
-  # load(paste0("data/expected_death_f_1918.RData"))
+  # load(paste0("data/expected_death_inlaf_1918.RData"))
   # death_1918_f <- expected_deaths
   # 
-  # load(paste0("data/expected_death_f_2020.RData"))
+  # load(paste0("data/expected_death_inlaf_2020.RData"))
   # death_2020_f <- expected_deaths
   # 
-  # load(paste0("data/expected_death_m_1890.RData"))
+  # load(paste0("data/expected_death_inlam_1890.RData"))
   # death_1890_m <- expected_deaths
   # 
-  # load(paste0("data/expected_death_m_1918.RData"))
+  # load(paste0("data/expected_death_inlam_1918.RData"))
   # death_1918_m <- expected_deaths
   # 
-  # load(paste0("data/expected_death_m_2020.RData"))
+  # load(paste0("data/expected_death_inlam_2020.RData"))
   # death_2020_m <- expected_deaths
 
   data_excess <- rbind(death_1890_m,death_1918_m, death_2020_m,
@@ -42,10 +42,12 @@ function_lisa_sex <- function(VarYear, Sex){
     select(-column_label)
   
   data_excess <- data_excess %>%
+    ungroup() %>%
     mutate(excess_death = death - fit,
            excess_rate = (excess_death/population)*10000,
            Bezirk = as.factor(Bezirk)) %>%
-    filter(Year=="2020"  |Year=="1918" |Year=="1890")
+    filter(Year=="2020"  |Year=="1918" |Year=="1890")%>%
+    rename(sex=sex.x)
   
   # sf::sf_use_s2(TRUE)
   

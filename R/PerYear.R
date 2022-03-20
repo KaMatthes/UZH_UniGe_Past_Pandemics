@@ -1,10 +1,10 @@
 function_year <- function (){
   
-  load(paste0("../data/expected_death_1890.RData"))
+  load(paste0("../data/expected_death_inla1890.RData"))
   Expected_death_Russian <-expected_deaths
-  load(paste0("../data/expected_death_1918.RData"))
+  load(paste0("../data/expected_death_inla1918.RData"))
   Expected_death_Spanish <- expected_deaths
-  load(paste0("../data/expected_death_2020.RData"))
+  load(paste0("../data/expected_death_inla2020.RData"))
   Expected_death_Covid <- expected_deaths
   
   
@@ -20,6 +20,7 @@ NameBezirk <- data_total %>%
 vline_pandemic <- tibble(Year=c("1890", "1918","2020")) 
 
 data_excess_year <- data_excess %>%
+  ungroup() %>%
   mutate( Year_group = replace(Year, Year <1896, "1885-1895"),
           Year = as.factor(Year)) %>%
   mutate(Year_group = recode(Year_group, 
@@ -45,7 +46,8 @@ data_excess_year <- data_excess %>%
          Difference_pop = replace( Difference_pop, excess_death_pop > 0 & Difference_pop=="No-Pandemic",
                                  "More than expected"),
          Difference_pop = replace( Difference_pop, excess_death_pop < 0 & Difference_pop=="No-Pandemic",
-                                 "Fewer than expected"))%>%
+                                 "Fewer than expected"),
+         Bezirk = as.numeric(Bezirk))%>%
   left_join(NameBezirk) %>%
   arrange(Bezirk)
          

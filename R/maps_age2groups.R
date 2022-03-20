@@ -49,7 +49,9 @@ data_excess <- data_excess %>%
   mutate(excess_death = death - fit,
          excess_rate = (excess_death/population)*10000,
          Bezirk = as.factor(Bezirk)) %>%
-  filter(Year=="2020"  |Year=="1918" |Year=="1890")
+  filter(Year=="2020"  |Year=="1918" |Year=="1890") %>%
+  mutate(significant_dummy = ifelse(death > lpi & death < upi,0,1),
+         significant_dummy = as.factor( significant_dummy ))
 
 # sf::sf_use_s2(TRUE)
 
@@ -76,24 +78,25 @@ bezirk_geo <- read_sf("../data_raw/Map_2020/Maps_dissolved/Maps_dissolved_2020.s
          excess_rate_total = as.character(cut(excess_rate,
                                          breaks=quantile(excess_rate,
                                                          probs = seq(0, 1, length.out = no_classes_map + 1)),
-                                         include.lowest = TRUE))) %>%
+                                         include.lowest = TRUE)),
+         excess_rate_group = excess_rate_total) %>%
+  mutate( excess_rate_group = recode( excess_rate_group ,
+                                      "[-1.56e+03,-13.3]" = "Q1",
+                                      "(-13.3,3.75]" = "Q2",
+                                      "(3.75,47.3]" = "Q3",
+                                      "(47.3,101]" = "Q4",
+                                      "(101,971]" = "Q5")) %>%
   group_by(Year, age_group) %>%
   mutate(excess_per_quant = as.character(cut(excess_percentage_o,
                                              breaks=quantile(excess_percentage_o,
                                                              probs = seq(0, 1, length.out = no_classes_map + 1)),
                                              include.lowest = TRUE))) %>%
   mutate(excess_per_quant2= recode(excess_per_quant,
-                               "[-53,-9.61]" = "Q1",
-                               "(-9.61,4.4]" = "Q2",
-                               "(4.4,17.7]" = "Q3",
-                               "(17.7,33.5]" = "Q4",
-                               "(33.5,137]" = "Q5",
-                               
-                               "[-68.9,-13.2]" = "Q1",
-                               "(-13.2,-0.724]" = "Q2",
-                               "(-0.724,10.5]" = "Q3",
-                               "(10.5,24.6]" = "Q4",
-                               "(24.6,218]" = "Q5",
+                               "[-49.7,-8.98]" = "Q1",
+                               "(-8.98,-2.22]" = "Q2",
+                               "(-2.22,4.5]" = "Q3",
+                               "(4.5,15.3]" = "Q4",
+                               "(15.3,65.2]" = "Q5",
                                
                                "[-51.2,-12]" = "Q1",
                                "(-12,0.155]" = "Q2",
@@ -101,17 +104,17 @@ bezirk_geo <- read_sf("../data_raw/Map_2020/Maps_dissolved/Maps_dissolved_2020.s
                                "(13.5,23.3]" = "Q4",
                                "(23.3,99.1]" = "Q5",
                                
+                               "[4.16,44.9]" = "Q1",
+                               "(44.9,56.6]" = "Q2",
+                               "(56.6,70.8]" = "Q3",
+                               "(70.8,87.8]" = "Q4",
+                               "(87.8,150]" = "Q5",
+                               
                                "[11.8,111]" = "Q1",
                                "(111,141]" = "Q2",
                                "(141,170]" = "Q3",
                                "(170,202]" = "Q4",
                                "(202,508]" = "Q5",
-                               
-                               "[-47.6,-4.48]" = "Q1",
-                               "(-4.48,3.77]" = "Q2",
-                               "(3.77,16.3]" = "Q3",
-                               "(16.3,27.5]" = "Q4",
-                               "(27.5,157]" = "Q5",
                                
                                "[-50.1,-17.1]" = "Q1",
                                "(-17.1,-7.47]" = "Q2",
@@ -119,17 +122,11 @@ bezirk_geo <- read_sf("../data_raw/Map_2020/Maps_dissolved/Maps_dissolved_2020.s
                                "(4.16,14.6]" = "Q4",
                                "(14.6,143]" = "Q5",
                                
-                               "[-100,-33.6]" = "Q1",
-                               "(-33.6,-7.37]" = "Q2",
-                               "(-7.37,17.1]" = "Q3",
-                               "(17.1,57.4]" = "Q4",
-                               "(57.4,6.97e+12]" = "Q5",
-                               
-                               "[-71.6,-18]" = "Q1",
-                               "(-18,-3.66]" = "Q2",
-                               "(-3.66,10.3]" = "Q3",
-                               "(10.3,30.4]" = "Q4",
-                               "(30.4,253]" = "Q5",
+                               "[-68.8,-14.5]" = "Q1",
+                               "(-14.5,-3.54]" = "Q2",
+                               "(-3.54,9.23]" = "Q3",
+                               "(9.23,30.2]" = "Q4",
+                               "(30.2,209]" = "Q5",
                                
                                "[-20.6,1.56]" = "Q1",
                                "(1.56,10.7]" = "Q2",
@@ -155,7 +152,7 @@ bezirk_geo <- read_sf("../data_raw/Map_2020/Maps_dissolved/Maps_dissolved_2020.s
                                                      breaks=quantile(excess_percentage_o,
                                                                      probs = seq(0, 1, length.out = no_classes_map + 1)),
                                                      include.lowest = TRUE)),
-          excess_perc_year_quant2 = recode(excess_perc_year_quant,
+          excess_per_year_quant2 = recode(excess_perc_year_quant,
                                           "[-51.2,-9.85]" = "Q1",
                                           "(-9.85,-0.919]" = "Q2",
                                           "(-0.919,7.01]" = "Q3",
@@ -180,13 +177,18 @@ bezirk_geo <- read_sf("../data_raw/Map_2020/Maps_dissolved/Maps_dissolved_2020.s
  
 
   # filter(!is.na(Bezirk))
-if(var=="excess_perc_groups") {
+if(var=="excess_rate_group") {
 plot_excess <- ggplot(data=bezirk_geo)+
-  geom_sf(mapping = aes(fill =excess_perc_year_cat)) +
+  geom_sf_pattern(aes(pattern=significant_dummy, fill=excess_rate_group),pattern_fill = "grey30", pattern_color="grey30",
+                  pattern_spacing = 0.03,pattern_size=0.01 )+
   facet_wrap(Year~age_group, ncol = 2) +
-  scale_fill_manual("Percentages:",
-    values = col_11_groups_green_trans)+
-  ggtitle("Excess Mortality Percentage")+
+  scale_fill_manual("Quntile:",
+    values = col_5_groups_green_trans)+
+  scale_pattern_manual("significant",
+                       breaks =c("0", "1"),
+                       labels=c("no", "yes"),
+                       values = c("none","crosshatch"))+
+  ggtitle("Excess Mortality")+
   theme(
     panel.grid.major=element_blank(),
     axis.title=element_blank(),
@@ -195,17 +197,22 @@ plot_excess <- ggplot(data=bezirk_geo)+
     axis.ticks=element_blank(),
     panel.border = element_blank(),
     legend.position = "bottom")
-# cowplot::save_plot("output/plot_excess_percentages.pdf",plot_excess,base_height=12,base_width=10)
+# cowplot::save_plot("output/plot_excess_age.pdf",plot_excess,base_height=12,base_width=10)
 }
 
 
-else if (var=="excess_perc_year_quant2") {
+else if (var=="excess_per_year_quant2") {
 plot_excess <- ggplot(data=bezirk_geo)+
-  geom_sf(mapping = aes(fill =  excess_perc_year_quant2)) +
+  geom_sf_pattern(aes(pattern=significant_dummy, fill=excess_per_year_quant2),pattern_fill = "grey30", pattern_color="grey30",
+                  pattern_spacing = 0.03,pattern_size=0.01 )+
   facet_wrap(Year~age_group, ncol = 2) +
   scale_fill_manual("Quantile:",
     values = col_5_groups_green_trans)+
-  ggtitle("Excess Mortality Percentage normalised")+
+  scale_pattern_manual("significant",
+                       breaks =c("0", "1"),
+                       labels=c("no", "yes"),
+                       values = c("none","crosshatch"))+
+  ggtitle("Excess Mortality normalised")+
   theme(
     panel.grid.major=element_blank(),
     axis.title=element_blank(),
@@ -215,7 +222,7 @@ plot_excess <- ggplot(data=bezirk_geo)+
     panel.border = element_blank(),
     legend.position = "bottom")
 # 
-# cowplot::save_plot("output/plot_excess_percentages_norm.pdf",plot_excess,base_height=12,base_width=10)
+# cowplot::save_plot("output/plot_excess_age_norm.pdf",plot_excess,base_height=12,base_width=10)
 }
 
 return(plot_excess)

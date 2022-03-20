@@ -108,11 +108,11 @@ save(expected_deaths,file=paste0("data/expected_death_",Sex,"_",Year_Pan,".RData
 }
 
 
-function_excess_mortaliy_sex(Year_Pan=1890, Year_max=1895, Year_min=1882, Sex="f")
-function_excess_mortaliy_sex(Year_Pan=1890, Year_max=1895, Year_min=1882, Sex="m")
+function_excess_mortaliy_sex(Year_Pan=1890, Year_max=1891, Year_min=1886, Sex="f")
+function_excess_mortaliy_sex(Year_Pan=1890, Year_max=1891, Year_min=1886, Sex="m")
 
-function_excess_mortaliy_sex(Year_Pan=1918, Year_max=1920, Year_min=1908, Sex="f")
-function_excess_mortaliy_sex(Year_Pan=1918, Year_max=1920, Year_min=1908, Sex="m")
+function_excess_mortaliy_sex(Year_Pan=1918, Year_max=1919, Year_min=1914, Sex="f")
+function_excess_mortaliy_sex(Year_Pan=1918, Year_max=1919, Year_min=1914, Sex="m")
 
-function_excess_mortaliy_sex(Year_Pan=2020, Year_max=2020, Year_min=2014, Sex="f")
-function_excess_mortaliy_sex(Year_Pan=2020, Year_max=2020, Year_min=2014, Sex="m")
+function_excess_mortaliy_sex(Year_Pan=2020, Year_max=2020, Year_min=2016, Sex="f")
+function_excess_mortaliy_sex(Year_Pan=2020, Year_max=2020, Year_min=2016, Sex="m")

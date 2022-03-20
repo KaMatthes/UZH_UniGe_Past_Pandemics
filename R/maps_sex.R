@@ -19,23 +19,24 @@ function_maps_sex <- function(var){
   load(paste0("../data/expected_death_m_2020.RData"))
   death_2020_m <- expected_deaths
 
-# 
-#   load(paste0("data/expected_death_f_1890.RData"))
-#   death_1890_f <- expected_deaths
-#   load(paste0("data/expected_death_f_1918.RData"))
-#   death_1918_f <- expected_deaths
-# 
-#   load(paste0("data/expected_death_f_2020.RData"))
-#   death_2020_f <- expected_deaths
-# 
-#   load(paste0("data/expected_death_m_1890.RData"))
-#   death_1890_m <- expected_deaths
-# 
-#   load(paste0("data/expected_death_m_1918.RData"))
-#   death_1918_m <- expected_deaths
-# 
-#   load(paste0("data/expected_death_m_2020.RData"))
-#   death_2020_m <- expected_deaths
+
+  # load(paste0("data/expected_death_f_1890.RData"))
+  # death_1890_f <- expected_deaths
+  # 
+  # load(paste0("data/expected_death_f_1918.RData"))
+  # death_1918_f <- expected_deaths
+  # 
+  # load(paste0("data/expected_death_f_2020.RData"))
+  # death_2020_f <- expected_deaths
+  # 
+  # load(paste0("data/expected_death_m_1890.RData"))
+  # death_1890_m <- expected_deaths
+  # 
+  # load(paste0("data/expected_death_m_1918.RData"))
+  # death_1918_m <- expected_deaths
+  # 
+  # load(paste0("data/expected_death_m_2020.RData"))
+  # death_2020_m <- expected_deaths
 
   data_excess <- rbind(death_1890_m,death_1918_m, death_2020_m,
                        death_1890_f,death_1918_f, death_2020_f )%>%
@@ -46,7 +47,9 @@ data_excess <- data_excess %>%
   mutate(excess_death = death - fit,
          excess_rate = (excess_death/population)*10000,
          Bezirk = as.factor(Bezirk)) %>%
-  filter(Year=="2020"  |Year=="1918" |Year=="1890")
+  filter(Year=="2020"  |Year=="1918" |Year=="1890")%>%
+  mutate(significant_dummy = ifelse(death > lpi & death < upi,0,1),
+         significant_dummy = as.factor( significant_dummy ))
 
 # sf::sf_use_s2(TRUE)
 
@@ -73,7 +76,14 @@ bezirk_geo <- read_sf("../data_raw/Map_2020/Maps_dissolved/Maps_dissolved_2020.s
          excess_rate_total = as.character(cut(excess_rate,
                                          breaks=quantile(excess_rate,
                                                          probs = seq(0, 1, length.out = no_classes_map + 1)),
-                                         include.lowest = TRUE))) %>%
+                                         include.lowest = TRUE)),
+         excess_rate_group = excess_rate_total) %>%
+  mutate( excess_rate_group = recode( excess_rate_group ,
+                                      "[-184,-1.86]" = "Q1",
+                                      "(-1.86,10.9]" = "Q2",
+                                      "(10.9,26.1]" = "Q3",
+                                      "(26.1,57]" = "Q4",
+                                      "(57,216]" = "Q5")) %>%
   group_by(Year, sex) %>%
   mutate(excess_per_quant = as.character(cut(excess_percentage_o,
                                              breaks=quantile(excess_percentage_o,
@@ -134,7 +144,7 @@ bezirk_geo <- read_sf("../data_raw/Map_2020/Maps_dissolved/Maps_dissolved_2020.s
                                                    breaks=quantile(excess_percentage_o,
                                                                    probs = seq(0, 1, length.out = no_classes_map + 1)),
                                                    include.lowest = TRUE)),
-         excess_perc_year_quant2 = recode(excess_perc_year_quant,
+         excess_per_year_quant2 = recode(excess_perc_year_quant,
                                           "[-63.5,-9.87]" = "Q1",
                                           "(-9.87,-1.77]" = "Q2",
                                           "(-1.77,5.74]" = "Q3",
@@ -159,10 +169,15 @@ bezirk_geo <- read_sf("../data_raw/Map_2020/Maps_dissolved/Maps_dissolved_2020.s
   # filter(!is.na(Bezirk))
 if(var=="excess_rate_group") {
 plot_excess <- ggplot(data=bezirk_geo)+
-  geom_sf(mapping = aes(fill =excess_rate_group)) +
+  geom_sf_pattern(aes(pattern=significant_dummy, fill=excess_rate_group),pattern_fill = "grey30", pattern_color="grey30",
+                  pattern_spacing = 0.03,pattern_size=0.01 )+
   facet_wrap(Year~sex, ncol = 2) +
-  scale_fill_manual("Quantile:",
-    values = col_5_groups_green_trans)+
+  scale_fill_manual("Quntile:",
+                    values = col_5_groups_green_trans)+
+  scale_pattern_manual("significant",
+                       breaks =c("0", "1"),
+                       labels=c("no", "yes"),
+                       values = c("none","crosshatch"))+
   ggtitle("Excess Mortality")+
   theme(
     panel.grid.major=element_blank(),
@@ -172,16 +187,21 @@ plot_excess <- ggplot(data=bezirk_geo)+
     axis.ticks=element_blank(),
     panel.border = element_blank(),
     legend.position = "bottom")
-# cowplot::save_plot("output/plot_excess_percentages.pdf",plot_excess,base_height=12,base_width=10)
+# cowplot::save_plot("output/plot_excess_sex.pdf",plot_excess,base_height=12,base_width=10)
 }
 
 
-else if (var=="excess_perc_year_quant2") {
+else if (var=="excess_per_year_quant2") {
 plot_excess <- ggplot(data=bezirk_geo)+
-  geom_sf(mapping = aes(fill =excess_perc_year_quant2)) +
+  geom_sf_pattern(aes(pattern=significant_dummy, fill=excess_per_year_quant2),pattern_fill = "grey30", pattern_color="grey30",
+                  pattern_spacing = 0.03,pattern_size=0.01 )+
   facet_wrap(Year~sex, ncol = 2) +
   scale_fill_manual("Quantile:",
-    values = col_5_groups_green_trans)+
+                    values = col_5_groups_green_trans)+
+  scale_pattern_manual("significant",
+                       breaks =c("0", "1"),
+                       labels=c("no", "yes"),
+                       values = c("none","crosshatch"))+
   ggtitle("Excess Mortality normalised")+
   theme(
     panel.grid.major=element_blank(),
@@ -192,7 +212,7 @@ plot_excess <- ggplot(data=bezirk_geo)+
     panel.border = element_blank(),
     legend.position = "bottom")
 # 
-# cowplot::save_plot("output/plot_excess_percentages_norm.pdf",plot_excess,base_height=12,base_width=10)
+ # cowplot::save_plot("output/plot_excess_sex_norm.pdf",plot_excess,base_height=12,base_width=10)
 }
 
 return(plot_excess)

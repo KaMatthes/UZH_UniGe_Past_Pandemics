@@ -1,4 +1,13 @@
-function_maps <- function(var){
+function_maps <- function(var, method){
+  
+  if(method=="Frequentist")  {
+# load(paste0("../data/expected_death_1890.RData"))
+# Expected_death_Russian <-expected_deaths
+# load(paste0("../data/expected_death_1918.RData"))
+# Expected_death_Spanish <- expected_deaths
+# load(paste0("../data/expected_death_2020.RData"))
+# Expected_death_Covid <- expected_deaths
+
 
 load(paste0("data/expected_death_1890.RData"))
 Expected_death_Russian <-expected_deaths
@@ -7,24 +16,50 @@ Expected_death_Spanish <- expected_deaths
 load(paste0("data/expected_death_2020.RData"))
 Expected_death_Covid <- expected_deaths
 
+data_excess <- rbind(Expected_death_Russian, Expected_death_Spanish, Expected_death_Covid) %>%
+  mutate(LL =lpi,
+         UL= upi)
+}
+  
+  else if(method=="bayesian") {
+    # load(paste0("../data/expected_death_inla1890.RData"))
+    # Expected_death_Russian <-expected_deaths
+    # load(paste0("../data/expected_death_inla1918.RData"))
+    # Expected_death_Spanish <- expected_deaths
+    # load(paste0("../data/expected_death_inla2020.RData"))
+    # Expected_death_Covid <- expected_deaths
+    
+    load(paste0("data/expected_death_inla1890.RData"))
+    Expected_death_Russian <-expected_deaths
+    load(paste0("data/expected_death_inla1918.RData"))
+    Expected_death_Spanish <- expected_deaths
+    load(paste0("data/expected_death_inla2020.RData"))
+    Expected_death_Covid <- expected_deaths
+    
+    data_excess <- rbind(Expected_death_Russian, Expected_death_Spanish, Expected_death_Covid)
+    
+  }
+  
 
-data_excess <- rbind(Expected_death_Russian, Expected_death_Spanish, Expected_death_Covid) 
+
+
 
 
 # save(data_excess ,file=paste0("data/data_excess.RData"))
 # write.xlsx(data_excess,file=paste0("data/data_excess.xlsx"),row.names=FALSE, overwrite = TRUE)
 
 data_excess <- data_excess %>%
+  ungroup() %>%
   mutate(excess_death = death - fit,
          excess_rate = (excess_death/population)*10000,
          Bezirk = as.factor(Bezirk)) %>%
   filter(Year=="2020"  |Year=="1918" |Year=="1890") %>%
-  mutate(significant_dummy = ifelse(death > lpi & death < upi,0,1),
+  mutate(significant_dummy = ifelse(death > LL & death < UL,0,1),
          significant_dummy = as.factor( significant_dummy ))
 
 # sf::sf_use_s2(TRUE)
 
-bezirk_geo <- read_sf("data_raw/Map_2020/Maps_dissolved/Maps_dissolved_2020.shp") %>%
+bezirk_geo <- read_sf("../data_raw/Map_2020/Maps_dissolved/Maps_dissolved_2020.shp") %>%
   filter(!(  BEZIRKSNUM=="1110" |BEZIRKSNUM=="1101" | BEZIRKSNUM=="1102"  | BEZIRKSNUM=="1103" | BEZIRKSNUM=="1104" | BEZIRKSNUM=="1105"
            | BEZIRKSNUM=="1107"  | BEZIRKSNUM=="1106"| BEZIRKSNUM=="1108"| BEZIRKSNUM=="1109"| BEZIRKSNUM=="2225" | BEZIRKSNUM=="2229"
            | BEZIRKSNUM=="1401"  | BEZIRKSNUM=="1402"| BEZIRKSNUM=="1403"| BEZIRKSNUM=="1404"| BEZIRKSNUM=="1405" | BEZIRKSNUM=="1406"
@@ -104,7 +139,7 @@ plot_excess <- ggplot(data=bezirk_geo)+
     axis.ticks=element_blank(),
     panel.border = element_blank(),
     legend.position = "bottom")
-cowplot::save_plot("output/excess_rate_group.pdf",plot_excess,base_height=12,base_width=10)
+# cowplot::save_plot("output/excess_rate_group.pdf",plot_excess,base_height=12,base_width=10)
 }
 
 
@@ -129,7 +164,7 @@ plot_excess <- ggplot(data=bezirk_geo)+
     panel.border = element_blank(),
     legend.position = "bottom")
 # 
-cowplot::save_plot("output/excess_per_quant.pdf",plot_excess,base_height=12,base_width=10)
+# cowplot::save_plot("output/excess_per_quant.pdf",plot_excess,base_height=12,base_width=10)
 }
 
 return(plot_excess)

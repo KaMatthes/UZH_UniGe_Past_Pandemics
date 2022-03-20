@@ -23,6 +23,9 @@ library(spgwr)
 library(grid)
 library(gridExtra)
 library(ggpattern)
+library(INLA)
+library(maptools)
+library(colorspace)
 
 
 
@@ -45,6 +48,9 @@ col_5_groups_green_trans <- c("#1a9641","#a6d96a","#ffffbf","#fdae61","#d7191c")
 
 col_11_groups_green_trans <- c("#006d2c","#31a354","#74c476","#bae4b3","#edf8e9",
                                "#fee5d9","#fcbba1","#fc9272","#fb6a4a","#de2d26","#a50f15")
+
+coldiv <- diverge_hcl(8)  
+col5magma <- viridis(5, alpha = 1, begin = 1, end = 0, direction = 1, option = "magma")
 # load functions
 # source("R/prepare_data.R")
 # source("R/population.R")
@@ -54,8 +60,11 @@ source("R/PerYear.R")
 source("R/PerYear_sex.R")
 source("R/PerYear_age.R")
 source("R/maps.R")
+source("R/maps_inla.R")
 source("R/maps_sex.R")
+source("R/maps_sex_inla.R")
 source("R/maps_age2groups.R")
+source("R/maps_age2groups_inla.R")
 source("R/maps_age2groups_sex.R")
 source("R/lisa.R")
 source("R/lisa_sex.R")
@@ -68,4 +77,4 @@ source("R/lisa_age_sex.R")
 
 
 # render html
-render(paste0("R/PastPandemics_Excess_Mortality.Rmd"), output_file = paste0("../output/",today(),"_Report_PastPandemice.html"))
+render(paste0("R/PastPandemics_Excess_Mortality_inla.Rmd"), output_file = paste0("../output/",today(),"_Report_PastPandemice_inla.html"))

@@ -1,9 +1,9 @@
 function_lisa <- function(VarYear){
-  load(paste0("../data/expected_death_1890.RData"))
+  load(paste0("../data/expected_death_inla1890.RData"))
   Expected_death_Russian <-expected_deaths
-  load(paste0("../data/expected_death_1918.RData"))
+  load(paste0("../data/expected_death_inla1918.RData"))
   Expected_death_Spanish <- expected_deaths
-  load(paste0("../data/expected_death_2020.RData"))
+  load(paste0("../data/expected_death_inla2020.RData"))
   Expected_death_Covid <- expected_deaths
 
   data_excess <- rbind(Expected_death_Russian, Expected_death_Spanish, Expected_death_Covid) 
@@ -13,6 +13,7 @@ function_lisa <- function(VarYear){
   # write.xlsx(data_excess,file=paste0("data/data_excess.xlsx"),row.names=FALSE, overwrite = TRUE)
   
   data_excess <- data_excess %>%
+    ungroup() %>%
     mutate(excess_death = death - fit,
            excess_rate = (excess_death/population)*10000,
            Bezirk = as.factor(Bezirk)) %>%

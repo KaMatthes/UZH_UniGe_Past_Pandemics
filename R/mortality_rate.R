@@ -1,10 +1,10 @@
 function_mortality_rate <- function() {
 
+  
+  load(paste0("data/data_total.RData"))
+  load(paste0("data/pop_total.RData"))
 
-load(paste0("data/data_total.RData"))
-load(paste0("data/pop_total.RData"))
-
-data_mortality_rate <- data_total %>%
+data_mortality_rate <- data_excess %>%
   filter(age_group =="total") %>%
   filter(sex=="both") %>%
   dplyr::select(Year, Bezirk, death) %>%

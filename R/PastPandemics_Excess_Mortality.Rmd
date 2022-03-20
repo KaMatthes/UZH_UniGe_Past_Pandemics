@@ -126,8 +126,13 @@ cowplot::plot_grid(function_lisa(1890),function_lisa(1918),function_lisa(2020),
 <!-- ``` -->
 
 ### Maps
+
 ```{r, echo=FALSE,message=FALSE,fig.height = 12,  fig.width = 10}
-function_maps_sex("excess_perc_year_quant2")
+function_maps_sex("excess_rate_group")
+```
+
+```{r, echo=FALSE,message=FALSE,fig.height = 12,  fig.width = 10}
+function_maps_sex("excess_per_year_quant2")
 ```
 
 ### LISA (Local Indicators of Spatial Association)
@@ -165,7 +170,11 @@ cowplot::plot_grid(function_lisa_sex(1890, "f"),function_lisa_sex(1890, "m"),
 
 ### Maps
 ```{r, echo=FALSE,message=FALSE,fig.height = 12,  fig.width = 10}
-function_maps_age2("excess_perc_year_quant2")
+function_maps_age2("excess_rate_group")
+```
+
+```{r, echo=FALSE,message=FALSE,fig.height = 12,  fig.width = 10}
+function_maps_age2("excess_per_year_quant2")
 ```
 
 ### LISA (Local Indicators of Spatial Association)

@@ -3,8 +3,11 @@ load(paste0("data/data_mortality_rate.RData"))
 
   
   # year_max <- 1895
+  
   year_max <- Year_max
   year_min <- Year_min
+  
+
   # pandemic_year <- 1890
   pandemic_year <- Year_Pan
   
@@ -26,7 +29,6 @@ Bezirk_vec <- dat.excess %>%
   distinct(Bezirk) 
 
 Bezirk_vec <- Bezirk_vec$Bezirk
-
 
 # function bootstrapping
 set.seed(20220316)
@@ -83,7 +85,7 @@ for (BEZIRK in  Bezirk_vec) {
                           family = "poisson")
 
   # Prediction
-  predict <- boot_pi(timespan, pred_data, 1000, 0.95)
+  predict <- boot_pi(timespan, pred_data, 10, 0.95)
   
   pred_data <- pred_data %>%
     mutate(
