@@ -6,13 +6,13 @@ function_maps_inla <- function(var, method){
     Expected_death_Spanish <- expected_deaths
     load(paste0("../data/expected_death_inla2020.RData"))
     Expected_death_Covid <- expected_deaths
-# 
-#     load(paste0("data/expected_death_inla1890.RData"))
-#     Expected_death_Russian <-expected_deaths
-#     load(paste0("data/expected_death_inla1918.RData"))
-#     Expected_death_Spanish <- expected_deaths
-#     load(paste0("data/expected_death_inla2020.RData"))
-#     Expected_death_Covid <- expected_deaths
+
+    # load(paste0("data/expected_death_inla1890.RData"))
+    # Expected_death_Russian <-expected_deaths
+    # load(paste0("data/expected_death_inla1918.RData"))
+    # Expected_death_Spanish <- expected_deaths
+    # load(paste0("data/expected_death_inla2020.RData"))
+    # Expected_death_Covid <- expected_deaths
     # 
     data_excess <- rbind(Expected_death_Russian, Expected_death_Spanish, Expected_death_Covid)
     
@@ -97,7 +97,7 @@ plot_excess <- ggplot(data=bezirk_geo)+
                   pattern_spacing = 0.03,pattern_size=0.5 )+
   facet_wrap(~Year, ncol = 2) +
   scale_fill_manual("Quintile:",
-                    values = col5magma)+
+                    values = col5viridis)+
   scale_pattern_manual("significant",
                        breaks =c("0", "1"),
                        labels=c("no", "yes"),
@@ -121,7 +121,7 @@ plot_excess <- ggplot(data=bezirk_geo)+
                   pattern_spacing = 0.03,pattern_size=0.5)+
   facet_wrap(~Year, ncol = 2)+
   scale_fill_manual("Quintile:",
-                    values = col5magma)+
+                    values = col5viridis)+
   scale_pattern_manual("significant",
                        breaks =c("0", "1"),
                        labels=c("no", "yes"),

@@ -26,7 +26,7 @@ library(ggpattern)
 library(INLA)
 library(maptools)
 library(colorspace)
-
+library(viridis)
 
 
 # data
@@ -52,6 +52,7 @@ col_11_groups_green_trans <- c("#006d2c","#31a354","#74c476","#bae4b3","#edf8e9"
 coldiv <- diverge_hcl(8)  
 col5magma <- viridis(5, alpha = 1, begin = 1, end = 0, direction = 1, option = "magma")
 # load functions
+col5viridis <- viridis(5, alpha = 1, begin = 1, end = 0, direction = 1, option = "viridis")
 # source("R/prepare_data.R")
 # source("R/population.R")
 # source("R/mortality_rate.R")

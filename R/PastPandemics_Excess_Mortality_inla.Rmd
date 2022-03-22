@@ -111,19 +111,41 @@ knitr::include_graphics("../data/Bookscanner.png")
 * Data $Y$ is given as the total number of death in fixed areas and in each year
 * Standard Poisson likelihood to model the counts $$ y_i \mid \eta_i\sim Po\left(E_i \exp(\eta_i)\right),$$
 where $E_i$ is the ``population at risk'' in region $i$.
-* Default: gamma prior distributions of INLA
-where $\textrm{Gamma}(\alpha, \beta)$ denotes the gamma density
-with shape parameter $\alpha$ and rate parameter $\beta$. The default
-values are $\alpha_u = \alpha_v = 1$ and $\beta_u = \beta_v = 0.00005$.
+<br />
+<br />
+* classical disease mapping model; BYM model (Besag, York and Mollie proposed it)
+* The log relative risk, $\bf{\eta} = (\eta_1, \dots, \eta_n)^T$, is thus decomposed
+  into $$\bf{\eta} = \mu + \bf{u} + \bf{v} $$
+  +  $\mu$ is the overall intercept
+  +  $\bf{u}$ is a random effect with spatial structure following the Besag model 
+  +  $\bf{v}$ represents a non-spatial overdispersion
+* ${\bf u}$ is "besag" modelled spatially structured with smoothing parameter $\kappa_u$. 
+* ${\bf v}$ is unstructured with precision parameter $\kappa_v$, i.e.
+$\bf{v} \sim \mathcal{N}(0, \kappa_v^{-1}I)$.
+* The precision terms $\kappa_v$ and $\kappa_u$ are assigned the default
+gamma prior distributions of INLA
+$$
+\begin{aligned}
+  \kappa_u & \sim \textrm{Gamma}( \alpha_u, \beta_u ), \\
+  \kappa_v & \sim \textrm{Gamma}( \alpha_v, \beta_v ).
+\end{aligned}
+$$
+* The default values are $\alpha_u = \alpha_v = 1$ and $\beta_u = \beta_v = 0.00005$.
+<br />
+<br />
 
-* calculation of expected values based on the mortality trend of the previous 4 years (1890 only 4 years possible)
+* Year is modelled using independent and identically (iid)  Gaussian prior distribution
+with ${N}(0,  \tau_v^{-1})$
+<br />
+* Calculation of expected values based on the mortality trend of the previous 4 years (1890 only 4 years possible)
 
 ```{r, echo=TRUE,message=FALSE, eval=FALSE}
  formula =
     death ~ 1 + offset(log(population)) +
-    f(Region.struct, model="besag", graph="Bezirk_Inla", scale.model = TRUE)
-    f(Year, model='iid', constr = TRUE) +
+    f(Region.struct, model="besag", graph="Bezirk_Inla", scale.model = TRUE)+
     f(Region, model='iid', constr = TRUE) +
+    f(Year, model='iid', constr = TRUE) 
+   
 
 
 inla.mod = inla(formula,
@@ -136,14 +158,16 @@ inla.mod = inla(formula,
                   control.predictor=list(compute=T))
 ```
 
+<br />
+<br />
 
 * 1000 samples from the posterior distribution
 * Calculation of median and 95% CrI(Credible interval) of the 1000 samples
 * Excess mortality = observed death counts – expected death counts
 
-<!-- * Excess mortality is shown relatively in percentage (Excess mortality/expected death counts) -->
-<!-- * To compare the districts of each pandemic year the relative excess mortality was normalized -->
-<!-- * To find pattern and clusters: Moran’s I statistics ( LISA: Local Indicators of Spatial Association) were used for mapping statistically significant local clusters -->
+<!-- <!-- * Excess mortality is shown relatively in percentage (Excess mortality/expected death counts) -->
+<!-- <!-- * To compare the districts of each pandemic year the relative excess mortality was normalized -->
+<!-- <!-- * To find pattern and clusters: Moran’s I statistics ( LISA: Local Indicators of Spatial Association) were used for mapping statistically significant local clusters --> 
 
 # Results
 
@@ -155,7 +179,7 @@ function_year()
 ```
 
 ### Maps
-Significant means that the observed value is outside the CrI.
+"Significant" means that the observed value is outside the of the CrI.
 
 ```{r, echo=FALSE,message=FALSE,fig.height = 12,  fig.width = 10}
 function_maps_inla("excess_rate_group")
@@ -188,8 +212,6 @@ function_maps_inla("excess_per_quant2")
 <!-- ```{r, echo=FALSE,message=FALSE,fig.height = 12,  fig.width = 10} -->
 <!-- function_maps_sex_inla("excess_rate_group") -->
 <!-- ``` -->
-
-
 
 ```{r, echo=FALSE,message=FALSE,fig.height = 12,  fig.width = 10}
 function_maps_sex_inla("excess_per_year_quant2")
@@ -231,8 +253,6 @@ function_maps_sex_inla("excess_per_year_quant2")
 <!-- ```{r, echo=FALSE,message=FALSE,fig.height = 12,  fig.width = 10} -->
 <!-- function_maps_age2_inla("excess_rate_group") -->
 <!-- ``` -->
-
-
 
 ```{r, echo=FALSE,message=FALSE,fig.height = 12,  fig.width = 10}
 function_maps_age2_inla("excess_per_year_quant2")
@@ -284,8 +304,8 @@ function_maps_age2_inla("excess_per_year_quant2")
 
 # Next steps, points to be discussed
 
-1. Model choices? Now Besag.
-2. Define priors, now only default (gamma). But maybe okay?
+1. Model choices? Now BMY (Besag)
+2. Definition of priors and hyperparamter
 3. Add further Co-factors such as:
  * Urbanization
  * Infant mortality rates as a proxy for health index

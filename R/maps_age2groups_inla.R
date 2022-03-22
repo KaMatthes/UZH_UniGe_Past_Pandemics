@@ -179,7 +179,7 @@ plot_excess <- ggplot(data=bezirk_geo)+
                   pattern_spacing = 0.03,pattern_size=0.5 )+
   facet_wrap(Year~age_group, ncol = 2) +
   scale_fill_manual("Quintile:",
-                    values = col5magma)+
+                    values = col5viridis)+
   scale_pattern_manual("significant",
                        breaks =c("0", "1"),
                        labels=c("no", "yes"),
@@ -203,7 +203,7 @@ plot_excess <- ggplot(data=bezirk_geo)+
                   pattern_spacing = 0.03,pattern_size=0.5)+
   facet_wrap(Year~age_group, ncol = 2) +
   scale_fill_manual("Quintile:",
-                    values = col5magma)+
+                    values = col5viridis)+
   scale_pattern_manual("significant",
                        breaks =c("0", "1"),
                        labels=c("no", "yes"),

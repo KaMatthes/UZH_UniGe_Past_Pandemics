@@ -19,7 +19,7 @@ function_maps_sex_inla <- function(var){
   load(paste0("../data/expected_death_inlam_2020.RData"))
   death_2020_m <- expected_deaths
 
-
+# 
 # load(paste0("data/expected_death_inlaf_1890.RData"))
 # death_1890_f <- expected_deaths
 # 
@@ -174,7 +174,7 @@ plot_excess <- ggplot(data=bezirk_geo)+
                   pattern_spacing = 0.03,pattern_size=0.5 )+
   facet_wrap(Year~sex, ncol = 2) +
   scale_fill_manual("Quintile:",
-                     values = col5magma)+
+                    values = col5viridis)+
   scale_pattern_manual("significant",
                        breaks =c("0", "1"),
                        labels=c("no", "yes"),
@@ -188,7 +188,7 @@ plot_excess <- ggplot(data=bezirk_geo)+
     axis.ticks=element_blank(),
     panel.border = element_blank(),
     legend.position = "bottom")
-# cowplot::save_plot("output/plot_excess_sex.pdf",plot_excess,base_height=12,base_width=10)
+# cowplot::save_plot("output/plot_excess_sextest.pdf",plot_excess,base_height=12,base_width=10)
 }
 
 
@@ -198,7 +198,7 @@ plot_excess <- ggplot(data=bezirk_geo)+
                   pattern_spacing = 0.03,pattern_size=0.5 )+
   facet_wrap(Year~sex, ncol = 2) +
   scale_fill_manual("Quintile:",
-                    values = col5magma)+
+                    values = col5viridis)+
   scale_pattern_manual("significant",
                        breaks =c("0", "1"),
                        labels=c("no", "yes"),
@@ -213,7 +213,7 @@ plot_excess <- ggplot(data=bezirk_geo)+
     panel.border = element_blank(),
     legend.position = "bottom")
 # 
- # cowplot::save_plot("output/plot_excess_sex_norm.pdf",plot_excess,base_height=12,base_width=10)
+# cowplot::save_plot("output/plot_excess_sex_normtest.pdf",plot_excess,base_height=12,base_width=10)
 }
 
 return(plot_excess)
