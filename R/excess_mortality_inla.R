@@ -2,12 +2,12 @@ function_inla_total <- function(Year_Pan,Year_max, Year_min) {
 load(paste0("data/data_mortality_rate.RData"))
 
 
-year_max <- Year_max
-year_min <- Year_min
+# year_max <- Year_max
+# year_min <- Year_min
 
 
 # pandemic_year <- 1890
-pandemic_year <- Year_Pan
+# pandemic_year <- Year_Pan
 
 
 nc.sids <- sf::st_read("data_raw/Map_2020/Maps_dissolved/Maps_dissolved_2020.shp") %>%
@@ -64,12 +64,37 @@ year_reg <- year_from + year_smooth
   #    f(Region, model="iid") +
   #    f(Year,model = "iid")
   
+# Previus model
+  # formula =
+  #   death ~ 1 + offset(log(population)) +
+  #   f(Year, model='iid', constr = TRUE) +
+  #   f(Region.struct, model='iid', constr = TRUE) +
+  #   f(Region, model="besag", graph="Bezirk_Inla", scale.model = TRUE)
+
+# Model Paper Garyfallos Konstantinoudis
+  # formula =
+  #   death ~ 1 + offset(log(population)) +
+  #   f(Year, model='iid', constr = TRUE, hyper=hyper.iid) +
+  #   # f(Region.struct, model='iid', constr = TRUE) +
+  #   f(Region, model="bym2", graph="Bezirk_Inla", scale.model = TRUE,hyper = hyper.bym)
+  
   formula =
     death ~ 1 + offset(log(population)) +
     f(Year, model='iid', constr = TRUE) +
-    f(Region.struct, model='iid', constr = TRUE) +
-    f(Region, model="besag", graph="Bezirk_Inla", scale.model = TRUE)
+    f(Region, model="bym", graph="Bezirk_Inla", scale.model = TRUE)
+
   
+  # formula = 
+  #   deaths ~ 1 + offset(log(population)) + hol + 
+  #   f(id.tmp, model='rw2', hyper=hyper.iid, constr = TRUE, scale.model = TRUE) +
+  #   f(id.year, model='iid', hyper=hyper.iid, constr = TRUE) + 
+  #   f(id.time, model='rw1', hyper=hyper.iid, constr = TRUE, scale.model = TRUE, cyclic = TRUE) +
+  #   f(id.space, model='bym2', graph="W.adj", scale.model = TRUE, constr = TRUE, hyper = hyper.bym)
+  # 
+  # priors
+  # hyper.bym <- list(theta1 = list('PCprior', c(1, 0.01)), theta2 = list('PCprior', c(0.5, 0.5)))
+  # hyper.iid <- list(theta = list(prior="pc.prec", param=c(1, 0.01)))
+  # 
   # formula =
   #   death ~ 1 + offset(log(population)) +
   #   f(Year, model='iid', constr = TRUE) +
@@ -87,11 +112,11 @@ year_reg <- year_from + year_smooth
   
   expected_deaths <- list()
   
-  for (YEAR in year_reg:year_max){
+  for (YEAR in year_reg:Year_max){
     
     print(YEAR)
     
-    if (YEAR==pandemic_year) {
+    if (YEAR==Year_Pan) {
     reg_data <-  dat.excess %>% 
       filter(Year >= YEAR+1 - year_smooth & Year < YEAR+1)%>%
       mutate(death=ifelse (Year ==YEAR, NA, death))
@@ -101,20 +126,50 @@ year_reg <- year_from + year_smooth
       reg_data <-  dat.excess %>% 
         filter(Year >= YEAR+1 - year_smooth & Year < YEAR+1)%>%
         mutate(death=ifelse (Year ==YEAR, NA, death)) %>%
-        filter(!Year == pandemic_year)
+        filter(!Year == Year_Pan)
     }
       # 
       # 
   
-  inla.mod = inla(formula,
+  # inla.mod <- inla(formula,
+  #                 data=reg_data,
+  #                 family="Poisson",
+  #                 verbose = TRUE,
+  #                 control.compute=list(config = TRUE),
+  #                 control.mode=list(restart=T),
+  #                 num.threads = round(parallel::detectCores()*.8),
+  #                 control.predictor=list(compute=T))
+
+  
+  inla.mod <- inla(formula,
                   data=reg_data,
-                  family="Poisson",
+                  family="nbinomial",
                   verbose = TRUE,
                   control.compute=list(config = TRUE),
                   control.mode=list(restart=T),
                   num.threads = round(parallel::detectCores()*.8),
                   control.predictor=list(compute=T))
   
+  # 
+  # beta0 =  inla.mod$marginals.fixed$`(Intercept)`
+  # ggplot() + 
+  #   geom_line(data = data.frame(beta0),aes(x,y)) + 
+  #   geom_vline(xintercept = beta.0, lty  = "dashed")+
+  #   ggtitle("Posterior marginal for beta_0")
+  # 
+  # 
+  # tau = inla.mod$marginals.hyperpar$`Precision for Region (spatial component)`
+  # 
+  # #Use   `inla.tmarginal()` to compute the marginal for sigma^2
+  # sigma2 = inla.tmarginal(fun = function(x) 1/sqrt(x), 
+  #                         marginal = tau)
+  # 
+  # ggplot() + geom_line(data = data.frame(sigma2), aes(x,y)) +
+  #   geom_vline(xintercept = sigma, lty = "dashed") +
+  #   ggtitle("Posterior marginal for the variance parameter")
+  # 
+  # ggplot(data =  inla.mod$summary.random$x ) + geom_line(aes(ID, mean)) +
+  #   geom_ribbon(aes(ID, ymin = `0.025quant`, ymax = `0.975quant`), alpha = 0.5)
   
   
   post.samples <- inla.posterior.sample(n = 1000, result = inla.mod)
