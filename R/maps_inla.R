@@ -7,13 +7,13 @@ function_maps_inla <- function(var, method){
     load(paste0("../data/expected_death_inla2020.RData"))
     Expected_death_Covid <- expected_deaths
 
-    # load(paste0("data/expected_death_inla1890.RData"))
-    # Expected_death_Russian <-expected_deaths
-    # load(paste0("data/expected_death_inla1918.RData"))
-    # Expected_death_Spanish <- expected_deaths
-    # load(paste0("data/expected_death_inla2020.RData"))
-    # Expected_death_Covid <- expected_deaths
-    # 
+    load(paste0("data/expected_death_inla1890.RData"))
+    Expected_death_Russian <-expected_deaths
+    load(paste0("data/expected_death_inla1918.RData"))
+    Expected_death_Spanish <- expected_deaths
+    load(paste0("data/expected_death_inla2020.RData"))
+    Expected_death_Covid <- expected_deaths
+
     data_excess <- rbind(Expected_death_Russian, Expected_death_Spanish, Expected_death_Covid)
     
 
@@ -31,7 +31,7 @@ data_excess <- data_excess %>%
 
 # sf::sf_use_s2(TRUE)
 
-bezirk_geo <- read_sf("../data_raw/Map_2020/Maps_dissolved/Maps_dissolved_2020.shp") %>%
+bezirk_geo <- read_sf("data_raw/Map_2020/Maps_dissolved/Maps_dissolved_2020.shp") %>%
   filter(!(  BEZIRKSNUM=="1110" |BEZIRKSNUM=="1101" | BEZIRKSNUM=="1102"  | BEZIRKSNUM=="1103" | BEZIRKSNUM=="1104" | BEZIRKSNUM=="1105"
            | BEZIRKSNUM=="1107"  | BEZIRKSNUM=="1106"| BEZIRKSNUM=="1108"| BEZIRKSNUM=="1109"| BEZIRKSNUM=="2225" | BEZIRKSNUM=="2229"
            | BEZIRKSNUM=="1401"  | BEZIRKSNUM=="1402"| BEZIRKSNUM=="1403"| BEZIRKSNUM=="1404"| BEZIRKSNUM=="1405" | BEZIRKSNUM=="1406"
@@ -92,9 +92,10 @@ bezirk_geo <- read_sf("../data_raw/Map_2020/Maps_dissolved/Maps_dissolved_2020.s
 
 
 if(var=="excess_rate_group") {
-plot_excess <- ggplot(data=bezirk_geo)+
-  geom_sf_pattern(aes(pattern=significant_dummy, fill=excess_rate_group),pattern_fill = "grey50", pattern_color="grey50",
-                  pattern_spacing = 0.03,pattern_size=0.5 )+
+plot_excess <- ggplot()+
+  # geom_sf_pattern(aes(pattern=significant_dummy, fill=excess_rate_group),pattern_fill = "grey50", pattern_color="grey50",
+  #                 pattern_spacing = 0.03,pattern_size=0.5 )+
+  geom_sf(data= bezirk_geo, aes(fill= excess_rate_group),alpha=1,col="black", size=0.1) +
   facet_wrap(~Year, ncol = 2) +
   scale_fill_manual("Quintile:",
                     values = col5viridis)+

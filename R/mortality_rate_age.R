@@ -1,4 +1,4 @@
-function_mortality_rate_sex <- function() {
+function_mortality_rate_age <- function() {
 
 
 load(paste0("data/data_total.RData"))
@@ -6,11 +6,11 @@ load(paste0("data/pop_total_age.RData"))
 
 pop_total_age2 <- pop_total_age %>%
   mutate(age_group= recode(age_group, 
-                           "20_29" = "20_49",
-                           "30_39" = "20_49",
-                           "40_49" = "20_49",
-                           "50_59" = "50_69",
-                           "60_69" = "50_69")) %>%
+                           "20_29" = "20_39",
+                           "30_39" = "20_39",
+                           "40_49" = "40_69",
+                           "50_59" = "40_69",
+                           "60_69" = "40_69")) %>%
   group_by(Year,Bezirk, age_group) %>%
  summarize(population=sum(population))
 
@@ -18,11 +18,11 @@ data_mortality_rate_age <- data_total %>%
   filter(sex =="f" | sex =="m") %>%
   filter(!age_group=="total") %>%
   mutate(age_group= recode(age_group, 
-                           "20_29" = "20_49",
-                           "30_39" = "20_49",
-                           "40_49" = "20_49",
-                           "50_59" = "50_69",
-                           "60_69" = "50_69")) %>%
+                           "20_29" = "20_39",
+                           "30_39" = "20_39",
+                           "40_49" = "40_69",
+                           "50_59" = "40_69",
+                           "60_69" = "40_69")) %>%
   mutate(Year = as.character(Year),
          Year = as.numeric(Year))%>%
   filter(Year > 1885) %>%

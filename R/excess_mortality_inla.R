@@ -2,14 +2,6 @@ function_inla_total <- function(Year_Pan,Year_max, Year_min) {
 load(paste0("data/data_mortality_rate.RData"))
 
 
-# year_max <- Year_max
-# year_min <- Year_min
-
-
-# pandemic_year <- 1890
-# pandemic_year <- Year_Pan
-
-
 nc.sids <- sf::st_read("data_raw/Map_2020/Maps_dissolved/Maps_dissolved_2020.shp") %>%
   filter(!(  BEZIRKSNUM=="1110" |BEZIRKSNUM=="1101" | BEZIRKSNUM=="1102"  | BEZIRKSNUM=="1103" | BEZIRKSNUM=="1104" | BEZIRKSNUM=="1105"
              | BEZIRKSNUM=="1107"  | BEZIRKSNUM=="1106"| BEZIRKSNUM=="1108"| BEZIRKSNUM=="1109"| BEZIRKSNUM=="2225" | BEZIRKSNUM=="2229"
@@ -28,20 +20,6 @@ region.names <- poly2nb(nc.sids, nc.sids$Bezirk) %>%
   rename(Bezirk = ".") %>%
   mutate(Region = 1:130) 
 
-
-# dat.excess <- data_mortality_rate %>%
-#   mutate(Bezirk=as.character(Bezirk)) %>%
-#   full_join(region.names) %>%
-#   filter(Year>2014 )  %>%
-#   arrange(Region) %>%
-#   mutate(Bezirk= as.numeric(Bezirk),
-#          death = ifelse(death < 0, 0, death),
-#          death = ifelse(is.na(death), 0, death),
-#          Region.struct= Region,
-#          Region.beta = Region) %>%
-#   select(Year,death, population,Region, Region.struct)
-
-
 dat.excess <- data_mortality_rate %>%
   mutate(Bezirk=as.character(Bezirk)) %>%
   full_join(region.names) %>%
@@ -58,58 +36,13 @@ year_smooth <- 4
 year_from <- min(dat.excess$Year)
 year_reg <- year_from + year_smooth
 
-  
-  # formula = death ~ 1 + 
-  #                                f(Region.struct, model="besag", graph="Bezirk_Inla") +
-  #    f(Region, model="iid") +
-  #    f(Year,model = "iid")
-  
-# Previus model
-  # formula =
-  #   death ~ 1 + offset(log(population)) +
-  #   f(Year, model='iid', constr = TRUE) +
-  #   f(Region.struct, model='iid', constr = TRUE) +
-  #   f(Region, model="besag", graph="Bezirk_Inla", scale.model = TRUE)
 
-# Model Paper Garyfallos Konstantinoudis
-  # formula =
-  #   death ~ 1 + offset(log(population)) +
-  #   f(Year, model='iid', constr = TRUE, hyper=hyper.iid) +
-  #   # f(Region.struct, model='iid', constr = TRUE) +
-  #   f(Region, model="bym2", graph="Bezirk_Inla", scale.model = TRUE,hyper = hyper.bym)
-  
-  formula =
-    death ~ 1 + offset(log(population)) +
+control.family <- inla.set.control.family.default()
+
+  formula <- death ~ 1 + offset(log(population)) +
     f(Year, model='iid', constr = TRUE) +
     f(Region, model="bym", graph="Bezirk_Inla", scale.model = TRUE)
 
-  
-  # formula = 
-  #   deaths ~ 1 + offset(log(population)) + hol + 
-  #   f(id.tmp, model='rw2', hyper=hyper.iid, constr = TRUE, scale.model = TRUE) +
-  #   f(id.year, model='iid', hyper=hyper.iid, constr = TRUE) + 
-  #   f(id.time, model='rw1', hyper=hyper.iid, constr = TRUE, scale.model = TRUE, cyclic = TRUE) +
-  #   f(id.space, model='bym2', graph="W.adj", scale.model = TRUE, constr = TRUE, hyper = hyper.bym)
-  # 
-  # priors
-  # hyper.bym <- list(theta1 = list('PCprior', c(1, 0.01)), theta2 = list('PCprior', c(0.5, 0.5)))
-  # hyper.iid <- list(theta = list(prior="pc.prec", param=c(1, 0.01)))
-  # 
-  # formula =
-  #   death ~ 1 + offset(log(population)) +
-  #   f(Year, model='iid', constr = TRUE) +
-  #   f(Region, model='bym2', graph="Bezirk_Inla", scale.model = TRUE)
-
-  
-    
-  # result  =  inla(formula, 
-  #                 family="poisson", 
-  #                 data=dat.excess, 
-  #                 E=log(population),
-  #                 control.compute = list(return.marginals.predictor    = TRUE,
-  #                                        config = TRUE),
-  #                 control.predictor=list(compute=TRUE))
-  
   expected_deaths <- list()
   
   for (YEAR in year_reg:Year_max){
@@ -128,51 +61,22 @@ year_reg <- year_from + year_smooth
         mutate(death=ifelse (Year ==YEAR, NA, death)) %>%
         filter(!Year == Year_Pan)
     }
-      # 
-      # 
+    
+    set.seed(20220421)
+   
+    inla.mod <- inla(formula,
+                     data=reg_data,
+                     # family="nbinomial",
+                     family = "zeroinflatednbinomial0",
+                     # family = "zeroinflatednbinomial1",
+                     #verbose = TRUE,
+                     control.family = control.family,
+                     control.compute = list(config = TRUE),
+                     control.mode = list(restart = TRUE),
+                      # num.threads = round(parallel::detectCores() * .2),
+                     control.predictor = list(compute = TRUE, link = 1))
   
-  # inla.mod <- inla(formula,
-  #                 data=reg_data,
-  #                 family="Poisson",
-  #                 verbose = TRUE,
-  #                 control.compute=list(config = TRUE),
-  #                 control.mode=list(restart=T),
-  #                 num.threads = round(parallel::detectCores()*.8),
-  #                 control.predictor=list(compute=T))
-
-  
-  inla.mod <- inla(formula,
-                  data=reg_data,
-                  family="nbinomial",
-                  verbose = TRUE,
-                  control.compute=list(config = TRUE),
-                  control.mode=list(restart=T),
-                  num.threads = round(parallel::detectCores()*.8),
-                  control.predictor=list(compute=T))
-  
-  # 
-  # beta0 =  inla.mod$marginals.fixed$`(Intercept)`
-  # ggplot() + 
-  #   geom_line(data = data.frame(beta0),aes(x,y)) + 
-  #   geom_vline(xintercept = beta.0, lty  = "dashed")+
-  #   ggtitle("Posterior marginal for beta_0")
-  # 
-  # 
-  # tau = inla.mod$marginals.hyperpar$`Precision for Region (spatial component)`
-  # 
-  # #Use   `inla.tmarginal()` to compute the marginal for sigma^2
-  # sigma2 = inla.tmarginal(fun = function(x) 1/sqrt(x), 
-  #                         marginal = tau)
-  # 
-  # ggplot() + geom_line(data = data.frame(sigma2), aes(x,y)) +
-  #   geom_vline(xintercept = sigma, lty = "dashed") +
-  #   ggtitle("Posterior marginal for the variance parameter")
-  # 
-  # ggplot(data =  inla.mod$summary.random$x ) + geom_line(aes(ID, mean)) +
-  #   geom_ribbon(aes(ID, ymin = `0.025quant`, ymax = `0.975quant`), alpha = 0.5)
-  
-  
-  post.samples <- inla.posterior.sample(n = 1000, result = inla.mod)
+  post.samples <- inla.posterior.sample(n = 1000, result = inla.mod, seed=20220421)
   predlist <- do.call(cbind, lapply(post.samples, function(X)
     exp(X$latent[startsWith(rownames(X$latent), "Pred")])))
   
@@ -210,79 +114,3 @@ function_inla_total(Year_Pan=1890, Year_max=1895, Year_min=1882)
 function_inla_total(Year_Pan=1918, Year_max=1920, Year_min=1908)
 function_inla_total(Year_Pan=2020, Year_max=2020, Year_min=2013)
 
-
-  
-  # bezirk_geo <- read_sf("data_raw/Map_2020/Maps_dissolved/Maps_dissolved_2020.shp") %>%
-  #   filter(!(  BEZIRKSNUM=="1110" |BEZIRKSNUM=="1101" | BEZIRKSNUM=="1102"  | BEZIRKSNUM=="1103" | BEZIRKSNUM=="1104" | BEZIRKSNUM=="1105"
-  #              | BEZIRKSNUM=="1107"  | BEZIRKSNUM=="1106"| BEZIRKSNUM=="1108"| BEZIRKSNUM=="1109"| BEZIRKSNUM=="2225" | BEZIRKSNUM=="2229"
-  #              | BEZIRKSNUM=="1401"  | BEZIRKSNUM=="1402"| BEZIRKSNUM=="1403"| BEZIRKSNUM=="1404"| BEZIRKSNUM=="1405" | BEZIRKSNUM=="1406"
-  #              | BEZIRKSNUM=="311"  | BEZIRKSNUM=="312" | BEZIRKSNUM=="112" | BEZIRKSNUM=="111")) %>%
-  #   dplyr::rename(Bezirk = BEZIRKSNUM) %>%
-  #   dplyr::mutate(Bezirk = as.factor(Bezirk)) %>%
-  #   dplyr::select(Bezirk, geometry)
-  # 
-  # 
-  # data.map <- data.frame(fit=result$summary.random$Region.struct,
-  #                        Region = 1:130) %>%
-  #   left_join(region.names) %>%
-  #   mutate(Bezirk = as.factor(Bezirk),
-  #          fit.mean = ifelse(fit.mean < -1.6, -1.6,fit.mean)) %>%
-  #   left_join(  bezirk_geo) %>%
-  #   as_tibble()
-  # 
-  # library(colorspace)
-  # col <- diverge_hcl(8)  
-  # plot_excess <- ggplot(data=data.map)+
-  #   geom_sf(mapping = aes(fill = fit.mean, geometry = geometry))+
-  #   scale_fill_viridis_c()
-  # 
-  # 
-  # result.pred = inla(formula,
-  #                    data = data.frame(Year = Year, death = death, y = y),
-  #                    family="gaussian",
-  #                    control.inla = list(int.strategy = "grid"),
-  #                    control.compute = list(config = TRUE,
-  #                                           return.marginals.predictor=TRUE),
-  #                    # tell inla to return the marginals for eta!
-  #                    control.predictor = list(compute = TRUE))
-  # 
-  # 
-  # 
-  # samples <- inla.posterior.sample(n=1000,result)
-  # func_sum <- function(...){
-  # exp(Intercept + Region.struct)
-  #   
-  # }
-  # 
-  # draws <- inla.posterior.sample(50, result)
-  # rate.draws <- lapply(draws, function(i)
-  #   exp(i$latent[grep("Predictor",rownames(i$latent))]))
-  # rate.drawsMed<-array(unlist(rate.draws), dim=c(dim(dat.excess)[1], 50)); dim(rate.drawsMed)
-  # dM = as.data.frame(rate.drawsMed)
-  # # Add to the data and save
-  # Data= cbind(dat.excess,dM)
-  # rm(dM)
-  # 
-  # 
-  # 
-  # 
-  # 
-  # func_eval <- inla.posterior.sample.eval(func_sum, samples)
-  # 
-  # timespan <- glm(death ~ Year,
-  #                 offset = log(population),
-  #                 data = reg_data, 
-  #                 family = "poisson")
-  # 
-  # # Prediction
-  # predict <- boot_pi(timespan, pred_data, 1000, 0.95)
-  # 
-  # pred_data <- pred_data %>%
-  #   mutate(
-  #     fit = predict$pred,
-  #     lpi = predict$lower,
-  #     upi = predict$upper
-  #   )
-  
-  # Expected death
-  

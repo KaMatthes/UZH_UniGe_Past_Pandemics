@@ -5,14 +5,6 @@ function_inla_sex <- function(Year_Pan,Year_max, Year_min, Sex) {
   
 
 
-year_max <- Year_max
-year_min <- Year_min
-
-
-# pandemic_year <- 1890
-pandemic_year <- Year_Pan
-
-
 nc.sids <- sf::st_read("data_raw/Map_2020/Maps_dissolved/Maps_dissolved_2020.shp") %>%
   filter(!(  BEZIRKSNUM=="1110" |BEZIRKSNUM=="1101" | BEZIRKSNUM=="1102"  | BEZIRKSNUM=="1103" | BEZIRKSNUM=="1104" | BEZIRKSNUM=="1105"
              | BEZIRKSNUM=="1107"  | BEZIRKSNUM=="1106"| BEZIRKSNUM=="1108"| BEZIRKSNUM=="1109"| BEZIRKSNUM=="2225" | BEZIRKSNUM=="2229"
@@ -30,19 +22,6 @@ region.names <- poly2nb(nc.sids, nc.sids$Bezirk) %>%
   as.data.frame() %>%
   rename(Bezirk = ".") %>%
   mutate(Region = 1:130) 
-
-
-# dat.excess <- data_mortality_rate %>%
-#   mutate(Bezirk=as.character(Bezirk)) %>%
-#   full_join(region.names) %>%
-#   filter(Year>2014 )  %>%
-#   arrange(Region) %>%
-#   mutate(Bezirk= as.numeric(Bezirk),
-#          death = ifelse(death < 0, 0, death),
-#          death = ifelse(is.na(death), 0, death),
-#          Region.struct= Region,
-#          Region.beta = Region) %>%
-#   select(Year,death, population,Region, Region.struct)
 
 
 dat.excess <- data_mortality_rate_sex %>%
@@ -63,40 +42,19 @@ year_smooth <- 4
 year_from <- min(dat.excess$Year)
 year_reg <- year_from + year_smooth
 
-  
-  # formula = death ~ 1 + 
-  #                                f(Region.struct, model="besag", graph="Bezirk_Inla") +
-  #    f(Region, model="iid") +
-  #    f(Year,model = "iid")
-  
-  formula =
-    death ~ 1 + offset(log(population)) +
-    f(Year, model='iid', constr = TRUE) +
-    f(Region.struct, model='iid', constr = TRUE) +
-    f(Region, model="besag", graph="Bezirk_Inla", scale.model = TRUE)
-  
-  # formula =
-  #   death ~ 1 + offset(log(population)) +
-  #   f(Year, model='iid', constr = TRUE) +
-  #   f(Region, model='bym2', graph="Bezirk_Inla", scale.model = TRUE)
+control.family <- inla.set.control.family.default()
 
-  
-    
-  # result  =  inla(formula, 
-  #                 family="poisson", 
-  #                 data=dat.excess, 
-  #                 E=log(population),
-  #                 control.compute = list(return.marginals.predictor    = TRUE,
-  #                                        config = TRUE),
-  #                 control.predictor=list(compute=TRUE))
-  
+formula <- death ~ 1 + offset(log(population)) +
+  f(Year, model='iid', constr = TRUE) +
+  f(Region, model="bym", graph="Bezirk_Inla", scale.model = TRUE)
+
   expected_deaths <- list()
   
-  for (YEAR in year_reg:year_max){
+  for (YEAR in year_reg:Year_max){
     
     print(YEAR)
     
-    if (YEAR==pandemic_year) {
+    if (YEAR==Year_Pan) {
     reg_data <-  dat.excess %>% 
       filter(Year >= YEAR+1 - year_smooth & Year < YEAR+1)%>%
       mutate(death=ifelse (Year ==YEAR, NA, death),
@@ -108,25 +66,28 @@ year_reg <- year_from + year_smooth
         filter(Year >= YEAR+1 - year_smooth & Year < YEAR+1)%>%
         mutate(death=ifelse (Year ==YEAR, NA, death),
                death = as.integer(death)) %>%
-        filter(!Year == pandemic_year)
+        filter(!Year == Year_Pan)
     }
-      # 
-      # 
-  
-  inla.mod = inla(formula,
-                  data=reg_data,
-                  family="Poisson",
-                  verbose = TRUE,
-                  control.compute=list(config = TRUE),
-                  control.mode=list(restart=T),
-                  num.threads = round(parallel::detectCores()*.8),
-                  control.predictor=list(compute=T))
-  
-  
-  
-  post.samples <- inla.posterior.sample(n = 1000, result = inla.mod)
-  predlist <- do.call(cbind, lapply(post.samples, function(X)
-    exp(X$latent[startsWith(rownames(X$latent), "Pred")])))
+
+    set.seed(20220421)
+    
+    inla.mod <- inla(formula,
+                     data=reg_data,
+                     # family="nbinomial",
+                     family = "zeroinflatednbinomial0",
+                     # family = "zeroinflatednbinomial1",
+                     #verbose = TRUE,
+                     control.family = control.family,
+                     control.compute = list(config = TRUE),
+                     control.mode = list(restart = TRUE),
+                     # num.threads = round(parallel::detectCores() * .2),
+                     control.predictor = list(compute = TRUE, link = 1))
+    
+    
+    post.samples <- inla.posterior.sample(n = 1000, result = inla.mod, seed=20220421)
+    predlist <- do.call(cbind, lapply(post.samples, function(X)
+      exp(X$latent[startsWith(rownames(X$latent), "Pred")])))
+
   
   rate.drawsMed<-array(unlist( predlist), dim=c(dim(reg_data)[1], 1000)); dim(rate.drawsMed) 
   dM = as.data.frame(rate.drawsMed)

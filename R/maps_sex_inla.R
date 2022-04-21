@@ -19,24 +19,24 @@ function_maps_sex_inla <- function(var){
   load(paste0("../data/expected_death_inlam_2020.RData"))
   death_2020_m <- expected_deaths
 
-# 
-# load(paste0("data/expected_death_inlaf_1890.RData"))
-# death_1890_f <- expected_deaths
-# 
-# load(paste0("data/expected_death_inlaf_1918.RData"))
-# death_1918_f <- expected_deaths
-# 
-# load(paste0("data/expected_death_inlaf_2020.RData"))
-# death_2020_f <- expected_deaths
-# 
-# load(paste0("data/expected_death_inlam_1890.RData"))
-# death_1890_m <- expected_deaths
-# 
-# load(paste0("data/expected_death_inlam_1918.RData"))
-# death_1918_m <- expected_deaths
-# 
-# load(paste0("data/expected_death_inlam_2020.RData"))
-# death_2020_m <- expected_deaths
+
+load(paste0("data/expected_death_inlaf_1890.RData"))
+death_1890_f <- expected_deaths
+
+load(paste0("data/expected_death_inlaf_1918.RData"))
+death_1918_f <- expected_deaths
+
+load(paste0("data/expected_death_inlaf_2020.RData"))
+death_2020_f <- expected_deaths
+
+load(paste0("data/expected_death_inlam_1890.RData"))
+death_1890_m <- expected_deaths
+
+load(paste0("data/expected_death_inlam_1918.RData"))
+death_1918_m <- expected_deaths
+
+load(paste0("data/expected_death_inlam_2020.RData"))
+death_2020_m <- expected_deaths
 
   data_excess <- rbind(death_1890_m,death_1918_m, death_2020_m,
                        death_1890_f,death_1918_f, death_2020_f )%>%
@@ -170,8 +170,9 @@ bezirk_geo <- read_sf("../data_raw/Map_2020/Maps_dissolved/Maps_dissolved_2020.s
   # filter(!is.na(Bezirk))
 if(var=="excess_rate_group") {
 plot_excess <- ggplot(data=bezirk_geo)+
-  geom_sf_pattern(aes(pattern=significant_dummy, fill=excess_rate_group),pattern_fill = "grey50", pattern_color="grey50",
-                  pattern_spacing = 0.03,pattern_size=0.5 )+
+  # geom_sf_pattern(aes(pattern=significant_dummy, fill=excess_rate_group),pattern_fill = "grey50", pattern_color="grey50",
+  #                 pattern_spacing = 0.03,pattern_size=0.5 )+
+  geom_sf(mapping = aes(fill =excess_perc_groups)) +
   facet_wrap(Year~sex, ncol = 2) +
   scale_fill_manual("Quintile:",
                     values = col5viridis)+

@@ -1,5 +1,5 @@
-function_inla_age <- function(Year_Pan,Year_max, Year_min, Age, Name) {
-  load(paste0("data/data_mortality_rate_age.RData"))
+function_inla_sex_age <- function(Year_Pan,Year_max, Year_min, Age, Name, Sex) {
+  load(paste0("data/data_mortality_rate_age2groups_sex.RData"))
 
 nc.sids <- sf::st_read("data_raw/Map_2020/Maps_dissolved/Maps_dissolved_2020.shp") %>%
   filter(!(  BEZIRKSNUM=="1110" |BEZIRKSNUM=="1101" | BEZIRKSNUM=="1102"  | BEZIRKSNUM=="1103" | BEZIRKSNUM=="1104" | BEZIRKSNUM=="1105"
@@ -20,11 +20,12 @@ region.names <- poly2nb(nc.sids, nc.sids$Bezirk) %>%
   mutate(Region = 1:130) 
 
 
-dat.excess <- data_mortality_rate_age %>%
+dat.excess <- data_mortality_rate_age2groups_sex %>%
   mutate(Bezirk=as.character(Bezirk)) %>%
   full_join(region.names) %>%
   filter(Year >=Year_min & Year <=Year_max ) %>%
   filter(age_group==Age) %>%
+  filter(sex==Sex) %>%
   arrange(Region) %>%
   mutate(Bezirk= as.numeric(Bezirk),
          death = ifelse(death < 0, 0, death),
@@ -32,7 +33,7 @@ dat.excess <- data_mortality_rate_age %>%
          Region.struct= Region,
          Region.beta = Region,
          death = as.integer(death)) %>%
-  select(Year,death, population,Region, Region.struct,age_group)
+  select(Year,death, population,Region, Region.struct,age_group,sex)
 
 year_smooth <- 4
 year_from <- min(dat.excess$Year)
@@ -112,26 +113,42 @@ formula <- death ~ 1 + offset(log(population)) +
   expected_deaths <- expected_deaths %>%
     bind_rows(., .id = "column_label")
   
-  write.xlsx(expected_deaths,paste0("data/expected_death_inla",Name,"_",Year_Pan,".xlsx"), row.names=FALSE, overwrite = TRUE)
-  save(expected_deaths,file=paste0("data/expected_death_inla",Name,"_",Year_Pan,".RData"))
+  write.xlsx(expected_deaths,paste0("data/expected_death_inla_",Name,"_",Sex,"_",Year_Pan,".xlsx"), row.names=FALSE, overwrite = TRUE)
+  save(expected_deaths,file=paste0("data/expected_death_inla_",Name,"_",Sex,"_",Year_Pan,".RData"))
   }
 
-function_inla_age(Year_Pan=1890, Year_max=1891, Year_min=1886, Age="0_19", Name="0_19")
-function_inla_age(Year_Pan=1918, Year_max=1919, Year_min=1914, Age="0_19", Name="0_19")
-function_inla_age(Year_Pan=2020, Year_max=2020, Year_min=2016, Age="0_19", Name="0_19")
+function_inla_sex_age(Year_Pan=1890, Year_max=1891, Year_min=1886, Age="0_19", Name="0_19", Sex="f")
+function_inla_sex_age(Year_Pan=1918, Year_max=1919, Year_min=1914, Age="0_19", Name="0_19", Sex="f")
+function_inla_sex_age(Year_Pan=2020, Year_max=2020, Year_min=2016, Age="0_19", Name="0_19", Sex="f")
 
-function_inla_age(Year_Pan=1890, Year_max=1891, Year_min=1886, Age="20_39", Name="20_39")
-function_inla_age(Year_Pan=1918, Year_max=1919, Year_min=1914, Age="20_39", Name="20_39")
-function_inla_age(Year_Pan=2020, Year_max=2020, Year_min=2016, Age="20_39", Name="20_39")
+function_inla_sex_age(Year_Pan=1890, Year_max=1891, Year_min=1886, Age="20_39", Name="20_39", Sex="f")
+function_inla_sex_age(Year_Pan=1918, Year_max=1919, Year_min=1914, Age="20_39", Name="20_39", Sex="f")
+function_inla_sex_age(Year_Pan=2020, Year_max=2020, Year_min=2016, Age="20_39", Name="20_39", Sex="f")
 
-function_inla_age(Year_Pan=1890, Year_max=1891, Year_min=1886, Age="40_69", Name="40_69")
-function_inla_age(Year_Pan=1918, Year_max=1919, Year_min=1914, Age="40_69", Name="40_69")
-function_inla_age(Year_Pan=2020, Year_max=2020, Year_min=2016, Age="40_69", Name="40_69")
+function_inla_sex_age(Year_Pan=1890, Year_max=1891, Year_min=1886, Age="40_69", Name="40_69", Sex="f")
+function_inla_sex_age(Year_Pan=1918, Year_max=1919, Year_min=1914, Age="40_69", Name="40_69", Sex="f")
+function_inla_sex_age(Year_Pan=2020, Year_max=2020, Year_min=2016, Age="40_69", Name="40_69", Sex="f")
 
-function_inla_age(Year_Pan=1890, Year_max=1891, Year_min=1886, Age=">70", Name="70")
-function_inla_age(Year_Pan=1918, Year_max=1919, Year_min=1914, Age=">70", Name="70")
-function_inla_age(Year_Pan=2020, Year_max=2020, Year_min=2016, Age=">70", Name="70")
+function_inla_sex_age(Year_Pan=1890, Year_max=1891, Year_min=1886, Age=">70", Name="70", Sex="f")
+function_inla_sex_age(Year_Pan=1918, Year_max=1919, Year_min=1914, Age=">70", Name="70", Sex="f")
+function_inla_sex_age(Year_Pan=2020, Year_max=2020, Year_min=2016, Age=">70", Name="70", Sex="f")
 
+
+function_inla_sex_age(Year_Pan=1890, Year_max=1891, Year_min=1886, Age="0_19", Name="0_19", Sex="m")
+function_inla_sex_age(Year_Pan=1918, Year_max=1919, Year_min=1914, Age="0_19", Name="0_19", Sex="m")
+function_inla_sex_age(Year_Pan=2020, Year_max=2020, Year_min=2016, Age="0_19", Name="0_19", Sex="m")
+
+function_inla_sex_age(Year_Pan=1890, Year_max=1891, Year_min=1886, Age="20_39", Name="20_39", Sex="m")
+function_inla_sex_age(Year_Pan=1918, Year_max=1919, Year_min=1914, Age="20_39", Name="20_39", Sex="m")
+function_inla_sex_age(Year_Pan=2020, Year_max=2020, Year_min=2016, Age="20_39", Name="20_39", Sex="m")
+
+function_inla_sex_age(Year_Pan=1890, Year_max=1891, Year_min=1886, Age="40_69", Name="40_69", Sex="m")
+function_inla_sex_age(Year_Pan=1918, Year_max=1919, Year_min=1914, Age="40_69", Name="40_69", Sex="m")
+function_inla_sex_age(Year_Pan=2020, Year_max=2020, Year_min=2016, Age="40_69", Name="40_69", Sex="m")
+
+function_inla_sex_age(Year_Pan=1890, Year_max=1891, Year_min=1886, Age=">70", Name="70", Sex="m")
+function_inla_sex_age(Year_Pan=1918, Year_max=1919, Year_min=1914, Age=">70", Name="70", Sex="m")
+function_inla_sex_age(Year_Pan=2020, Year_max=2020, Year_min=2016, Age=">70", Name="70", Sex="m")
 
   
   
