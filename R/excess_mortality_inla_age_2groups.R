@@ -20,7 +20,7 @@ region.names <- poly2nb(nc.sids, nc.sids$Bezirk) %>%
   mutate(Region = 1:130) 
 
 
-dat.excess <- data_mortality_rate_age %>%
+dat.excess <- data_mortality_rate_age2groups %>%
   mutate(Bezirk=as.character(Bezirk)) %>%
   full_join(region.names) %>%
   filter(Year >=Year_min & Year <=Year_max ) %>%
