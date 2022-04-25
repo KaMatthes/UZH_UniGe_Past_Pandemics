@@ -27,6 +27,7 @@ library(INLA)
 library(maptools)
 library(colorspace)
 library(viridis)
+library(RColorBrewer)
 
 
 # data
@@ -53,6 +54,9 @@ coldiv <- diverge_hcl(8)
 col5magma <- viridis(5, alpha = 1, begin = 1, end = 0, direction = 1, option = "magma")
 # load functions
 col5viridis <- viridis(5, alpha = 1, begin = 1, end = 0, direction = 1, option = "viridis")
+col8viridis <- viridis(8, alpha = 1, begin = 1, end = 0, direction = 1, option = "viridis")
+cols_reds <- brewer.pal(n =8, name = "Reds")
+cols_reds <- brewer.pal(n = 9, name = "Blues")
 # source("R/prepare_data.R")
 # source("R/population.R")
 # source("R/mortality_rate.R")

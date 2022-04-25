@@ -15,7 +15,7 @@ pop_total_age2 <- pop_total_age %>%
   group_by(Year,Bezirk, age_group) %>%
  summarize(population=sum(population))
 
-data_mortality_rate_age <- data_total %>%
+data_mortality_rate_age2groups <- data_total %>%
   filter(sex =="f" | sex =="m") %>%
   filter(!age_group=="total") %>%
   mutate(age_group= recode(age_group, 
@@ -42,7 +42,7 @@ data_mortality_rate_age <- data_total %>%
          
 
 
-save(data_mortality_rate_age ,file=paste0("data/data_mortality_rate_age2groups.RData"))
-write.xlsx(data_mortality_rate_age,file=paste0("data/data_mortality_rate_age2groups.xlsx"),rowNames=FALSE, overwrite = TRUE)
+save(data_mortality_rate_age2groups ,file=paste0("data/data_mortality_rate_age2groups.RData"))
+write.xlsx(data_mortality_rate_age2groups,file=paste0("data/data_mortality_rate_age2groups.xlsx"),rowNames=FALSE, overwrite = TRUE)
 
 }
