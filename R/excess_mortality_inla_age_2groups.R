@@ -117,7 +117,7 @@ formula <- death ~ 1 + offset(log(population)) +
   }
 
 function_inla_age2groups(Year_Pan=1890, Year_max=1891, Year_min=1886, Age="0_69", Name="0_69")
-# function_inla_age(Year_Pan=1918, Year_max=1919, Year_min=1914, Age="0_69", Name="0_69")
+function_inla_age2groups(Year_Pan=1918, Year_max=1919, Year_min=1914, Age="0_69", Name="0_69")
 function_inla_age2groups(Year_Pan=2020, Year_max=2020, Year_min=2016, Age="0_69", Name="0_69")
 
 # function_inla_age(Year_Pan=1890, Year_max=1891, Year_min=1886, Age=">70", Name="70")
