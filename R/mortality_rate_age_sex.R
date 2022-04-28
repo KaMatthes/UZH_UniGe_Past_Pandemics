@@ -6,25 +6,23 @@ load(paste0("data/pop_total_age.RData"))
 
 pop_total_age2 <- pop_total_age %>%
   mutate(age_group= recode(age_group, 
-                           "0_19" = "0_69",
-                           "20_29" = "0_69",
-                           "30_39" = "0_69",
-                           "40_49" = "0_69",
-                           "50_59" = "0_69",
-                           "60_69" = "0_69")) %>%
+                           "20_29" = "20_39",
+                           "30_39" = "20_39",
+                           "40_49" = "40_69",
+                           "50_59" = "40_69",
+                           "60_69" = "40_69")) %>%
   group_by(Year,Bezirk, age_group, sex) %>%
-  summarize(population=sum(population))
+ summarize(population=sum(population))
 
-data_mortality_rate_age2groups_sex <- data_total %>%
+data_mortality_rate_age_sex <- data_total %>%
   filter(sex =="f" | sex =="m") %>%
   filter(!age_group=="total") %>%
   mutate(age_group= recode(age_group, 
-                           "0_19" = "0_69",
-                           "20_29" = "0_69",
-                           "30_39" = "0_69",
-                           "40_49" = "0_69",
-                           "50_59" = "0_69",
-                           "60_69" = "0_69")) %>%
+                           "20_29" = "20_39",
+                           "30_39" = "20_39",
+                           "40_49" = "40_69",
+                           "50_59" = "40_69",
+                           "60_69" = "40_69")) %>%
   mutate(Year = as.character(Year),
          Year = as.numeric(Year))%>%
   filter(Year > 1885) %>%
@@ -42,7 +40,7 @@ data_mortality_rate_age2groups_sex <- data_total %>%
          
 
 
-save(data_mortality_rate_age2groups_sex ,file=paste0("data/data_mortality_rate_age2groups_sex.RData"))
-write.xlsx(data_mortality_rate_age2groups_sex,file=paste0("data/data_mortality_rate_age2groups_sex.xlsx"),rowNames=FALSE, overwrite = TRUE)
+save(data_mortality_rate_age_sex ,file=paste0("data/data_mortality_rate_age_sex.RData"))
+write.xlsx(data_mortality_rate_age_sex,file=paste0("data/data_mortality_rate_age_sex.xlsx"),rowNames=FALSE, overwrite = TRUE)
 
 }
