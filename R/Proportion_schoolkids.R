@@ -19,6 +19,7 @@ pop_1888_age <- readxl::read_excel(paste0("data_raw/Data1890/Population_Age1888.
 pop_1910_age <- readxl::read_excel(paste0("data_raw/Data1918/Population_Age1910.xlsx")) %>%
   mutate(Year= "1910")
 
+
 pop_age <- rbind(pop_1888_age,pop_1910_age) %>%
  filter(!Agegroups=="Total") %>%
   rename(age_group=Agegroups,
@@ -234,10 +235,19 @@ pop_age_extrapolate_tmp2 <- pop_hist %>%
 
 
 pop_extrapolate_age <- rbind(pop_age_extrapolate_tmp1,pop_age_extrapolate_tmp2) %>%
-  select(-population) %>%
-  rename(population=pop_age) %>%
+  group_by(Year, Bezirk, age_group, MapName,population) %>%
+  mutate(pop_age_s = sum( pop_age)) %>%
+  ungroup() %>%
+  filter(age_group=="5_14") %>%
+  distinct(Bezirk, Year, .keep_all = TRUE) %>%
+  select(-sex, -pop_age) %>%
+  mutate(prop_both =pop_age_s/population) %>%
   filter(Year == 1890 | Year == 1918) %>%
-  filter(age_group=="5-14")
+  select(Year, Bezirk, prop=prop_both)
+
+
+pop_modern <- pop_total %>%
+  filter(Year == 2020)
 
 pop_2014_2020_age <- readxl::read_excel(paste0("data_raw/Data2020/Population_Age2014_2020.xlsx")) %>%
   gather(.,age_group, population, `0-4 Jahre`:`100 Jahre`, factor_key=TRUE) %>%
@@ -420,26 +430,23 @@ pop_2014_2020_age <- readxl::read_excel(paste0("data_raw/Data2020/Population_Age
                  "Zürich" = "Bezirk Zürich",
                  "Dietikon" = "Bezirk Zürich")) %>%
   left_join(Bezirke_nr) %>%
-  dplyr::group_by(Bezirk,Year,sex, MapName,age_group) %>%
-  dplyr::summarise(population = sum(population)) %>%
+  dplyr::group_by(Bezirk,Year, MapName,age_group) %>%
+  dplyr::mutate(population_both = sum(population)) %>%
   dplyr::ungroup() %>%
-  filter(Year==2020) 
+  distinct(Bezirk, Year, age_group,.keep_all = TRUE) %>%
+  dplyr::group_by(Bezirk,Year, MapName,age_group) %>%
+  ungroup() %>%
+  select(-population) %>%
+  filter(age_group=="5_14") %>%
+  filter(Year ==2020) %>%
+  full_join(pop_modern) %>%
+  mutate(prop=population_both/ population) %>%
+  select(Year, Bezirk, prop)
  
 
 prop_school_kids <- rbind(pop_extrapolate_age, pop_2014_2020_age) %>%
-  select(-prop) %>%
-  filter(!is.na(population)) %>%
-  dplyr::group_by(Year,Bezirk,age_group,MapName) %>%
-  dplyr::summarise(population = sum(population)) %>%
-  dplyr::ungroup() %>%
-  dplyr::group_by(MapName, Year) %>%
-  mutate(prop= (population / sum(population))*100) %>%
-  dplyr::ungroup() %>%
-  filter(age_group=="5_14") %>%
-  select(Year, Bezirk, prop_school=prop) %>%
-  group_by(Year) %>%
-  mutate(prop_norm = normalit(prop_school)) %>%
-  ungroup()
+  mutate(prop =ifelse(is.na(prop), 0, prop))
+  
 
 write.xlsx(prop_school_kids ,file=paste0("data/prop_school_kids.xlsx"),row.names=FALSE, overwrite = TRUE)
 save(prop_school_kids,file=paste0("data/prop_school_kids.RData"))
