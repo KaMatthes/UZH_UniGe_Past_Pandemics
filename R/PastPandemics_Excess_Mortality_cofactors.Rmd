@@ -112,28 +112,39 @@ function_maps_inla()
 ```
 
 ### Sex
-Because excess death is different in each pandemic year, and to better compare sex per pandemic year, the divisions of relative excess death per year are different.
+Because excess death is different in each pandemic year, and to better compare sex per pandemic year, the divisions of relative excess death per year are different. In 1890 no significant differences between sex, 1918 and 2020 higher excess mortality in men compared to women.
 
 ```{r, echo=FALSE,message=FALSE,fig.height = 5,  fig.width = 12}
 function_maps_sex(Year_Pan=1890)
+function_regression_mortality(VarTest = "Sex")[1]
 function_maps_sex(Year_Pan=1918)
+function_regression_mortality(VarTest = "Sex")[2]
 function_maps_sex(Year_Pan=2020)
+function_regression_mortality(VarTest = "Sex")[3]
 ```
 
 ### Age
 
 Because excess death is different in each pandemic year, and to better compare age groups per pandemic year, the divisions of relative excess death per year are different. Since the highest excess death in the 1918 pandemic was between 20 - 39 years, we further divided the age groups from 0-69 years into 3 additional groups for the 1918 pandemic. In the other pandemic years, this is not possible due to low death rates in the younger age groups.
+<br />
+<br />
+In 1890 no significant differences in excess mortality between age age groups.  1918 higher excess mortality for age group 0-69 years compared to > 70 years, in 2020 lower excess mortality for age group 0-69 years compared to < 70 years.
 
 ```{r, echo=FALSE,message=FALSE,fig.height = 5,  fig.width = 12}
 function_maps_age(Year_Pan=1890)
+function_regression_mortality(VarTest = "Age")[1]
 function_maps_age(Year_Pan=1918)
+function_regression_mortality(VarTest = "Age")[2]
 function_maps_age(Year_Pan=2020)
+function_regression_mortality(VarTest = "Age")[3]
 ```
 
 1918
+Age groups 0-19, 20-39 and 40-69 show higher excess mortality compared to >70 years. The  highest excess mortality shows the age group 0-69.
 
 ```{r, echo=FALSE,message=FALSE,fig.height = 10,  fig.width = 12}
 function_maps_age_1918()
+function_regression_mortality(VarTest = "Age_1918")
 ```
 
 
@@ -153,8 +164,37 @@ function_maps_sex_age(Year_Pan=2020, Age=">70")
 1918 - Age 20 - 39
 <br />
 <br />
-Relative excess death is greater than 14% in both sexes in the age group 20-39 years, but it is even higher in men than in women.
+The relative mortality rate is above 14% for both sexes in the 20-39 age group, but even higher for men than for women.
 
 ```{r, echo=FALSE,message=FALSE,fig.height = 5,  fig.width = 12}
 function_maps_sex_age_1918()
+function_regression_mortality(VarTest = "Age_Sex_1918")
+```
+
+## Co-factors
+
+### GDP per capita
+GDP per capita was taken from 1888 for 1890, 1910 for 1918, 2008 for 2020.
+
+```{r, echo=FALSE,message=FALSE,fig.height = 10,  fig.width = 12}
+function_cor_gdp()
+```
+
+### Number of hospitals
+
+```{r, echo=FALSE,message=FALSE,fig.height = 10,  fig.width = 12}
+function_cor_hospitals()
+```
+
+### Proportion of children aged 5-14 
+
+```{r, echo=FALSE,message=FALSE,fig.height = 10,  fig.width = 12}
+function_cor_schoolkids()
+```
+
+### Proportion of child mortality
+Child mortality was taken from the year before the pandamic
+
+```{r, echo=FALSE,message=FALSE,fig.height = 10,  fig.width = 12}
+function_cor_child_mort()
 ```

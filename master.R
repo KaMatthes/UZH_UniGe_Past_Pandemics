@@ -45,7 +45,7 @@ col_5_groups1 <- c("#f0f9e8","#bae4bc","#7bccc4","#43a2ca","#0868ac")
 col_5_groups2 <- c("#ca0020","#f4a582","#ffffbf","#abd9e9","#2c7bb6")
 col_5_groups2_trans <- c("#2c7bb6","#abd9e9","#ffffbf","#f4a582","#ca0020")
 col_5_groups_green_trans <- c("#1a9641","#a6d96a","#ffffbf","#fdae61","#d7191c")
-
+cbp1 <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#0072B2", "#D55E00", "#CC79A7")
 
 col_11_groups_green_trans <- c("#006d2c","#31a354","#74c476","#bae4b3","#edf8e9",
                                "#fee5d9","#fcbba1","#fc9272","#fb6a4a","#de2d26","#a50f15")
@@ -72,19 +72,8 @@ source("R/maps_age_inla.R")
 source("R/maps_age_1918_inla.R")
 source("R/maps_age_sex_inla.R")
 source("R/maps_age_sex_1918_inla.R")
+source("R/cor_child_mort.R")
+source("R/cor_schoolkids.R")
+source("R/cor_hospitals.R")
+source("R/cor_gdp.R")
 
-# source("R/maps_age2groups_sex.R")
-# source("R/lisa.R")
-# source("R/lisa_sex.R")
-# source("R/lisa_age.R")
-# source("R/lisa_age_sex.R")
-# functios
-# function_prepare_data()
-# function_population()
-# function_mortality_rate()
-
-
-# render html
-# render(paste0("R/PastPandemics_Excess_Mortality_inla.Rmd"), output_file = paste0("../output/",today(),"_Report_PastPandemice_inla.html"))
-
-render(paste0("R/PastPandemics_Excess_Mortality_cofactors.Rmd"), output_file = paste0("../output/",today(),"_Report_PastPandemice_cofactors.html"))

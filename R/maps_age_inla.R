@@ -36,6 +36,7 @@ function_maps_age <- function(Year_Pan){
   
   load(paste0("../data/expected_death_inla70_2020.RData"))
   death_2020_70  <- expected_deaths
+  
   data_excess <- rbind(death_1890_0_69,death_1918_0_69,death_2020_0_69,
                        death_1890_70, death_1918_70, death_2020_70)%>%
     select(-column_label) %>%

@@ -445,7 +445,10 @@ pop_2014_2020_age <- readxl::read_excel(paste0("data_raw/Data2020/Population_Age
  
 
 prop_school_kids <- rbind(pop_extrapolate_age, pop_2014_2020_age) %>%
-  mutate(prop =ifelse(is.na(prop), 0, prop))
+  mutate(prop =ifelse(is.na(prop), 0, prop)) %>%
+  group_by(Year) %>%
+  mutate(prop_norm = normalit(prop)) %>%
+  ungroup()
   
 
 write.xlsx(prop_school_kids ,file=paste0("data/prop_school_kids.xlsx"),row.names=FALSE, overwrite = TRUE)
