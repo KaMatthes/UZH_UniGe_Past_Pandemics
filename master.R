@@ -76,4 +76,11 @@ source("R/cor_child_mort.R")
 source("R/cor_schoolkids.R")
 source("R/cor_hospitals.R")
 source("R/cor_gdp.R")
+source("R/Regression.R")
 
+
+
+# render html
+# render(paste0("R/PastPandemics_Excess_Mortality_inla.Rmd"), output_file = paste0("../output/",today(),"_Report_PastPandemice_inla.html"))
+
+render(paste0("R/PastPandemics_Excess_Mortality_cofactors.Rmd"), output_file = paste0("../output/",today(),"_Report_PastPandemice_cofactors.html"))

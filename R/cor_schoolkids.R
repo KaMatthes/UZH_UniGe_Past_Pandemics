@@ -75,10 +75,11 @@ function_cor_schoolkids <- function(){
     
     plot_schoolkids <- ggplot(data=data_excess) +
       geom_point(aes(x=prop, y=excess_percentage, shape=Language,col=Language), lwd=3) +
-      geom_smooth(aes(x=prop, y=excess_percentage), col="black") +
-      facet_wrap(~Year, ncol = 2,scales = "free") +
-      scale_color_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
-      scale_shape_manual("Language region: ",values = c(15,16,17))+
+      geom_smooth(aes(x=prop, y=excess_percentage,col=Language), method='lm',lwd=1.5, se=FALSE) +
+  facet_wrap(~Year, nrow = 2,scales = "free") +
+  scale_color_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
+  scale_fill_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
+  scale_shape_manual("Language region: ",values = c(15,16,17))+
       ggtitle("Proportion of Children aged 5-14 years")+
       ylab("Relative Excess Mortality")+
       xlab("Proportion of Children aged 5-14 years") +

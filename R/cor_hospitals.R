@@ -72,9 +72,10 @@ function_cor_hospitals <- function(){
              
     plot_Hospitals <- ggplot(data=data_excess) +
       geom_point(aes(x=hospitals_inc, y=excess_percentage, shape=Language,col=Language), lwd=3) +
-      geom_smooth(aes(x=hospitals_inc, y=excess_percentage), col="black") +
+      geom_smooth(aes(x=hospitals_inc, y=excess_percentage,col=Language), method='lm',lwd=1.5, se=FALSE) +
       facet_wrap(~Year, nrow = 2,scales = "free") +
       scale_color_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
+      scale_fill_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
       scale_shape_manual("Language region: ",values = c(15,16,17))+
       ggtitle("Number of Hospitals per 100'000 inhabitants")+
       ylab("Relative Excess Mortality")+

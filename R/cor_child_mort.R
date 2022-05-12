@@ -4,20 +4,24 @@ function_cor_child_mort <- function(){
     Expected_death_Russian <- expected_deaths
     load(paste0("../data/expected_death_inla1918.RData"))
     Expected_death_Spanish <- expected_deaths
-    # load(paste0("data/expected_death_inla2020.RData"))
-    # Expected_death_Covid <- expected_deaths
+# 
+#     load(paste0("data/expected_death_inla_child1890.RData"))
+#     Expected_death_Russian <-expected_deaths
+#     load(paste0("data/expected_death_inla_child1918.RData"))
+#     Expected_death_Spanish <- expected_deaths
 
-    # load(paste0("data/expected_death_inla_child1890.RData"))
-    # Expected_death_Russian <-expected_deaths
-    # load(paste0("data/expected_death_inla_child1918.RData"))
-    # Expected_death_Spanish <- expected_deaths
-
+    load(paste0("../data/data_total.RData"))
+    Canton <- data_total %>%
+      dplyr::select(Canton, Bezirk) %>%
+      distinct(Canton,Bezirk)
+    
+    
     # load(paste0("data/expected_death_inla1918.RData"))
     # Expected_death <- expected_deaths %>%
     #   mutate(excess_percentage_o = ((death-fit)/fit)*100,
     #          excess_percentage = round(((death-fit)/fit)*100,2),
     #          excess_perc_groups =  as.numeric(excess_percentage))
-    # 
+
     
     load(paste0("../data/child_mortality.RData"))
     child_mortality <- child_mortality%>%
@@ -29,7 +33,7 @@ function_cor_child_mort <- function(){
                            "1917" = "1918")) %>%
       select(-death)
   
-    data_excess <- rbind(Expected_death_Russian, Expected_death_Spanish,  Expected_death_Covid ) %>%
+    data_excess <- rbind(Expected_death_Russian, Expected_death_Spanish) %>%
       ungroup() %>%
       left_join(Canton) %>%
       filter(Year == 1890 | Year == 1918) %>%
@@ -73,9 +77,10 @@ function_cor_child_mort <- function(){
   
     plot_child_mortality <- ggplot(data=data_excess) +
       geom_point(aes(x=prop_child_death, y=excess_percentage, shape=Language,col=Language), lwd=3) +
-      geom_smooth(aes(x=prop_child_death, y=excess_percentage), col="black") +
+      geom_smooth(aes(x=prop_child_death, y=excess_percentage, col=Language), method='lm',lwd=1.5, se=FALSE) +
       facet_wrap(~Year, nrow = 2,scales = "free") +
       scale_color_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
+      scale_fill_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
       scale_shape_manual("Language region: ",values = c(15,16,17))+
       ggtitle("Child Mortality per 100'000 inhabitants")+
       ylab("Relative Excess Mortality")+
