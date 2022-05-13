@@ -76,7 +76,10 @@ source("R/cor_child_mort.R")
 source("R/cor_schoolkids.R")
 source("R/cor_hospitals.R")
 source("R/cor_gdp.R")
+source("R/cor_sep.R")
 source("R/Regression.R")
+source("R/Hotspots.R")
+source("R/Hotspots_sex.R")
 
 
 

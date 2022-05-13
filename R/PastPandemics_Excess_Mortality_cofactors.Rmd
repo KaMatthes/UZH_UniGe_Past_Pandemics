@@ -32,7 +32,7 @@ knitr::opts_chunk$set(echo = FALSE)
 * Pandemic 1918 (Spanish flu): Data from 1908 - 1925
 * Mortality data for each year, district, age group and sex
 * Population data for census of 1880, 1888, 1900, 1910, 1920 for all districts
-* Population data for sex and age group only  for year census 1888 and 1910 
+* Population data for sex and age group only  for year census 1888 and 1910
 * Years between were interpolated
 
 ## Covid 19
@@ -52,9 +52,9 @@ where $E_i$ is the ``population at risk'' in region $i$.
 * The log relative risk, $\bf{\eta} = (\eta_1, \dots, \eta_n)^T$, is thus decomposed
   into $$\bf{\eta} = \mu + \bf{u} + \bf{v} $$
   +  $\mu$ is the overall intercept
-  +  $\bf{u}$ is a random effect with spatial structure following the Besag model 
+  +  $\bf{u}$ is a random effect with spatial structure following the Besag model
   +  $\bf{v}$ represents a non-spatial overdispersion
-* ${\bf u}$ is "besag" modelled spatially structured with smoothing parameter $\kappa_u$. 
+* ${\bf u}$ is "besag" modelled spatially structured with smoothing parameter $\kappa_u$.
 * ${\bf v}$ is unstructured with precision parameter $\kappa_v$, i.e.
 $\bf{v} \sim \mathcal{N}(0, \kappa_v^{-1}I)$.
 * The precision terms $\kappa_v$ and $\kappa_u$ are assigned the default
@@ -78,8 +78,8 @@ with ${N}(0,  \tau_v^{-1})$
  formula =
     death ~ 1 + offset(log(population)) +
     f(Region, model="bmy", graph="Bezirk_Inla", scale.model = TRUE)+
-    f(Year, model='iid', constr = TRUE) 
-   
+    f(Year, model='iid', constr = TRUE)
+
 inla.mod = inla(formula,
                   data=reg_data,
                   family="Poisson",
@@ -99,7 +99,7 @@ inla.mod = inla(formula,
 
 <!-- <!-- * Excess mortality is shown relatively in percentage (Excess mortality/expected death counts) -->
 <!-- <!-- * To compare the districts of each pandemic year the relative excess mortality was normalized -->
-<!-- <!-- * To find pattern and clusters: Moran’s I statistics ( LISA: Local Indicators of Spatial Association) were used for mapping statistically significant local clusters --> 
+<!-- <!-- * To find pattern and clusters: Moran’s I statistics ( LISA: Local Indicators of Spatial Association) were used for mapping statistically significant local clusters -->
 
 # Results
 
@@ -180,13 +180,20 @@ GDP per capita was taken from 1888 for 1890, 1910 for 1918, 2008 for 2020.
 function_cor_gdp()
 ```
 
+### Swiss SEP per capita
+Only for 2020, Swiss SEP from xxx (from which year?)
+
+```{r, echo=FALSE,message=FALSE,fig.height = 10,  fig.width = 12}
+function_cor_sep()
+```
+
 ### Number of hospitals
 
 ```{r, echo=FALSE,message=FALSE,fig.height = 10,  fig.width = 12}
 function_cor_hospitals()
 ```
 
-### Proportion of children aged 5-14 
+### Proportion of children aged 5-14
 
 ```{r, echo=FALSE,message=FALSE,fig.height = 10,  fig.width = 12}
 function_cor_schoolkids()
@@ -198,3 +205,28 @@ Child mortality was taken from the year before the pandamic
 ```{r, echo=FALSE,message=FALSE,fig.height = 10,  fig.width = 12}
 function_cor_child_mort()
 ```
+
+## Hotspots
+
+An alternative spatial statistics to detect spatial anomalies is the Getis and Ord’s G-statistics (Getis and Ord, 1972; Ord and Getis, 1995). It looks at neighbours within a defined proximity to identify where either high or low values clutser spatially. Here, statistically significant hot-spots are recognised as areas of high values where other areas within a neighbourhood range also share high values too.
+<br />
+<br />
+The Gi statistics is represented as a Z-score. Greater values represent a greater intensity of clustering and the direction (positive or negative) indicates high or low clusters.
+
+```{r, echo=FALSE,message=FALSE,fig.height = 8,  fig.width = 12}
+function_hotspot(Year_Pan=1890)
+function_hotspot(Year_Pan=1918)
+function_hotspot(Year_Pan=2020)
+```
+
+<!-- ### Sex -->
+
+<!-- ```{r, echo=FALSE,message=FALSE,fig.height = 8,  fig.width = 12} -->
+<!-- function_hotspot_sex(Year_Pan=1890, Sex="m") -->
+<!-- function_hotspot_sex(Year_Pan=1890, Sex="f") -->
+<!-- function_hotspot_sex(Year_Pan=1918, Sex="m") -->
+<!-- function_hotspot_sex(Year_Pan=1918, Sex="f") -->
+<!-- function_hotspot_sex(Year_Pan=2020, Sex="m") -->
+<!-- function_hotspot_sex(Year_Pan=2020, Sex="f") -->
+<!-- ``` -->
+

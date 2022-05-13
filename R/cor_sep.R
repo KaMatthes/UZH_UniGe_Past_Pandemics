@@ -1,6 +1,6 @@
-function_cor_gdp <- function(){
+function_cor_sep <- function(){
 
-load(paste0("data/expected_death_inla2020.RData"))
+load(paste0("../data/expected_death_inla2020.RData"))
 Expected_death_Covid <- expected_deaths
 
   # 
@@ -12,7 +12,7 @@ Expected_death_Covid <- expected_deaths
   # Expected_death_Covid <- expected_deaths
   # 
   
-  load(paste0("data/Swiss_SEP.RData"))
+  load(paste0("../data/Swiss_SEP.RData"))
   
     
     data_excess <- Expected_death_Covid %>%
@@ -69,13 +69,13 @@ Expected_death_Covid <- expected_deaths
         plot.title = element_text(size=15),
         legend.position = "bottom")
     
-cowplot::save_plot("output/plot_SEP.pdf",plot_SEP,base_height=7,base_width=11)
-cowplot::save_plot("output/plot_SEP_all.pdf",plot_SEP2,base_height=7,base_width=11)
+# cowplot::save_plot("output/plot_SEP.pdf",plot_SEP,base_height=7,base_width=11)
+# cowplot::save_plot("output/plot_SEP_all.pdf",plot_SEP2,base_height=7,base_width=11)
+# 
+# summary(lm(excess_percentage~SEP_Bezirk*Language, data=data_excess))
 
-summary(lm(excess_percentage~SEP_Bezirk, data=data_excess))
-
-
-return(  plot_SEP)
+plot_SEP_both <- list( plot_SEP , plot_SEP2)
+return( plot_SEP_both)
 
 }
 
