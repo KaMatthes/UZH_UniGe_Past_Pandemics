@@ -171,41 +171,6 @@ function_maps_sex_age_1918()
 function_regression_mortality(VarTest = "Age_Sex_1918")
 ```
 
-## Co-factors
-
-### GDP per capita
-GDP per capita was taken from 1888 for 1890, 1910 for 1918, 2008 for 2020.
-
-```{r, echo=FALSE,message=FALSE,fig.height = 10,  fig.width = 12}
-function_cor_gdp()
-```
-
-### Swiss SEP per capita
-Only for 2020, Swiss SEP from xxx (from which year?)
-
-```{r, echo=FALSE,message=FALSE,fig.height = 10,  fig.width = 12}
-function_cor_sep()
-```
-
-### Number of hospitals
-
-```{r, echo=FALSE,message=FALSE,fig.height = 10,  fig.width = 12}
-function_cor_hospitals()
-```
-
-### Proportion of children aged 5-14
-
-```{r, echo=FALSE,message=FALSE,fig.height = 10,  fig.width = 12}
-function_cor_schoolkids()
-```
-
-### Proportion of child mortality
-Child mortality was taken from the year before the pandamic
-
-```{r, echo=FALSE,message=FALSE,fig.height = 10,  fig.width = 12}
-function_cor_child_mort()
-```
-
 ## Hotspots
 
 An alternative spatial statistics to detect spatial anomalies is the Getis and Ord’s G-statistics (Getis and Ord, 1972; Ord and Getis, 1995). It looks at neighbours within a defined proximity to identify where either high or low values clutser spatially. Here, statistically significant hot-spots are recognised as areas of high values where other areas within a neighbourhood range also share high values too.
@@ -219,14 +184,209 @@ function_hotspot(Year_Pan=1918)
 function_hotspot(Year_Pan=2020)
 ```
 
-<!-- ### Sex -->
 
-<!-- ```{r, echo=FALSE,message=FALSE,fig.height = 8,  fig.width = 12} -->
-<!-- function_hotspot_sex(Year_Pan=1890, Sex="m") -->
-<!-- function_hotspot_sex(Year_Pan=1890, Sex="f") -->
-<!-- function_hotspot_sex(Year_Pan=1918, Sex="m") -->
-<!-- function_hotspot_sex(Year_Pan=1918, Sex="f") -->
-<!-- function_hotspot_sex(Year_Pan=2020, Sex="m") -->
-<!-- function_hotspot_sex(Year_Pan=2020, Sex="f") -->
-<!-- ``` -->
+## Co-factors
 
+### GDP per capita
+GDP per capita was taken from 1888 for 1890, 1910 for 1918, 2008 for 2020.
+
+```{r, echo=FALSE,message=FALSE,fig.height = 10,  fig.width = 12}
+function_cor_gdp()
+```
+
+GDP per capita is not significantly associated with excess mortality.
+<br /> 
+<br /> 
+
+1890
+
+```{r, echo=FALSE,message=FALSE}
+function_test_gdp(Year_Pan=1890)
+```
+
+1918
+
+```{r, echo=FALSE,message=FALSE}
+function_test_gdp(Year_Pan=1918)
+```
+
+2020
+
+```{r, echo=FALSE,message=FALSE}
+function_test_gdp(Year_Pan=2020)
+```
+
+### Swiss SEP per capita
+Only for 2020, Swiss SEP from xxx (from which year?)
+
+```{r, echo=FALSE,message=FALSE,fig.height = 10,  fig.width = 12}
+function_cor_sep()
+```
+
+Swiss SEP is significantly associated with excess mortality. The higher the SEP is the excess mortality. 
+
+```{r, echo=FALSE,message=FALSE}
+function_test_sep()
+```
+
+### Number of hospitals
+
+```{r, echo=FALSE,message=FALSE,fig.height = 10,  fig.width = 12}
+function_cor_hospitals()
+```
+
+The number of hospitals per 10'000 inhabitants is not significantly associated with excess mortality. But perhaps distance to hospital would be a better explanatory variable than number of hospitals.
+
+1890
+
+```{r, echo=FALSE,message=FALSE}
+function_test_hospitals(Year_Pan=1890)
+```
+
+1918
+
+```{r, echo=FALSE,message=FALSE}
+function_test_hospitals(Year_Pan=1918)
+```
+
+
+### Proportion of children aged 5-14
+
+```{r, echo=FALSE,message=FALSE,fig.height = 10,  fig.width = 12}
+function_cor_schoolkids()
+```
+
+
+Proportion of children aged 5-14 years is not significantly associated with excess mortality.
+
+1890
+
+```{r, echo=FALSE,message=FALSE}
+function_test_schoolkids(Year_Pan=1890)
+```
+
+1918
+
+```{r, echo=FALSE,message=FALSE}
+function_test_schoolkids(Year_Pan=1918)
+```
+
+2020
+
+```{r, echo=FALSE,message=FALSE}
+function_test_schoolkids(Year_Pan=2020)
+```
+
+### Proportion of child mortality
+Child mortality was taken from the year before the pandamic
+
+```{r, echo=FALSE,message=FALSE,fig.height = 10,  fig.width = 12}
+function_cor_child_mort()
+```
+
+
+Child mortality is not significantly associated with excess mortality.
+
+1890
+
+```{r, echo=FALSE,message=FALSE}
+function_test_child_mort(Year_Pan=1890)
+```
+
+1918
+
+```{r, echo=FALSE,message=FALSE}
+function_test_child_mort(Year_Pan=1918)
+```
+
+### Tuberculosis
+
+In Davos was a high tuberculosis mortality because Davos was a health resort for tuberculosis patients in the 19th century and at the beginning of the 20th century. Since these mortality numbers do not reflect the population and actual tuberculosis mortalities in Davos, Davos was excluded of the calculation.
+
+With Davos
+
+```{r, echo=FALSE,message=FALSE,warning=FALSE,fig.height = 10,  fig.width = 12}
+function_cor_tbc(Davos="yes")
+```
+
+Without Davos
+
+```{r, echo=FALSE,message=FALSE,warning=FALSE,fig.height = 10,  fig.width = 12}
+function_cor_tbc(Davos="no")
+```
+
+Tuberculosis mortalityiy is significantly associated with excess mortality in 1890, but not in 1918. This suggests that the 1918 pandemic had a greater impact on mortality than tuberculosis. Whereas in 1890 tuberculosis played a greater role.
+
+1890
+
+```{r, echo=FALSE,message=FALSE}
+function_test_tbc(Year_Pan=1890)
+```
+
+1918
+
+```{r, echo=FALSE,message=FALSE}
+function_test_tbc(Year_Pan=1918)
+```
+
+
+### Population density
+
+However, excess mortality is lower in all 3 pandemics the higher the population density. The reason for this could perhaps be the better medical care in larger cities? The greater proximity to the hospitals or medical office?
+
+```{r, echo=FALSE,message=FALSE,warning=FALSE,fig.height = 10,  fig.width = 12}
+function_cor_area(city="yes")
+```
+
+Without the districts: City of Zurich, Basel-Stadt, Lausanne, Geneva
+
+```{r, echo=FALSE,message=FALSE,warning=FALSE,fig.height = 10,  fig.width = 12}
+function_cor_area(city="no")
+```
+
+Regression analysis with all districts. Population density is not significantly associated with excess mortality.
+
+1890
+
+```{r, echo=FALSE,message=FALSE}
+function_test_area(Year_Pan=1890)
+```
+
+1918
+
+```{r, echo=FALSE,message=FALSE}
+function_test_area(Year_Pan=1918)
+```
+
+2020
+
+```{r, echo=FALSE,message=FALSE}
+function_test_area(Year_Pan=2020)
+```
+
+
+### Urbanity
+
+```{r, echo=FALSE,message=FALSE,warning=FALSE,fig.height = 10,  fig.width = 12}
+function_cor_urbanity()
+```
+
+Ubanity is not significantly associated with excess mortality. However, the median excess mortality is lower in urban areas in all 3 pandemics.
+
+1890
+
+```{r, echo=FALSE,message=FALSE}
+function_test_urbanity(Year_Pan=1890)
+```
+
+1918
+
+```{r, echo=FALSE,message=FALSE}
+function_test_urbanity(Year_Pan=1918)
+```
+
+2020
+
+```{r, echo=FALSE,message=FALSE}
+function_test_urbanity(Year_Pan=2020)
+```

@@ -57,6 +57,13 @@ col5viridis <- viridis(5, alpha = 1, begin = 1, end = 0, direction = 1, option =
 col8viridis <- viridis(8, alpha = 1, begin = 1, end = 0, direction = 1, option = "viridis")
 cols_reds <- brewer.pal(n =8, name = "Reds")
 cols_reds <- brewer.pal(n = 9, name = "Blues")
+
+col_line <- "grey40"
+lwd_size_points  <- 3
+lwd_size <- 1.5
+
+
+
 # source("R/prepare_data.R")
 # source("R/population.R")
 # source("R/mortality_rate.R")
@@ -77,6 +84,9 @@ source("R/cor_schoolkids.R")
 source("R/cor_hospitals.R")
 source("R/cor_gdp.R")
 source("R/cor_sep.R")
+source("R/cor_urbanity.R")
+source("R/cor_tbc.R")
+source("R/cor_area.R")
 source("R/Regression.R")
 source("R/Hotspots.R")
 source("R/Hotspots_sex.R")

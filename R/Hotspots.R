@@ -1,9 +1,9 @@
 function_hotspot <- function(Year_Pan) {
-# load(paste0("../data/expected_death_inla1890.RData"))
+# load(paste0("data/expected_death_inla1890.RData"))
 # Expected_death_Russian <-expected_deaths
-# load(paste0("../data/expected_death_inla1918.RData"))
+# load(paste0("data/expected_death_inla1918.RData"))
 # Expected_death_Spanish <- expected_deaths
-# load(paste0("../data/expected_death_inla2020.RData"))
+# load(paste0("data/expected_death_inla2020.RData"))
 # Expected_death_Covid <- expected_deaths
 
   load(paste0("../data/expected_death_inla1890.RData"))

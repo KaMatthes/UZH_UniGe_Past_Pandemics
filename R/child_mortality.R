@@ -276,10 +276,11 @@ child_mortality <- rbind(alldata.2010,alldata.hist) %>%
   dplyr::ungroup() %>%
   left_join(pop_total) %>%
   filter(!is.na(MapName)) %>%
-  mutate(prop_child_death = (death/population)*100000) %>%
+  mutate(prop_child_death = (death/population)*10000) %>%
   group_by(Year) %>%
   mutate(prop_norm = normalit(prop_child_death)) %>%
-  ungroup() 
+  ungroup() %>%
+  filter(Year==1889 | Year==1917  | Year ==2020)
   
 write.xlsx(child_mortality ,file=paste0("data/child_mortality.xlsx"),row.names=FALSE, overwrite = TRUE)
 save(child_mortality  ,file=paste0("data/child_mortality.RData"))
