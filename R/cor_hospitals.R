@@ -72,7 +72,7 @@ function_cor_hospitals <- function(){
              
     plot_Hospitals <- ggplot(data=data_excess) +
       geom_point(aes(x=hospitals_inc, y=excess_percentage, shape=Language,col=Language),  lwd=lwd_size_points ) +
-      geom_smooth(aes(x=hospitals_inc, y=excess_percentage), method='lm',lwd=lwd_size, col=col_line,se=FALSE) +
+      geom_smooth(aes(x=hospitals_inc, y=excess_percentage),  method='loess',se=TRUE,lwd=lwd_size, col=col_line) +
       facet_wrap(~Year, nrow = 2,scales = "free") +
       scale_color_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
       scale_fill_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
@@ -170,6 +170,8 @@ function_test_hospitals <- function(Year_Pan){
            hospitals_inc= hospitals/population *10000) %>%
     filter(Year==Year_Pan)
   
-  summary(lm(excess_percentage~hospitals_inc,data_excess))
+  # summary(gam(excess_percentage ~ s(hospitals_inc),data=data_excess))
+  summary(lm(excess_percentage ~ hospitals_inc,data=data_excess))
+  
 }
 

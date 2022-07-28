@@ -1,7 +1,7 @@
 function_population <- function() {
 
 # load population total
-load(paste0("data/data_total.RData"))
+load("data/data_total.RData")
 Bezirke_nr <- data_total %>%
   dplyr::select(MapName, Bezirk) %>%
   distinct(Bezirk, .keep_all=TRUE)
@@ -302,7 +302,7 @@ pop_2014_2020 <- readxl::read_excel(paste0("data_raw/",population2014_2020)) %>%
 # write.xlsx(pop_2014_2020,file=paste0("data/pop_2014_2020.xlsx"),rowNames=FALSE, overwrite = TRUE)
 
 
-pop_2010_2020 <- readxl::read_excel(paste0("data_raw/Data2020/Population_total2010_2020.xlsx")) %>%
+pop_2010_2020 <- readxl::read_excel("data_raw/Data2020/Population_total2010_2020.xlsx") %>%
   filter(Sex =="Geschlecht - Total") %>%
   select(-Sex) %>%
   mutate(MapName=word(MapName ,-1)) %>%

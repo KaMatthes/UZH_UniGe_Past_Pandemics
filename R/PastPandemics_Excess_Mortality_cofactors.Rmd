@@ -301,6 +301,11 @@ function_test_child_mort(Year_Pan=1918)
 
 ### Tuberculosis
 
+1890: tb death cases from 1886-1890
+1918: tb death cases from 1911-1920
+
+Unfortunately, there is no exact number for the years 1890 and 1918.
+
 In Davos was a high tuberculosis mortality because Davos was a health resort for tuberculosis patients in the 19th century and at the beginning of the 20th century. Since these mortality numbers do not reflect the population and actual tuberculosis mortalities in Davos, Davos was excluded of the calculation.
 
 With Davos
@@ -315,7 +320,9 @@ Without Davos
 function_cor_tbc(Davos="no")
 ```
 
-Tuberculosis mortalityiy is significantly associated with excess mortality in 1890, but not in 1918. This suggests that the 1918 pandemic had a greater impact on mortality than tuberculosis. Whereas in 1890 tuberculosis played a greater role.
+Tuberculosis mortalityiy is significantly associated with excess mortality in 1890, but not in 1918. 
+
+<!-- This suggests that the 1918 pandemic had a greater impact on mortality than tuberculosis. Whereas in 1890 tuberculosis played a greater role.  -->
 
 1890
 
@@ -332,8 +339,6 @@ function_test_tbc(Year_Pan=1918)
 
 ### Population density
 
-However, excess mortality is lower in all 3 pandemics the higher the population density. The reason for this could perhaps be the better medical care in larger cities? The greater proximity to the hospitals or medical office?
-
 ```{r, echo=FALSE,message=FALSE,warning=FALSE,fig.height = 10,  fig.width = 12}
 function_cor_area(city="yes")
 ```
@@ -344,7 +349,7 @@ Without the districts: City of Zurich, Basel-Stadt, Lausanne, Geneva
 function_cor_area(city="no")
 ```
 
-Regression analysis with all districts. Population density is not significantly associated with excess mortality.
+Regression analysis with all districts. Population density is not significantly associated with excess mortality. However, excess mortality is lower in all 3 pandemics the higher the population density. The reason for this could perhaps be the better medical care in larger cities? The greater proximity to the hospitals or medical office?
 
 1890
 
@@ -390,3 +395,24 @@ function_test_urbanity(Year_Pan=1918)
 ```{r, echo=FALSE,message=FALSE}
 function_test_urbanity(Year_Pan=2020)
 ```
+
+### Train stations
+
+```{r, echo=FALSE,message=FALSE,warning=FALSE,fig.height = 10,  fig.width = 12}
+function_cor_stations()
+```
+
+The number of train stations in the respective districts is not significantly associated with excess mortality. 
+
+1890
+
+```{r, echo=FALSE,message=FALSE}
+function_test_stations(Year_Pan=1890)
+```
+
+1918
+
+```{r, echo=FALSE,message=FALSE}
+function_test_stations(Year_Pan=1918)
+```
+

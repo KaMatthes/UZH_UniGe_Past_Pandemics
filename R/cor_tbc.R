@@ -5,17 +5,17 @@ function_cor_tbc <- function(Davos){
     # load(paste0("../data/expected_death_inla1918.RData"))
     # Expected_death_Spanish <- expected_deaths
 
-  load(paste0("../data/data_total.RData"))
+  load("../data/data_total.RData")
   Canton <- data_total %>%
     dplyr::select(Canton, Bezirk) %>%
     distinct(Canton,Bezirk)
 
-  load(paste0("../data/expected_death_inla1890.RData"))
+  load("../data/expected_death_inla1890.RData")
   Expected_death_Russian <-expected_deaths
-  load(paste0("../data/expected_death_inla1918.RData"))
+  load("../data/expected_death_inla1918.RData")
   Expected_death_Spanish <- expected_deaths
   
-  load(paste0("../data/Tbc.RData"))
+  load("../data/Tbc.RData")
   
 Tbc_data <- Tbc %>%
    mutate(Year = as.factor(Year), 
@@ -69,7 +69,7 @@ Tbc_data <- Tbc %>%
              
     plot_tbc <- ggplot(data=data_excess) +
       geom_point(aes(x=tbc_inc, y=excess_percentage, shape=Language,col=Language),  lwd=lwd_size_points ) +
-      geom_smooth(aes(x=tbc_inc, y=excess_percentage), method='lm',lwd=lwd_size, col=col_line,se=FALSE) +
+      geom_smooth(aes(x=tbc_inc, y=excess_percentage), method='loess',se=TRUE,lwd=lwd_size, col=col_line) +
       facet_wrap(~Year, nrow = 2, scales="free_x") +
       scale_color_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
       scale_fill_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
@@ -92,7 +92,7 @@ Tbc_data <- Tbc %>%
     
     plot_tbc <- ggplot(data=data_excess[!data_excess$Bezirk=="1849",]) +
       geom_point(aes(x=tbc_inc, y=excess_percentage, shape=Language,col=Language),  lwd=lwd_size_points ) +
-      geom_smooth(aes(x=tbc_inc, y=excess_percentage), method='lm',lwd=lwd_size, col=col_line,se=FALSE) +
+      geom_smooth(aes(x=tbc_inc, y=excess_percentage), method='loess',se=TRUE,lwd=lwd_size, col=col_line) +
       facet_wrap(~Year, nrow = 2, scales="free_x") +
       scale_color_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
       scale_fill_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
@@ -125,17 +125,17 @@ function_test_tbc <- function(Year_Pan) {
   # load(paste0("../data/expected_death_inla1918.RData"))
   # Expected_death_Spanish <- expected_deaths
   
-  load(paste0("../data/data_total.RData"))
+  load("../data/data_total.RData")
   Canton <- data_total %>%
     dplyr::select(Canton, Bezirk) %>%
     distinct(Canton,Bezirk)
   
-  load(paste0("../data/expected_death_inla1890.RData"))
+  load("../data/expected_death_inla1890.RData")
   Expected_death_Russian <-expected_deaths
-  load(paste0("../data/expected_death_inla1918.RData"))
+  load("../data/expected_death_inla1918.RData")
   Expected_death_Spanish <- expected_deaths
   
-  load(paste0("../data/Tbc.RData"))
+  load("../data/Tbc.RData")
   
   Tbc_data <- Tbc %>%
     mutate(Year = as.factor(Year), 
@@ -185,9 +185,9 @@ function_test_tbc <- function(Year_Pan) {
            tbc_inc= Tbc_Bezirk/pop_sum *10000) %>%
     filter(!Bezirk==1849) %>%
     filter(Year==Year_Pan)
-  
-  summary(lm(excess_percentage~tbc_inc,data_excess))
-  
+  # 
+  # summary(gam(excess_percentage ~ s(tbc_inc),data=data_excess))
+  summary(lm(excess_percentage ~ tbc_inc,data=data_excess))
 }
 
 

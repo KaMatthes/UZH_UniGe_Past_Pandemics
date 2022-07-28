@@ -1,13 +1,13 @@
 function_cor_schoolkids <- function(){
 
-    load(paste0("../data/expected_death_inla1890.RData"))
+    load("../data/expected_death_inla1890.RData")
     Expected_death_Russian <-expected_deaths
-    load(paste0("../data/expected_death_inla1918.RData"))
+    load("../data/expected_death_inla1918.RData")
     Expected_death_Spanish <- expected_deaths
-    load(paste0("../data/expected_death_inla2020.RData"))
+    load("../data/expected_death_inla2020.RData")
     Expected_death_Covid <- expected_deaths
 
-  load(paste0("../data/data_total.RData"))
+  load("../data/data_total.RData")
   Canton <- data_total %>%
     dplyr::select(Canton, Bezirk) %>%
     distinct(Canton,Bezirk)
@@ -19,9 +19,9 @@ function_cor_schoolkids <- function(){
   # Expected_death_Spanish <- expected_deaths
   # load(paste0("data/expected_death_inla2020.RData"))
   # Expected_death_Covid <- expected_deaths
+
   
-  
-  load(paste0("../data/prop_school_kids.RData"))
+  load("../data/prop_school_kids.RData")
   
   Schoolkids_data <- prop_school_kids %>%
     mutate(Year = as.factor(Year))
@@ -75,7 +75,7 @@ function_cor_schoolkids <- function(){
     
     plot_schoolkids <- ggplot(data=data_excess) +
       geom_point(aes(x=prop, y=excess_percentage, shape=Language,col=Language),  lwd=lwd_size_points ) +
-      geom_smooth(aes(x=prop, y=excess_percentage), method='lm',lwd=lwd_size, col=col_line,se=FALSE) +
+      geom_smooth(aes(x=prop, y=excess_percentage), method='loess',se=TRUE,lwd=lwd_size, col=col_line) +
       facet_wrap(~Year, nrow = 2, scales="free_x") +
       scale_color_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
       scale_fill_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
@@ -102,14 +102,14 @@ return( plot_schoolkids)
 
 function_test_schoolkids <- function(Year_Pan) {
   
-  load(paste0("../data/expected_death_inla1890.RData"))
+  load("../data/expected_death_inla1890.RData")
   Expected_death_Russian <-expected_deaths
-  load(paste0("../data/expected_death_inla1918.RData"))
+  load("../data/expected_death_inla1918.RData")
   Expected_death_Spanish <- expected_deaths
-  load(paste0("../data/expected_death_inla2020.RData"))
+  load("../data/expected_death_inla2020.RData")
   Expected_death_Covid <- expected_deaths
   
-  load(paste0("../data/data_total.RData"))
+  load("../data/data_total.RData")
   Canton <- data_total %>%
     dplyr::select(Canton, Bezirk) %>%
     distinct(Canton,Bezirk)
@@ -123,7 +123,7 @@ function_test_schoolkids <- function(Year_Pan) {
   # Expected_death_Covid <- expected_deaths
   
   
-  load(paste0("../data/prop_school_kids.RData"))
+  load("../data/prop_school_kids.RData")
   
   Schoolkids_data <- prop_school_kids %>%
     mutate(Year = as.factor(Year))
@@ -175,7 +175,9 @@ function_test_schoolkids <- function(Year_Pan) {
     filter(!prop==0) %>%
     filter(Year==Year_Pan)
   
-  summary(lm(excess_percentage~prop,data_excess))
+  # summary(gam(excess_percentage ~ s(prop),data=data_excess))
+  summary(lm(excess_percentage ~ prop,data=data_excess))
+  
   
 }
 

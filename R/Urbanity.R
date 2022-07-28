@@ -1,6 +1,6 @@
 # load population total
 
-load(paste0("data/data_total.RData"))
+load("data/data_total.RData")
 Bezirke_nr <- data_total %>%
   dplyr::select(MapName, Bezirk) %>%
   distinct(Bezirk, .keep_all=TRUE)

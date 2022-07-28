@@ -5,12 +5,12 @@ function_cor_child_mort <- function(){
     # load(paste0("../data/expected_death_inla1918.RData"))
     # Expected_death_Spanish <- expected_deaths
 
-    load(paste0("../data/expected_death_inla_child1890.RData"))
+    load("../data/expected_death_inla_child1890.RData")
     Expected_death_Russian <-expected_deaths
-    load(paste0("../data/expected_death_inla_child1918.RData"))
+    load("../data/expected_death_inla_child1918.RData")
     Expected_death_Spanish <- expected_deaths
 
-    load(paste0("../data/data_total.RData"))
+    load("../data/data_total.RData")
     Canton <- data_total %>%
       dplyr::select(Canton, Bezirk) %>%
       distinct(Canton,Bezirk)
@@ -23,7 +23,7 @@ function_cor_child_mort <- function(){
     #          excess_perc_groups =  as.numeric(excess_percentage))
 
     
-    load(paste0("../data/child_mortality.RData"))
+    load("../data/child_mortality.RData")
     child_mortality <- child_mortality%>%
       mutate(Year = as.factor(Year)) %>%
       select(Year, Bezirk, prop_child_death, prop_norm, death) %>%
@@ -78,7 +78,7 @@ function_cor_child_mort <- function(){
   
     plot_child_mortality <- ggplot(data=data_excess) +
       geom_point(aes(x= prop_child_death, y=excess_percentage, shape=Language,col=Language),  lwd=lwd_size_points ) +
-      geom_smooth(aes(x= prop_child_death, y=excess_percentage), method='lm',lwd=lwd_size, col=col_line,se=FALSE) +
+      geom_smooth(aes(x= prop_child_death, y=excess_percentage),  method='loess',se=TRUE,lwd=lwd_size, col=col_line) +
       facet_wrap(~Year, nrow = 2,scales = "free") +
       scale_color_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
       scale_fill_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
@@ -128,7 +128,7 @@ function_test_child_mort <- function(Year_Pan){
   #          excess_perc_groups =  as.numeric(excess_percentage))
   
   
-  load(paste0("../data/child_mortality.RData"))
+  load("../data/child_mortality.RData")
   child_mortality <- child_mortality%>%
     mutate(Year = as.factor(Year)) %>%
     select(Year, Bezirk, prop_child_death, prop_norm, death) %>%
@@ -182,6 +182,7 @@ function_test_child_mort <- function(Year_Pan){
     filter(!is.na(Language)) %>%
     filter(Year==Year_Pan)
   
-  summary(lm(excess_percentage~prop_child_death,data_excess))
+  # summary(gam(excess_percentage ~ s(prop_child_death),data=data_excess))
+  summary(lm(excess_percentage ~ prop_child_death,data=data_excess))
 }
 

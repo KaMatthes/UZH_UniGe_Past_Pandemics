@@ -1,9 +1,9 @@
 function_cor_sep <- function(){
 
-load(paste0("../data/expected_death_inla2020.RData"))
+load("../data/expected_death_inla2020.RData")
 Expected_death_Covid <- expected_deaths
   
-  load(paste0("../data/Swiss_SEP.RData"))
+  load("../data/Swiss_SEP.RData")
   
     
     data_excess <- Expected_death_Covid %>%
@@ -42,7 +42,7 @@ Expected_death_Covid <- expected_deaths
     
     plot_SEP <- ggplot(data=data_excess) +
       geom_point(aes(x=SEP_Bezirk, y=excess_percentage, shape=Language,col=Language), lwd=lwd_size_points ) +
-      geom_smooth(aes(x=SEP_Bezirk, y=excess_percentage), method='lm',lwd=lwd_size,se=FALSE,col=col_line) +
+      geom_smooth(aes(x=SEP_Bezirk, y=excess_percentage),  method='loess',se=TRUE,lwd=lwd_size, col=col_line) +
       facet_wrap(~Year, nrow = 2, scales="free_x") +
       scale_color_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
       scale_fill_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
@@ -74,7 +74,7 @@ return( plot_SEP)
 
 function_test_sep <- function(){
   
-  load(paste0("../data/expected_death_inla2020.RData"))
+  load("../data/expected_death_inla2020.RData")
   Expected_death_Covid <- expected_deaths
   
   # 
@@ -86,7 +86,7 @@ function_test_sep <- function(){
   # Expected_death_Covid <- expected_deaths
   # 
   
-  load(paste0("../data/Swiss_SEP.RData"))
+  load("../data/Swiss_SEP.RData")
   
   
   data_excess <- Expected_death_Covid %>%
@@ -103,7 +103,8 @@ function_test_sep <- function(){
       Language= factor(Language, levels=c("German","French","Italien")))   %>%
     filter(Year ==2020)
   
-  summary(lm(excess_percentage~SEP_Bezirk,data_excess))
+  # summary(gam(excess_percentage ~ s(SEP_Bezirk),data=data_excess))
+  summary(lm(excess_percentage ~ SEP_Bezirk,data=data_excess))
   
 }
 
