@@ -8,20 +8,20 @@ function_cor_urbanity <- function(){
   # Expected_death_Spanish <- expected_deaths
   # load(paste0("data/expected_death_inla2020.RData"))
   # Expected_death_Covid <- expected_deaths
-  load(paste0("../data/expected_death_inla1890.RData"))
+  load("../data/expected_death_inla1890.RData")
 Expected_death_Russian <-expected_deaths
-load(paste0("../data/expected_death_inla1918.RData"))
+load("../data/expected_death_inla1918.RData")
 Expected_death_Spanish <- expected_deaths
-load(paste0("../data/expected_death_inla2020.RData"))
+load("../data/expected_death_inla2020.RData")
 Expected_death_Covid <- expected_deaths
 
-  load(paste0("../data/data_total.RData"))
+  load("../data/data_total.RData")
   Canton <- data_total %>%
     dplyr::select(Canton, Bezirk) %>%
     distinct(Canton,Bezirk)
 
   
-  load(paste0("../data/Urbanity.RData"))
+  load("../data/Urbanity.RData")
   
 data_excess <- rbind(Expected_death_Russian, Expected_death_Spanish, Expected_death_Covid) %>%
       ungroup() %>%
@@ -99,20 +99,20 @@ function_test_urbanity <-  function(Year_Pan)
   {
   
   
-  load(paste0("../data/expected_death_inla1890.RData"))
+  load("../data/expected_death_inla1890.RData")
   Expected_death_Russian <-expected_deaths
-  load(paste0("../data/expected_death_inla1918.RData"))
+  load("../data/expected_death_inla1918.RData")
   Expected_death_Spanish <- expected_deaths
-  load(paste0("../data/expected_death_inla2020.RData"))
+  load("../data/expected_death_inla2020.RData")
   Expected_death_Covid <- expected_deaths
   
-  load(paste0("../data/data_total.RData"))
+  load("../data/data_total.RData")
   Canton <- data_total %>%
     dplyr::select(Canton, Bezirk) %>%
     distinct(Canton,Bezirk)
   
   
-  load(paste0("../data/Urbanity.RData"))
+  load("../data/Urbanity.RData")
   
   
   

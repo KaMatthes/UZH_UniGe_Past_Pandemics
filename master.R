@@ -1,4 +1,4 @@
-.libPaths(c("H:/Documents/R/win-library/4.1", "C:/Program Files/R/R-4.1.2/library"))
+.libPaths(c("H:/Documents/R/win-library/4.1", "C:/Program Files/R/R-4.2.1/library"))
 
 library(plyr)
 library(readxl)
@@ -28,7 +28,8 @@ library(maptools)
 library(colorspace)
 library(viridis)
 library(RColorBrewer)
-
+library(mgcv)
+library(cowplot)
 
 # data
 data1879_1895 <- "Data1879_1895.xlsx"
@@ -62,6 +63,7 @@ cols_reds <- brewer.pal(n = 9, name = "Blues")
 col_line <- "grey40"
 lwd_size_points  <- 3
 lwd_size <- 1.5
+axix_size_legend <- 6
 
 
 
@@ -80,6 +82,8 @@ source("R/maps_age_inla.R")
 source("R/maps_age_1918_inla.R")
 source("R/maps_age_sex_inla.R")
 source("R/maps_age_sex_1918_inla.R")
+source("R/maps_age_1918.R")
+source("R/maps_1890_1918.R")
 source("R/cor_child_mort.R")
 source("R/cor_schoolkids.R")
 source("R/cor_hospitals.R")
@@ -89,9 +93,12 @@ source("R/cor_urbanity.R")
 source("R/cor_tbc.R")
 source("R/cor_area.R")
 source("R/cor_stations.R")
+source("R/cor_1890_1918.R")
+source("R/cor_age30_1918.R")
 source("R/Regression.R")
 source("R/Hotspots.R")
 source("R/Hotspots_sex.R")
+
 
 
 

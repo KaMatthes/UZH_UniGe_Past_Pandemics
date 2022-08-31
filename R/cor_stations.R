@@ -12,6 +12,12 @@ function_cor_stations <- function(){
   # 
   
   load("../data/Stations.RData")
+  load("../data/Area.RData")
+  
+  dat_area <- Area %>%
+    filter(Year == 1890 | Year == 1918) %>%
+    mutate(Bezirk= as.factor(Bezirk),
+           Year=as.factor(Year))
     
     data_excess <- rbind(Expected_death_Russian, Expected_death_Spanish) %>%
       ungroup() %>%
@@ -19,6 +25,7 @@ function_cor_stations <- function(){
       filter(Year == 1890 | Year == 1918) %>%
       mutate(Year=as.factor(Year)) %>%
       full_join(Stations) %>%
+      left_join(dat_area) %>%
       mutate(Language = Canton,
              Language = as.character(Language),
              Language = recode(Language,
@@ -53,18 +60,18 @@ function_cor_stations <- function(){
              excess_perc_groups =  as.numeric(excess_percentage),
              significant_dummy = ifelse(death > LL & death <UL,0,1),
              significant_dummy = as.factor( significant_dummy ),
-             death_inc = death/population *10000)
+             station_area = n_stat/area_Bezirk)
              
     plot_Stations <- ggplot(data=data_excess) +
-      geom_point(aes(x=n_stat, y=excess_percentage, shape=Language,col=Language),  lwd=lwd_size_points ) +
-      geom_smooth(aes(x=n_stat, y=excess_percentage),  method='loess',se=TRUE,lwd=lwd_size, col=col_line) +
+      geom_point(aes(x=station_area, y=excess_percentage, shape=Language,col=Language),  lwd=lwd_size_points ) +
+      geom_smooth(aes(x=station_area, y=excess_percentage),  method='lm',se=TRUE,lwd=lwd_size, col=col_line) +
       facet_wrap(~Year, nrow = 2,scales = "free") +
       scale_color_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
       scale_fill_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
       scale_shape_manual("Language region: ",values = c(15,16,17))+
       ggtitle("Number of train stations")+
       ylab("Relative Excess Mortality")+
-      xlab("Number of train stations") +
+      xlab("Number of train stations per km2") +
       theme_bw() +
       theme(
         strip.text.x=element_text(size=15),
@@ -92,6 +99,7 @@ function_test_stations <- function(Year_Pan){
   #     Expected_death_Covid <- expected_deaths
   
   
+  
   load("../data/data_total.RData")
   Canton <- data_total %>%
     dplyr::select(Canton, Bezirk) %>%
@@ -101,10 +109,15 @@ function_test_stations <- function(Year_Pan){
   Expected_death_Russian <-expected_deaths
   load("../data/expected_death_inla1918.RData")
   Expected_death_Spanish <- expected_deaths
-
+  # 
   
   load("../data/Stations.RData")
-
+  load("../data/Area.RData")
+  
+  dat_area <- Area %>%
+    filter(Year == 1890 | Year == 1918) %>%
+    mutate(Bezirk= as.factor(Bezirk),
+           Year=as.factor(Year))
   
   data_excess <- rbind(Expected_death_Russian, Expected_death_Spanish) %>%
     ungroup() %>%
@@ -112,6 +125,7 @@ function_test_stations <- function(Year_Pan){
     filter(Year == 1890 | Year == 1918) %>%
     mutate(Year=as.factor(Year)) %>%
     full_join(Stations) %>%
+    left_join(dat_area) %>%
     mutate(Language = Canton,
            Language = as.character(Language),
            Language = recode(Language,
@@ -146,10 +160,10 @@ function_test_stations <- function(Year_Pan){
            excess_perc_groups =  as.numeric(excess_percentage),
            significant_dummy = ifelse(death > LL & death <UL,0,1),
            significant_dummy = as.factor( significant_dummy ),
-           death_inc = death/population *10000) %>%
+           station_area = n_stat/area_Bezirk) %>%
     filter(Year==Year_Pan)
   
-  # summary(gam(excess_percentage ~ s(n_stat),data=data_excess))
-  summary(lm(excess_percentage ~ n_stat,data=data_excess))
+  # summary(gam(excess_percentage ~station_area,data=data_excess))
+  summary(lm(excess_percentage ~ station_area,data=data_excess))
 }
 

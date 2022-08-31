@@ -8,20 +8,20 @@ function_cor_hospitals <- function(){
 #     Expected_death_Covid <- expected_deaths
 
 
-  load(paste0("../data/data_total.RData"))
+  load("../data/data_total.RData")
   Canton <- data_total %>%
     dplyr::select(Canton, Bezirk) %>%
     distinct(Canton,Bezirk)
   
-  load(paste0("../data/expected_death_inla1890.RData"))
+  load("../data/expected_death_inla1890.RData")
   Expected_death_Russian <-expected_deaths
-  load(paste0("../data/expected_death_inla1918.RData"))
+  load("../data/expected_death_inla1918.RData")
   Expected_death_Spanish <- expected_deaths
-  load(paste0("../data/expected_death_inla2020.RData"))
+  load("../data/expected_death_inla2020.RData")
   Expected_death_Covid <- expected_deaths
   # 
   
-  load(paste0("../data/Hospitals.RData"))
+  load("../data/Hospitals.RData")
   
   Hospitals_data <- Hospitals %>%
    mutate(Year = as.factor(Year), 
@@ -72,7 +72,7 @@ function_cor_hospitals <- function(){
              
     plot_Hospitals <- ggplot(data=data_excess) +
       geom_point(aes(x=hospitals_inc, y=excess_percentage, shape=Language,col=Language),  lwd=lwd_size_points ) +
-      geom_smooth(aes(x=hospitals_inc, y=excess_percentage),  method='loess',se=TRUE,lwd=lwd_size, col=col_line) +
+      geom_smooth(aes(x=hospitals_inc, y=excess_percentage),  method='lm',se=TRUE,lwd=lwd_size, col=col_line) +
       facet_wrap(~Year, nrow = 2,scales = "free") +
       scale_color_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
       scale_fill_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +

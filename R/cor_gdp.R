@@ -76,7 +76,7 @@ function_cor_gdp <- function(){
 
     plot_GDP_rel <- ggplot(data=data_excess) +
       geom_point(aes(x=GDP, y=excess_percentage, shape=Language,col=Language),  lwd=lwd_size_points ) +
-      geom_smooth(aes(x=GDP, y=excess_percentage),  method='loess',se=TRUE,lwd=lwd_size, col=col_line) +
+      geom_smooth(aes(x=GDP, y=excess_percentage),  method='lm',se=TRUE,lwd=lwd_size, col=col_line) +
       facet_wrap(~Year, nrow = 2,scales = "free") +
       scale_color_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
       scale_fill_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +

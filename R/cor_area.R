@@ -17,7 +17,7 @@ function_cor_area <- function(city){
   load("../data/expected_death_inla2020.RData")
    Expected_death_Covid <- expected_deaths
   
-  load(paste0("../data/Area.RData"))
+  load("../data/Area.RData")
   
 area_data <- Area %>%
   mutate(Year = as.factor(Year)) %>%
@@ -103,7 +103,7 @@ if (city=="no") {
     
     plot_area <-  ggplot(data=data_excess) +
       geom_point(aes(x= densPop, y=excess_percentage, shape=Language,col=Language),  lwd=lwd_size_points ) +
-      geom_smooth(aes(x=densPop, y=excess_percentage),  method='loess',se=TRUE,lwd=lwd_size, col=col_line) +
+      geom_smooth(aes(x=densPop, y=excess_percentage),  method='lm',se=TRUE,lwd=lwd_size, col=col_line) +
       facet_wrap(~Year, nrow = 2,scales = "free") +
       scale_color_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
       scale_fill_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
@@ -200,7 +200,7 @@ function_test_area <- function(Year_Pan){
     filter(Year==Year_Pan)
   
   # summary(gam(excess_percentage ~ s(densPop),data=data_excess))
-  summary(lm(excess_percentage ~ densPop),data=data_excess))
+  summary(lm(excess_percentage ~ densPop,data=data_excess))
   
 }
 

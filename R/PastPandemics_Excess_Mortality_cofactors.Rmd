@@ -187,6 +187,41 @@ function_hotspot(Year_Pan=2020)
 
 ## Co-factors
 
+### Relation between 1890 and 1918
+
+
+```{r, echo=FALSE,message=FALSE,fig.height = 10,  fig.width = 12}
+function_cor_pandemic()
+```
+
+
+```{r, echo=FALSE,message=FALSE}
+function_test_pandemic()
+```
+
+The higher the excess mortality in 1890 the lower the excess mortality in 1918 (but not significant, but clearly a negative trend)
+
+```{r, echo=FALSE,message=FALSE}
+function_maps_1890_1818()
+```
+
+### Relation between 1918 and proportion >=30 years
+
+```{r, echo=FALSE,message=FALSE,fig.height = 10,  fig.width = 12}
+function_cor_pandemic_age()
+```
+
+
+```{r, echo=FALSE,message=FALSE}
+function_test_pandemic_age()
+```
+
+The higher the proportion of people aged >=30, the lower the excess mortality (but not significant, but clearly a negative trend)
+
+```{r, echo=FALSE,message=FALSE}
+function_maps_age_1818()
+```
+
 ### GDP per capita
 GDP per capita was taken from 1888 for 1890, 1910 for 1918, 2008 for 2020.
 
