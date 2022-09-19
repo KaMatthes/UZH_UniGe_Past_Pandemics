@@ -1,17 +1,17 @@
-function_maps_age_1818 <- function(){
+function_maps_age_1890_1918 <- function(){
   
   
-  source("R/bivariate_tmap.R")
+  source("../R/bivariate_tmap_size.R")
   
   
-  load("data/prop_older30.RData")
+  load("../data/prop_older30.RData")
   
   prop_older30 <- prop_older30 %>%
     filter(Year == 1918) 
   
-  load(paste0("data/expected_death_inla1890.RData"))
+  load(paste0("../data/expected_death_inla1890.RData"))
   Expected_death_Russian <-expected_deaths
-  load(paste0("data/expected_death_inla1918.RData"))
+  load(paste0("../data/expected_death_inla1918.RData"))
   Expected_death_Spanish <- expected_deaths
   
   data_excess <- rbind(Expected_death_Russian, Expected_death_Spanish) %>%
@@ -35,17 +35,11 @@ function_maps_age_1818 <- function(){
     select(excess_percentage_o, Bezirk)%>%
     rename(excess_percentage_1918 = excess_percentage_o) %>%
     full_join(prop_older30)     %>%
-    full_join(data_excess_1890) %>%
-    mutate(prop_quant=  as.numeric(cut(prop_norm, 
-                            breaks = quantile(prop_norm, probs = seq(0, 1,0.2)),
-                            labels = c("1", "2", "3",
-                                       "4", "5"),
-                            include.lowest = TRUE, right = FALSE)))
-  
+    full_join(data_excess_1890)
   
 # sf::sf_use_s2(TRUE)
 
-bezirk_geo <- read_sf("data_raw/Map_2020/Maps_dissolved/Maps_dissolved_2020.shp") %>%
+bezirk_geo <- read_sf("../data_raw/Map_2020/Maps_dissolved/Maps_dissolved_2020.shp") %>%
   filter(!(  BEZIRKSNUM=="1110" |BEZIRKSNUM=="1101" | BEZIRKSNUM=="1102"  | BEZIRKSNUM=="1103" | BEZIRKSNUM=="1104" | BEZIRKSNUM=="1105"
            | BEZIRKSNUM=="1107"  | BEZIRKSNUM=="1106"| BEZIRKSNUM=="1108"| BEZIRKSNUM=="1109"| BEZIRKSNUM=="2225" | BEZIRKSNUM=="2229"
            | BEZIRKSNUM=="1401"  | BEZIRKSNUM=="1402"| BEZIRKSNUM=="1403"| BEZIRKSNUM=="1404"| BEZIRKSNUM=="1405" | BEZIRKSNUM=="1406"
@@ -53,14 +47,21 @@ bezirk_geo <- read_sf("data_raw/Map_2020/Maps_dissolved/Maps_dissolved_2020.shp"
   dplyr::rename(Bezirk = BEZIRKSNUM) %>%
   dplyr::mutate(Bezirk = as.factor(Bezirk)) %>%
   dplyr::select(Bezirk, geometry) %>%
-  full_join(data_excess_1918)
+  full_join(data_excess_1918) %>%
+  mutate(prop_quin = as.character(cut(prop_norm,
+                         quantile(prop_norm, probs = seq(0, 1,  1/3), na.rm = FALSE,
+                                  include.lowest=TRUE))),
+         prop_quin = ifelse(is.na(prop_quin), "(0,0.318]",prop_quin))
 
 
 
 bezirk_geo <-as(bezirk_geo, "Spatial")
 
-bivariate_choropleth(bezirk_geo, c("excess_percentage_1890", "excess_percentage_1918"), bivmap_labels=c("1890","1918"))
-bivariate_choropleth(bezirk_geo, c("prop", "excess_percentage_1918"), bivmap_labels=c("Age 30","1918"))
+bivariate_choropleth(bezirk_geo, c("excess_percentage_1890", "excess_percentage_1918"), bivmap_labels=c("1890  or Age > 30","1918"), "prop_norm")
+
+# 
+# bivariate_choropleth(bezirk_geo, c("prop_norm", "excess_percentage_1918"), bivmap_labels=c("1890","1918"), "prop_norm")
+
 
 }
 

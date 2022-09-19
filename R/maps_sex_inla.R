@@ -63,7 +63,10 @@ bezirk_geo <- read_sf("../data_raw/Map_2020/Maps_dissolved/Maps_dissolved_2020.s
   mutate(excess_percentage_o = ((death-fit)/fit)*100,
          excess_percentage_o = ifelse(excess_percentage_o <0,0, excess_percentage_o),
          excess_percentage = round(((death-fit)/fit)*100,2),
-         excess_perc_groups =  as.numeric(excess_percentage)) 
+         excess_perc_groups =  as.numeric(excess_percentage),
+         sex=recode(sex, 
+                    "f" = "female",
+                    "m" = "male")) 
 
 
 
@@ -93,14 +96,17 @@ if(Year_Pan==1890) {
     tm_layout(
       #   main.title = "Relative excess deaths")
       # main.title.position = "left",
-      # legend.text.size = legend_size_map,
+      legend.text.size = legend_size_map,
+      legend.title.size= legend_size_title_map,
       # legend.width = 5,
       # legend.height = 8,
       # legend.position = c(0.7,0.8),
+      panel.label.size = panel_size_map,
       legend.outside.position = "bottom")
   # legend.outside.size = .1)
   # legend.title.size=legend_size_map,
   # main.title.size = main_size_map)
+  
   
     # plot_excess <- ggplot(data=bezirk_geo)+
     #   # geom_sf_pattern(aes(pattern=significant_dummy, fill=excess_rate_group),pattern_fill = "grey50", pattern_color="grey50",
@@ -172,10 +178,12 @@ if(Year_Pan==1918) {
     tm_layout(
       #   main.title = "Relative excess deaths")
       # main.title.position = "left",
-      # legend.text.size = legend_size_map,
+      legend.text.size = legend_size_map,
+      legend.title.size= legend_size_title_map,
       # legend.width = 5,
       # legend.height = 8,
       # legend.position = c(0.7,0.8),
+      panel.label.size = panel_size_map,
       legend.outside.position = "bottom")
   # legend.outside.size = .1)
   # legend.title.size=legend_size_map,
@@ -229,14 +237,17 @@ plot_excess <- tm_shape( bezirk_geo  ) +
   tm_layout(
     #   main.title = "Relative excess deaths")
     # main.title.position = "left",
-    # legend.text.size = legend_size_map,
+    legend.text.size = legend_size_map,
+    legend.title.size= legend_size_title_map,
     # legend.width = 5,
     # legend.height = 8,
     # legend.position = c(0.7,0.8),
+    panel.label.size = panel_size_map,
     legend.outside.position = "bottom")
 # legend.outside.size = .1)
 # legend.title.size=legend_size_map,
 # main.title.size = main_size_map)
+
 
 return(plot_excess)
 }

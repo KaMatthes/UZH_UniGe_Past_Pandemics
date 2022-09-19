@@ -30,6 +30,17 @@ library(viridis)
 library(RColorBrewer)
 library(mgcv)
 library(cowplot)
+library(introdataviz)
+library(conflicted)
+
+
+#
+conflict_prefer("select", "dplyr")
+conflict_prefer("mutate", "dplyr")
+conflict_prefer("recode", "dplyr")
+conflict_prefer("filter", "dplyr")
+conflict_prefer("rename", "dplyr")
+
 
 # data
 data1879_1895 <- "Data1879_1895.xlsx"
@@ -64,9 +75,20 @@ col_line <- "grey40"
 lwd_size_points  <- 3
 lwd_size <- 1.5
 axix_size_legend <- 6
+axis_size  <- 15
+axis_size_title  <- 15
+legend_size <- 15
+legend_size_title <- 15
+size_title <- 15
+legend_size_map <-1
+panel_size_map <- 1.5
+legend_size_title_map <- 1.5
 
 
 
+normalit <- function(m){
+  (m - min(m))/(max(m)-min(m))
+}
 # source("R/prepare_data.R")
 # source("R/population.R")
 # source("R/mortality_rate.R")
@@ -84,6 +106,11 @@ source("R/maps_age_1918_inla.R")
 source("R/maps_age_sex_1918_inla.R")
 source("R/maps_age_1918.R")
 source("R/maps_1890_1918.R")
+source("R/maps_age_1918_1890.R")
+source("R/maps_sep.R")
+source("R/maps_tbc.R")
+
+
 source("R/cor_child_mort.R")
 source("R/cor_schoolkids.R")
 source("R/cor_hospitals.R")

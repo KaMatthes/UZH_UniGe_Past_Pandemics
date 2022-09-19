@@ -35,7 +35,12 @@ function_maps_age_1918 <- function(){
     filter(Year==1918) %>%
     mutate(significant_dummy = ifelse(death > LL & death < UL,0,1),
            significant_dummy = as.factor( significant_dummy ),
-           age_group=factor(age_group, levels=c("0_19","20_39","40_69", ">70")))
+           age_group=factor(age_group, levels=c("0_19","20_39","40_69", ">70")),
+           age_group=recode(age_group, 
+                            "0_19" = "0 - 19 years",
+                            "20_39" = "20 - 39 years",
+                            "40_69"="40-69 years",
+                            ">70" = ">70 years")) 
 # sf::sf_use_s2(TRUE)
 
   bezirk_geo <- read_sf("../data_raw/Map_2020/Maps_dissolved/Maps_dissolved_2020.shp") %>%
@@ -71,11 +76,17 @@ function_maps_age_1918 <- function(){
     tm_layout(
       #   main.title = "Relative excess deaths")
       # main.title.position = "left",
-      # legend.text.size = legend_size_map,
+      legend.text.size = legend_size_map,
+      legend.title.size= legend_size_title_map,
       # legend.width = 5,
       # legend.height = 8,
       # legend.position = c(0.7,0.8),
+      panel.label.size = panel_size_map,
       legend.outside.position = "bottom")
+  # legend.outside.size = .1)
+  # legend.title.size=legend_size_map,
+  # main.title.size = main_size_map)
+  
   
     
     # plot_excess <- ggplot(data=bezirk_geo)+

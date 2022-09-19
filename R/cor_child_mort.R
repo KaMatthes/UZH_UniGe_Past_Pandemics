@@ -74,20 +74,26 @@ function_cor_child_mort <- function(){
              significant_dummy = ifelse(death > LL & death <UL,0,1),
              significant_dummy = as.factor( significant_dummy ),
              death_inc = death/population *10000) %>%
-      filter(!is.na(Language))
+      filter(!is.na(Language))   %>%
+      group_by(Year) %>%
+      mutate(excess_norm = normalit(excess_percentage_o),
+             death_norm = normalit(prop_child_death)) %>%
+      ungroup()
+    
+    
   
     plot_child_mortality <- ggplot(data=data_excess) +
-      geom_point(aes(x= prop_child_death, y=excess_percentage, shape=Language,col=Language),  lwd=lwd_size_points ) +
-      geom_smooth(aes(x= prop_child_death, y=excess_percentage),  method='lm',se=TRUE,lwd=lwd_size, col=col_line) +
-      facet_wrap(~Year, nrow = 2,scales = "free") +
+      geom_point(aes(x= death_norm, y=excess_norm, shape=Language,col=Language),  lwd=lwd_size_points ) +
+      geom_smooth(aes(x= death_norm, y=excess_norm),  method='lm',se=TRUE,lwd=lwd_size, col=col_line) +
+      facet_wrap(~Year, ncol = 2,scales = "free") +
       scale_color_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
       scale_fill_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
       scale_shape_manual("Language region: ",values = c(15,16,17))+
       ggtitle("Child Mortality")+
-      ylab("Relative Excess Mortality")+
-      xlab("Child Mortality per 10'000 inhabitants") +
+      ylab("Normalized Relative Excess Mortality")+
+      xlab("Normalized Child Mortality per 10'000 inhabitants") +
       theme_bw() +
-      theme(
+      theme(aspect.ratio = 1,
         strip.text.x=element_text(size=15),
         axis.text.x=element_text(color="black",size=10),
         axis.title=element_text(size=15),

@@ -72,20 +72,23 @@ function_cor_gdp <- function(){
              significant_dummy = ifelse(death > LL & death <UL,0,1),
              significant_dummy = as.factor( significant_dummy ),
              death_inc = death/population *100000) %>%
-      filter(disp=="rel")
+      filter(disp=="rel") %>%
+      group_by(Year) %>%
+      mutate(excess_norm = normalit(excess_percentage_o),
+             gdp_norm = normalit(GDP))
 
     plot_GDP_rel <- ggplot(data=data_excess) +
-      geom_point(aes(x=GDP, y=excess_percentage, shape=Language,col=Language),  lwd=lwd_size_points ) +
-      geom_smooth(aes(x=GDP, y=excess_percentage),  method='lm',se=TRUE,lwd=lwd_size, col=col_line) +
+      geom_point(aes(x= gdp_norm, y=excess_norm, shape=Language,col=Language),  lwd=lwd_size_points ) +
+      geom_smooth(aes(x= gdp_norm, y=excess_norm),  method='lm',se=TRUE,lwd=lwd_size, col=col_line) +
       facet_wrap(~Year, nrow = 2,scales = "free") +
       scale_color_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
       scale_fill_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
       scale_shape_manual("Language region: ",values = c(15,16,17))+
       ggtitle("Relative GDP per capita")+
-      ylab("Relative Excess Mortality")+
-      xlab("Relative GDP per Capita") +
+      ylab("Normalized Relative Excess Mortality")+
+      xlab("Normalized Relative GDP per Capita") +
       theme_bw() +
-      theme(
+      theme(aspect.ratio = 1, 
         strip.text.x=element_text(size=15),
         axis.text.x=element_text(color="black",size=10),
         axis.title=element_text(size=15),

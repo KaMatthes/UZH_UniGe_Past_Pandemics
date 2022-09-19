@@ -15,167 +15,204 @@ editor_options:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-<!-- # Research question -->
+# Research question
 
-<!-- * Are patterns of pandemic spread, its determinants, and effects of public health interventions are similar across pandemics in Switzerland? -->
-<!-- * Estimate excess mortality for pandemics in 1890, 1918 and 2020 per district, age groups and sex -->
-<!-- * Comparing of spatial pattern between the pandemics -->
-<!-- * Investigate the determinants of spread in the context of different co-factors ( Urbanization, GIP per capita etc.) -->
+* Are patterns of pandemic spread, its determinants, and effects of public health interventions are similar across pandemics in Switzerland?
+* Estimate excess mortality for pandemics in 1890, 1918 and 2020 per district, age groups and sex
+* Comparing of spatial pattern between the pandemics
+* Investigate the determinants of spread in the context of different co-factors ( Urbanization, GIP per capita etc.)
 
 
-<!-- # Data -->
+# Data
 
-<!-- ## Historical data -->
+## Historical data
 
-<!-- * Collected and digitalized from Kaspar Staub's team -->
-<!-- * Pandemic 1890 (Russian flu): Data from 1879 - 1895 -->
-<!-- * Pandemic 1918 (Spanish flu): Data from 1908 - 1925 -->
-<!-- * Mortality data for each year, district, age group and sex -->
-<!-- * Population data for census of 1880, 1888, 1900, 1910, 1920 for all districts -->
-<!-- * Population data for sex and age group only  for year census 1888 and 1910 -->
-<!-- * Years between were interpolated -->
+* Collected and digitalized from Kaspar Staub's team
+* Pandemic 1890: Data from 1879 - 1895
+* Pandemic 1918: Data from 1908 - 1925
+* Mortality data for each year, district, age group and sex
+* Population data for census of 1880, 1888, 1900, 1910, 1920 for all districts
+* Population data for sex and age group only  for year census 1888 and 1910
+* Years between were interpolated
 
-<!-- ## Covid 19 -->
+## Covid 19
 
-<!-- * Death and population data from 2014 - 2020 for each district, sex and age group -->
+* Death and population data from 2014 - 2020 for each district, sex and age group
 
-<!-- # Methods -->
-<!-- * Bayesian approach -->
-<!-- * INLA (Bayesian inference for Latent Gaussian Models) -->
-<!-- * Death data for $130$ districts of Switzerland for all three pandemics (1890, 1918, 2020) -->
-<!-- * Data $Y$ is given as the total number of death in fixed areas and in each year -->
-<!-- * Standard Poisson likelihood to model the counts $$ y_i \mid \eta_i\sim Po\left(E_i \exp(\eta_i)\right),$$ -->
-<!-- where $E_i$ is the ``population at risk'' in region $i$. -->
-<!-- <br /> -->
-<!-- <br /> -->
-<!-- * classical disease mapping model; BYM model (Besag, York and Mollie proposed it) -->
-<!-- * The log relative risk, $\bf{\eta} = (\eta_1, \dots, \eta_n)^T$, is thus decomposed -->
-<!--   into $$\bf{\eta} = \mu + \bf{u} + \bf{v} $$ -->
-<!--   +  $\mu$ is the overall intercept -->
-<!--   +  $\bf{u}$ is a random effect with spatial structure following the Besag model -->
-<!--   +  $\bf{v}$ represents a non-spatial overdispersion -->
-<!-- * ${\bf u}$ is "besag" modelled spatially structured with smoothing parameter $\kappa_u$. -->
-<!-- * ${\bf v}$ is unstructured with precision parameter $\kappa_v$, i.e. -->
-<!-- $\bf{v} \sim \mathcal{N}(0, \kappa_v^{-1}I)$. -->
-<!-- * The precision terms $\kappa_v$ and $\kappa_u$ are assigned the default -->
-<!-- gamma prior distributions of INLA -->
-<!-- $$ -->
-<!-- \begin{aligned} -->
-<!--   \kappa_u & \sim \textrm{Gamma}( \alpha_u, \beta_u ), \\ -->
-<!--   \kappa_v & \sim \textrm{Gamma}( \alpha_v, \beta_v ). -->
-<!-- \end{aligned} -->
-<!-- $$ -->
-<!-- * The default values are $\alpha_u = \alpha_v = 1$ and $\beta_u = \beta_v = 0.00005$. -->
-<!-- <br /> -->
-<!-- <br /> -->
+# Methods
+* Bayesian approach
+* INLA (Bayesian inference for Latent Gaussian Models)
+* Death data for $130$ districts of Switzerland for all three pandemics (1890, 1918, 2020)
+* Data $Y$ is given as the total number of death in fixed areas and in each year
+* Standard Poisson likelihood to model the counts $$ y_i \mid \eta_i\sim Po\left(E_i \exp(\eta_i)\right),$$
+where $E_i$ is the ``population at risk'' in region $i$.
+<br />
+<br />
+* classical disease mapping model; BYM model (Besag, York and Mollie proposed it)
+* The log relative risk, $\bf{\eta} = (\eta_1, \dots, \eta_n)^T$, is thus decomposed
+  into $$\bf{\eta} = \mu + \bf{u} + \bf{v} $$
+  +  $\mu$ is the overall intercept
+  +  $\bf{u}$ is a random effect with spatial structure following the Besag model
+  +  $\bf{v}$ represents a non-spatial overdispersion
+* ${\bf u}$ is "besag" modelled spatially structured with smoothing parameter $\kappa_u$.
+* ${\bf v}$ is unstructured with precision parameter $\kappa_v$, i.e.
+$\bf{v} \sim \mathcal{N}(0, \kappa_v^{-1}I)$.
+* The precision terms $\kappa_v$ and $\kappa_u$ are assigned the default
+gamma prior distributions of INLA
+$$
+\begin{aligned}
+  \kappa_u & \sim \textrm{Gamma}( \alpha_u, \beta_u ), \\
+  \kappa_v & \sim \textrm{Gamma}( \alpha_v, \beta_v ).
+\end{aligned}
+$$
+* The default values are $\alpha_u = \alpha_v = 1$ and $\beta_u = \beta_v = 0.00005$.
+<br />
+<br />
 
-<!-- * Year is modelled using independent and identically (iid)  Gaussian prior distribution -->
-<!-- with ${N}(0,  \tau_v^{-1})$ -->
-<!-- <br /> -->
-<!-- * Calculation of expected values based on the mortality trend of the previous 4 years (1890 only 4 years possible) -->
+* Year is modelled using independent and identically (iid)  Gaussian prior distribution
+with ${N}(0,  \tau_v^{-1})$
+<br />
+* Calculation of expected values based on the mortality trend of the previous 4 years (1890 only 4 years possible)
 
-<!-- ```{r, echo=TRUE,message=FALSE, eval=FALSE} -->
-<!--  formula = -->
-<!--     death ~ 1 + offset(log(population)) + -->
-<!--     f(Region, model="bmy", graph="Bezirk_Inla", scale.model = TRUE)+ -->
-<!--     f(Year, model='iid', constr = TRUE) -->
+```{r, echo=TRUE,message=FALSE, eval=FALSE}
+ formula =
+    death ~ 1 + offset(log(population)) +
+    f(Region, model="bmy", graph="Bezirk_Inla", scale.model = TRUE)+
+    f(Year, model='iid', constr = TRUE)
 
-<!-- inla.mod = inla(formula, -->
-<!--                   data=reg_data, -->
-<!--                   family="Poisson", -->
-<!--                   verbose = TRUE, -->
-<!--                   control.compute=list(config = TRUE), -->
-<!--                   control.mode=list(restart=T), -->
-<!--                   num.threads = round(parallel::detectCores()*.8), -->
-<!--                   control.predictor=list(compute=T)) -->
-<!-- ``` -->
+inla.mod = inla(formula,
+                  data=reg_data,
+                  family="Poisson",
+                  verbose = TRUE,
+                  control.compute=list(config = TRUE),
+                  control.mode=list(restart=T),
+                  num.threads = round(parallel::detectCores()*.8),
+                  control.predictor=list(compute=T))
+```
 
-<!-- <br /> -->
-<!-- <br /> -->
+<br />
+<br />
 
-<!-- * 1000 samples from the posterior distribution -->
-<!-- * Calculation of median and 95% CrI(Credible interval) of the 1000 samples -->
-<!-- * Excess mortality = observed death counts – expected death counts -->
+* 1000 samples from the posterior distribution
+* Calculation of median and 95% CrI(Credible interval) of the 1000 samples
+* Excess mortality = observed death counts – expected death counts
 
-<!-- <!-- <!-- * Excess mortality is shown relatively in percentage (Excess mortality/expected death counts) --> 
-<!-- <!-- <!-- * To compare the districts of each pandemic year the relative excess mortality was normalized --> 
-<!-- <!-- <!-- * To find pattern and clusters: Moran’s I statistics ( LISA: Local Indicators of Spatial Association) were used for mapping statistically significant local clusters --> 
+* Excess mortality is shown relatively in percentage (Excess mortality/expected death counts)
+* To compare the districts of each pandemic year the relative excess mortality was normalized
 
-<!-- An alternative spatial statistics to detect spatial anomalies is the Getis and Ord’s G-statistics (Getis and Ord, 1972; Ord and Getis, 1995). It looks at neighbours within a defined proximity to identify where either high or low values clutser spatially. Here, statistically significant hot-spots are recognised as areas of high values where other areas within a neighbourhood range also share high values too. -->
+* To find pattern and clusters: Moran’s I statistics ( LISA: Local Indicators of Spatial Association) were used for mapping statistically significant local cluster
 
-<!-- The Gi statistics is represented as a Z-score. Greater values represent a greater intensity of clustering and the direction (positive or negative) indicates high or low clusters. -->
+An alternative spatial statistics to detect spatial anomalies is the Getis and Ord’s G-statistics (Getis and Ord, 1972; Ord and Getis, 1995). It looks at neighbours within a defined proximity to identify where either high or low values clutser spatially. Here, statistically significant hot-spots are recognised as areas of high values where other areas within a neighbourhood range also share high values too.
+
+The Gi statistics is represented as a Z-score. Greater values represent a greater intensity of clustering and the direction (positive or negative) indicates high or low clusters.
+
 
 # Results
 
 ## Maps
 
-<!-- ### Year -->
+### Year
 
-<!-- ```{r, echo=FALSE,message=FALSE,fig.height = 8,  fig.width = 10} -->
-<!-- function_maps_inla() -->
-<!-- ``` -->
+```{r, echo=FALSE,message=FALSE,fig.height = 10,  fig.width = 12}
+function_maps_inla()
+```
 
-<!-- ```{r, echo=FALSE,message=FALSE,fig.height = 8,  fig.width = 12} -->
-<!-- function_hotspot(Year_Pan=1890) -->
-<!-- function_hotspot(Year_Pan=1918) -->
-<!-- function_hotspot(Year_Pan=2020) -->
-<!-- ``` -->
-
-
-<!-- ### Sex -->
-<!-- Because excess death is different in each pandemic year, and to better compare sex per pandemic year, the divisions of relative excess death per year are different. In 1890 no significant differences between sex, 1918 and 2020 higher excess mortality in men compared to women. -->
-
-<!-- ```{r, echo=FALSE,message=FALSE,fig.height = 5,  fig.width = 12} -->
-<!-- function_maps_sex(Year_Pan=1890) -->
-<!-- function_regression_mortality(VarTest = "Sex")[1] -->
-<!-- function_maps_sex(Year_Pan=1918) -->
-<!-- function_regression_mortality(VarTest = "Sex")[2] -->
-<!-- function_maps_sex(Year_Pan=2020) -->
-<!-- function_regression_mortality(VarTest = "Sex")[3] -->
-<!-- ``` -->
-
-<!-- ### Age -->
-
-<!-- Because excess death is different in each pandemic year, and to better compare age groups per pandemic year, the divisions of relative excess death per year are different. Since the highest excess death in the 1918 pandemic was between 20 - 39 years, we further divided the age groups from 0-69 years into 3 additional groups for the 1918 pandemic. In the other pandemic years, this is not possible due to low death rates in the younger age groups. -->
-<!-- <br /> -->
-<!-- <br /> -->
-<!-- In 1890 no significant differences in excess mortality between age age groups.  1918 higher excess mortality for age group 0-69 years compared to > 70 years, in 2020 lower excess mortality for age group 0-69 years compared to < 70 years. -->
-
-<!-- ```{r, echo=FALSE,message=FALSE,fig.height = 5,  fig.width = 12} -->
-<!-- function_maps_age(Year_Pan=1890) -->
-<!-- function_regression_mortality(VarTest = "Age")[1] -->
-<!-- function_maps_age(Year_Pan=1918) -->
-<!-- function_regression_mortality(VarTest = "Age")[2] -->
-<!-- function_maps_age(Year_Pan=2020) -->
-<!-- function_regression_mortality(VarTest = "Age")[3] -->
-<!-- ``` -->
-
-<!-- 1918 -->
-<!-- Age groups 0-19, 20-39 and 40-69 show higher excess mortality compared to >70 years. The  highest excess mortality shows the age group 0-69. -->
-
-<!-- ```{r, echo=FALSE,message=FALSE,fig.height = 10,  fig.width = 12} -->
-<!-- function_maps_age_1918() -->
-<!-- function_regression_mortality(VarTest = "Age_1918") -->
-<!-- ``` -->
+```{r, echo=FALSE,message=FALSE,fig.height = 8,  fig.width = 12}
+function_hotspot(Year_Pan=1890)
+function_hotspot(Year_Pan=1918)
+function_hotspot(Year_Pan=2020)
+```
 
 
-<!-- ### Age and Sex 1918 -->
+### Sex
+In the pandemic 1890 no significant differences between sex, were observed. In the pandemic 1918 and 2020 higher excess mortality in men compared to women was estimated.
 
-<!-- 1918 - Age 20 - 39 -->
-<!-- <br /> -->
-<!-- <br /> -->
-<!-- The relative mortality rate is above 14% for both sexes in the 20-39 age group, but even higher for men than for women. -->
+<br />
+<br />
 
-<!-- ```{r, echo=FALSE,message=FALSE,fig.height = 5,  fig.width = 12} -->
-<!-- function_maps_sex_age_1918() -->
-<!-- function_regression_mortality(VarTest = "Age_Sex_1918") -->
-<!-- ``` -->
+1890
+
+```{r, echo=FALSE,message=FALSE,fig.height = 8,  fig.width = 12}
+function_maps_sex(Year_Pan=1890)
+function_regression_mortality(VarTest = "Sex")[1]
+```
+
+<br />
+<br />
+
+1918
+
+```{r, echo=FALSE,message=FALSE,fig.height = 8,  fig.width = 12}
+function_maps_sex(Year_Pan=1918)
+function_regression_mortality(VarTest = "Sex")[2]
+```
+
+<br />
+<br />
+
+2020
+
+```{r, echo=FALSE,message=FALSE,fig.height = 8,  fig.width = 12}
+function_maps_sex(Year_Pan=2020)
+function_regression_mortality(VarTest = "Sex")[3]
+```
+
+### Age
+
+Because excess death is different in each pandemic year, and to better compare age groups per pandemic year, the divisions of relative excess death per year are different. Since the highest excess death in the 1918 pandemic was between 20 - 39 years, we further divided the age groups from 0-69 years into 3 additional groups for the 1918 pandemic. In the other pandemic years, this is not possible due to low death rates in the younger age groups.
+<br />
+<br />
+In 1890 no significant differences in excess mortality between age age groups.  1918 higher excess mortality for age group 0-69 years compared to > 70 years, in 2020 lower excess mortality for age group 0-69 years compared to < 70 years.
+<br />
+<br />
+
+1890
+```{r, echo=FALSE,message=FALSE,fig.height = 8,  fig.width = 12}
+function_maps_age(Year_Pan=1890)
+function_regression_mortality(VarTest = "Age")[1]
+```
+<br />
+<br />
+
+1918
+```{r, echo=FALSE,message=FALSE,fig.height = 8,  fig.width = 12}
+function_maps_age(Year_Pan=1918)
+function_regression_mortality(VarTest = "Age")[2]
+```
+<br />
+<br />
+
+2020
+```{r, echo=FALSE,message=FALSE,fig.height = 8,  fig.width = 12}
+function_maps_age(Year_Pan=2020)
+function_regression_mortality(VarTest = "Age")[3]
+```
+
+1918
+Age groups 0-19, 20-39 and 40-69 show higher excess mortality compared to >70 years. The  highest excess mortality shows the age group 0-69.
+
+```{r, echo=FALSE,message=FALSE,fig.height = 12,  fig.width = 12}
+function_maps_age_1918()
+function_regression_mortality(VarTest = "Age_1918")
+```
+
+
+### Age and Sex 1918
+
+1918 - Age 20 - 39
+<br />
+<br />
+The relative mortality rate is above 14% for both sexes in the 20-39 age group, but even higher for men than for women.
+
+```{r, echo=FALSE,message=FALSE,fig.height = 8,  fig.width = 12}
+function_maps_sex_age_1918()
+function_regression_mortality(VarTest = "Age_Sex_1918")
+```
 
 
 ## Co-factors
 
 ### Relation between 1890 and 1918
-
 
 ```{r, echo=FALSE,message=FALSE,fig.height = 10,  fig.width = 12}
 function_cor_pandemic()
@@ -195,245 +232,247 @@ function_cor_pandemic_age()
 function_test_pandemic_age()
 ```
 
-```{r, echo=FALSE,message=FALSE}
-function_maps_age_1818()
+```{r, echo=FALSE,message=FALSE,warning=FALSE}
+function_maps_age_1890_1918()
 ```
 
-```{r, echo=FALSE,message=FALSE}
-function_maps_1890_1818()
-```
-<!-- The higher the proportion of people aged >=30, the lower the excess mortality (but not significant, but clearly a negative trend) -->
+<!-- ```{r, echo=FALSE,message=FALSE}
+<!-- function_maps_1890_1818() -->
+<!--  ``` -->
+
+<!-- <!-- The higher the proportion of people aged >=30, the lower the excess mortality (but not significant, but clearly a negative trend) --> -->
 
 <!-- ```{r, echo=FALSE,message=FALSE} -->
 <!-- function_maps_age_1818() -->
 <!-- ``` -->
 
-<!-- ### GDP per capita -->
-<!-- GDP per capita was taken from 1888 for 1890, 1910 for 1918, 2008 for 2020. -->
+### GDP per capita
+GDP per capita was taken from 1888 for 1890, 1910 for 1918, 2008 for 2020.
 
-<!-- ```{r, echo=FALSE,message=FALSE,fig.height = 10,  fig.width = 12} -->
-<!-- function_cor_gdp() -->
-<!-- ``` -->
+```{r, echo=FALSE,message=FALSE,fig.height = 10,  fig.width = 12}
+function_cor_gdp()
+```
 
-<!-- GDP per capita is not significantly associated with excess mortality. -->
-<!-- <br />  -->
-<!-- <br />  -->
+GDP per capita is not significantly associated with excess mortality.
+<br />
+<br />
 
-<!-- 1890 -->
+1890
 
-<!-- ```{r, echo=FALSE,message=FALSE} -->
-<!-- function_test_gdp(Year_Pan=1890) -->
-<!-- ``` -->
+```{r, echo=FALSE,message=FALSE}
+function_test_gdp(Year_Pan=1890)
+```
 
-<!-- 1918 -->
+1918
 
-<!-- ```{r, echo=FALSE,message=FALSE} -->
-<!-- function_test_gdp(Year_Pan=1918) -->
-<!-- ``` -->
+```{r, echo=FALSE,message=FALSE}
+function_test_gdp(Year_Pan=1918)
+```
 
-<!-- 2020 -->
+2020
 
-<!-- ```{r, echo=FALSE,message=FALSE} -->
-<!-- function_test_gdp(Year_Pan=2020) -->
-<!-- ``` -->
+```{r, echo=FALSE,message=FALSE}
+function_test_gdp(Year_Pan=2020)
+```
 
-<!-- ### Swiss SEP per capita -->
-<!-- Only for 2020, Swiss SEP from xxx (from which year?) -->
+### Swiss SEP per capita
+Only for 2020, Swiss SEP from xxx (from which year?)
 
-<!-- ```{r, echo=FALSE,message=FALSE,fig.height = 10,  fig.width = 12} -->
-<!-- function_cor_sep() -->
-<!-- ``` -->
+```{r, echo=FALSE,message=FALSE,fig.height = 10,  fig.width = 12}
+function_cor_sep()
+```
 
-<!-- Swiss SEP is significantly associated with excess mortality. The higher the SEP is the excess mortality.  -->
+Swiss SEP is significantly associated with excess mortality. The higher the SEP is the excess mortality.
 
-<!-- ```{r, echo=FALSE,message=FALSE} -->
-<!-- function_test_sep() -->
-<!-- ``` -->
+```{r, echo=FALSE,message=FALSE}
+function_test_sep()
+```
 
-<!-- ### Number of hospitals -->
+```{r, echo=FALSE,message=FALSE}
+function_maps_sep()
+```
 
-<!-- ```{r, echo=FALSE,message=FALSE,fig.height = 10,  fig.width = 12} -->
-<!-- function_cor_hospitals() -->
-<!-- ``` -->
+### Number of hospitals
 
-<!-- The number of hospitals per 10'000 inhabitants is not significantly associated with excess mortality. But perhaps distance to hospital would be a better explanatory variable than number of hospitals. -->
+```{r, echo=FALSE,message=FALSE,warning=FALSE,fig.height = 10,  fig.width = 12}
+function_cor_hospitals()
+```
 
-<!-- 1890 -->
+The number of hospitals per 10'000 inhabitants is not significantly associated with excess mortality. But perhaps distance to hospital would be a better explanatory variable than number of hospitals.
 
-<!-- ```{r, echo=FALSE,message=FALSE} -->
-<!-- function_test_hospitals(Year_Pan=1890) -->
-<!-- ``` -->
+1890
 
-<!-- 1918 -->
+```{r, echo=FALSE,message=FALSE,warning=FALSE}
+function_test_hospitals(Year_Pan=1890)
+```
 
-<!-- ```{r, echo=FALSE,message=FALSE} -->
-<!-- function_test_hospitals(Year_Pan=1918) -->
-<!-- ``` -->
+1918
 
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+function_test_hospitals(Year_Pan=1918)
+```
 
-<!-- ### Proportion of children aged 5-14 -->
 
-<!-- ```{r, echo=FALSE,message=FALSE,fig.height = 10,  fig.width = 12} -->
-<!-- function_cor_schoolkids() -->
-<!-- ``` -->
+### Proportion of children aged 5-14
 
+```{r, echo=FALSE,message=FALSE,fig.height = 10,  fig.width = 12}
+function_cor_schoolkids()
+```
 
-<!-- Proportion of children aged 5-14 years is not significantly associated with excess mortality. -->
 
-<!-- 1890 -->
+Proportion of children aged 5-14 years is not significantly associated with excess mortality.
 
-<!-- ```{r, echo=FALSE,message=FALSE} -->
-<!-- function_test_schoolkids(Year_Pan=1890) -->
-<!-- ``` -->
+1890
 
-<!-- 1918 -->
+```{r, echo=FALSE,message=FALSE}
+function_test_schoolkids(Year_Pan=1890)
+```
 
-<!-- ```{r, echo=FALSE,message=FALSE} -->
-<!-- function_test_schoolkids(Year_Pan=1918) -->
-<!-- ``` -->
+1918
 
-<!-- 2020 -->
+```{r, echo=FALSE,message=FALSE}
+function_test_schoolkids(Year_Pan=1918)
+```
 
-<!-- ```{r, echo=FALSE,message=FALSE} -->
-<!-- function_test_schoolkids(Year_Pan=2020) -->
-<!-- ``` -->
+2020
 
-<!-- ### Proportion of child mortality -->
-<!-- Child mortality was taken from the year before the pandamic -->
+```{r, echo=FALSE,message=FALSE}
+function_test_schoolkids(Year_Pan=2020)
+```
 
-<!-- ```{r, echo=FALSE,message=FALSE,fig.height = 10,  fig.width = 12} -->
-<!-- function_cor_child_mort() -->
-<!-- ``` -->
+### Proportion of child mortality
+Child mortality was taken from the year before the pandamic
 
+```{r, echo=FALSE,message=FALSE,fig.height = 10,  fig.width = 12}
+function_cor_child_mort()
+```
 
-<!-- Child mortality is not significantly associated with excess mortality. -->
 
-<!-- 1890 -->
+Child mortality is not significantly associated with excess mortality.
 
-<!-- ```{r, echo=FALSE,message=FALSE} -->
-<!-- function_test_child_mort(Year_Pan=1890) -->
-<!-- ``` -->
+1890
 
-<!-- 1918 -->
+```{r, echo=FALSE,message=FALSE}
+function_test_child_mort(Year_Pan=1890)
+```
 
-<!-- ```{r, echo=FALSE,message=FALSE} -->
-<!-- function_test_child_mort(Year_Pan=1918) -->
-<!-- ``` -->
+1918
 
-<!-- ### Tuberculosis -->
+```{r, echo=FALSE,message=FALSE}
+function_test_child_mort(Year_Pan=1918)
+```
 
-<!-- 1890: tb death cases from 1886-1890 -->
-<!-- 1918: tb death cases from 1911-1920 -->
+### Tuberculosis
 
-<!-- Unfortunately, there is no exact number for the years 1890 and 1918. -->
+1890: tb death cases from 1886-1890
+1918: tb death cases from 1911-1920
 
-<!-- In Davos was a high tuberculosis mortality because Davos was a health resort for tuberculosis patients in the 19th century and at the beginning of the 20th century. Since these mortality numbers do not reflect the population and actual tuberculosis mortalities in Davos, Davos was excluded of the calculation. -->
+Unfortunately, there is no exact number for the years 1890 and 1918.
 
-<!-- With Davos -->
+In Davos was a high tuberculosis mortality because Davos was a health resort for tuberculosis patients in the 19th century and at the beginning of the 20th century.
 
-<!-- ```{r, echo=FALSE,message=FALSE,warning=FALSE,fig.height = 10,  fig.width = 12} -->
-<!-- function_cor_tbc(Davos="yes") -->
-<!-- ``` -->
+<!-- Since these mortality numbers do not reflect the population and actual tuberculosis mortalities in Davos, Davos was excluded of the calculation -->
+<br />
+<br />
 
-<!-- Without Davos -->
+1890
 
-<!-- ```{r, echo=FALSE,message=FALSE,warning=FALSE,fig.height = 10,  fig.width = 12} -->
-<!-- function_cor_tbc(Davos="no") -->
-<!-- ``` -->
+```{r, echo=FALSE,message=FALSE,warning=FALSE}
+function_maps_tbc(Year_Pan=1890)
+```
 
-<!-- Tuberculosis mortalityiy is significantly associated with excess mortality in 1890, but not in 1918.  -->
+Tuberculosis mortality is significantly associated with excess mortality in 1890
 
-<!-- <!-- This suggests that the 1918 pandemic had a greater impact on mortality than tuberculosis. Whereas in 1890 tuberculosis played a greater role.  --> -->
+```{r, echo=FALSE,message=FALSE,warning=FALSE}
+function_test_tbc(Year_Pan=1890)
+```
 
-<!-- 1890 -->
+<br />
+<br />
 
-<!-- ```{r, echo=FALSE,message=FALSE} -->
-<!-- function_test_tbc(Year_Pan=1890) -->
-<!-- ``` -->
+1918
 
-<!-- 1918 -->
 
-<!-- ```{r, echo=FALSE,message=FALSE} -->
-<!-- function_test_tbc(Year_Pan=1918) -->
-<!-- ``` -->
+```{r, echo=FALSE,message=FALSE,warning=FALSE}
+function_maps_tbc(Year_Pan=1918)
+```
 
+Tuberculosis mortality is significantly associated with excess mortality in 1890
 
-<!-- ### Population density -->
+```{r, echo=FALSE,message=FALSE,warning=FALSE,fig.height = 10,  fig.width = 12}
+function_test_tbc(Year_Pan=1918)
+```
 
-<!-- ```{r, echo=FALSE,message=FALSE,warning=FALSE,fig.height = 10,  fig.width = 12} -->
-<!-- function_cor_area(city="yes") -->
-<!-- ``` -->
+### Population density
 
-<!-- Without the districts: City of Zurich, Basel-Stadt, Lausanne, Geneva -->
+```{r, echo=FALSE,message=FALSE,warning=FALSE,fig.height = 10,  fig.width = 12}
+function_cor_area()
+```
 
-<!-- ```{r, echo=FALSE,message=FALSE,warning=FALSE,fig.height = 10,  fig.width = 12} -->
-<!-- function_cor_area(city="no") -->
-<!-- ``` -->
+Regression analysis with all districts. Population density is not significantly associated with excess mortality. However, excess mortality is lower in all 3 pandemics the higher the population density. The reason for this could perhaps be the better medical care in larger cities? The greater proximity to the hospitals or medical office?
 
-<!-- Regression analysis with all districts. Population density is not significantly associated with excess mortality. However, excess mortality is lower in all 3 pandemics the higher the population density. The reason for this could perhaps be the better medical care in larger cities? The greater proximity to the hospitals or medical office? -->
+1890
 
-<!-- 1890 -->
+```{r, echo=FALSE,message=FALSE}
+function_test_area(Year_Pan=1890)
+```
 
-<!-- ```{r, echo=FALSE,message=FALSE} -->
-<!-- function_test_area(Year_Pan=1890) -->
-<!-- ``` -->
+1918
 
-<!-- 1918 -->
+```{r, echo=FALSE,message=FALSE}
+function_test_area(Year_Pan=1918)
+```
 
-<!-- ```{r, echo=FALSE,message=FALSE} -->
-<!-- function_test_area(Year_Pan=1918) -->
-<!-- ``` -->
+2020
 
-<!-- 2020 -->
+```{r, echo=FALSE,message=FALSE}
+function_test_area(Year_Pan=2020)
+```
 
-<!-- ```{r, echo=FALSE,message=FALSE} -->
-<!-- function_test_area(Year_Pan=2020) -->
-<!-- ``` -->
 
+### Urbanity
 
-<!-- ### Urbanity -->
+```{r, echo=FALSE,message=FALSE,warning=FALSE,fig.height = 10,  fig.width = 12}
+function_cor_urbanity()
+```
 
-<!-- ```{r, echo=FALSE,message=FALSE,warning=FALSE,fig.height = 10,  fig.width = 12} -->
-<!-- function_cor_urbanity() -->
-<!-- ``` -->
+Ubanity is not significantly associated with excess mortality. However, the median excess mortality is lower in urban areas in all 3 pandemics.
 
-<!-- Ubanity is not significantly associated with excess mortality. However, the median excess mortality is lower in urban areas in all 3 pandemics. -->
+1890
 
-<!-- 1890 -->
+```{r, echo=FALSE,message=FALSE}
+function_test_urbanity(Year_Pan=1890)
+```
 
-<!-- ```{r, echo=FALSE,message=FALSE} -->
-<!-- function_test_urbanity(Year_Pan=1890) -->
-<!-- ``` -->
+1918
 
-<!-- 1918 -->
+```{r, echo=FALSE,message=FALSE}
+function_test_urbanity(Year_Pan=1918)
+```
 
-<!-- ```{r, echo=FALSE,message=FALSE} -->
-<!-- function_test_urbanity(Year_Pan=1918) -->
-<!-- ``` -->
+2020
 
-<!-- 2020 -->
+```{r, echo=FALSE,message=FALSE}
+function_test_urbanity(Year_Pan=2020)
+```
 
-<!-- ```{r, echo=FALSE,message=FALSE} -->
-<!-- function_test_urbanity(Year_Pan=2020) -->
-<!-- ``` -->
+### Train stations
 
-<!-- ### Train stations -->
+```{r, echo=FALSE,message=FALSE,warning=FALSE,fig.height = 10,  fig.width = 12}
+function_cor_stations()
+```
 
-<!-- ```{r, echo=FALSE,message=FALSE,warning=FALSE,fig.height = 10,  fig.width = 12} -->
-<!-- function_cor_stations() -->
-<!-- ``` -->
+The number of train stations in the respective districts is not significantly associated with excess mortality.
 
-<!-- The number of train stations in the respective districts is not significantly associated with excess mortality.  -->
+1890
 
-<!-- 1890 -->
+```{r, echo=FALSE,message=FALSE}
+function_test_stations(Year_Pan=1890)
+```
 
-<!-- ```{r, echo=FALSE,message=FALSE} -->
-<!-- function_test_stations(Year_Pan=1890) -->
-<!-- ``` -->
+1918
 
-<!-- 1918 -->
-
-<!-- ```{r, echo=FALSE,message=FALSE} -->
-<!-- function_test_stations(Year_Pan=1918) -->
-<!-- ``` -->
+```{r, echo=FALSE,message=FALSE}
+function_test_stations(Year_Pan=1918)
+```
 

@@ -21,7 +21,11 @@ function_maps_sex_age_1918 <- function(){
          age_group =  age_group.x,
          significant_dummy = ifelse(death > LL & death < UL,0,1),
          significant_dummy = as.factor( significant_dummy )) %>%
-   filter(Year==1918) 
+   filter(Year==1918)  %>%
+    mutate(sex=recode(sex, 
+               "f" = "female",
+               "m" = "male")) 
+
   
 # sf::sf_use_s2(TRUE)
 
@@ -61,11 +65,17 @@ plot_excess <- tm_shape( bezirk_geo  ) +
   tm_layout(
     #   main.title = "Relative excess deaths")
     # main.title.position = "left",
-    # legend.text.size = legend_size_map,
+    legend.text.size = legend_size_map,
+    legend.title.size= legend_size_title_map,
     # legend.width = 5,
     # legend.height = 8,
     # legend.position = c(0.7,0.8),
+    panel.label.size = panel_size_map,
     legend.outside.position = "bottom")
+# legend.outside.size = .1)
+# legend.title.size=legend_size_map,
+# main.title.size = main_size_map)
+
 
   # plot_excess <- ggplot(data=bezirk_geo)+
   #   # geom_sf_pattern(aes(pattern=significant_dummy, fill= excess_perc_groups),pattern_fill = "grey50", pattern_color="grey50",

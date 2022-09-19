@@ -70,21 +70,26 @@ function_cor_schoolkids <- function(){
            significant_dummy = ifelse(death > LL & death <UL,0,1),
            significant_dummy = as.factor( significant_dummy ),
            death_inc = death/population *100000) %>%
-    filter(!prop==0)
+    filter(!prop==0) %>%
+    group_by(Year) %>%
+    mutate(excess_norm = normalit(excess_percentage_o),
+           prop_norm = normalit(prop)) %>%
+    ungroup()
+  
              
     
     plot_schoolkids <- ggplot(data=data_excess) +
-      geom_point(aes(x=prop, y=excess_percentage, shape=Language,col=Language),  lwd=lwd_size_points ) +
-      geom_smooth(aes(x=prop, y=excess_percentage), method='lm',se=TRUE,lwd=lwd_size, col=col_line) +
+      geom_point(aes(x= prop_norm, y=excess_norm, shape=Language,col=Language),  lwd=lwd_size_points ) +
+      geom_smooth(aes(x= prop_norm, y=excess_norm), method='lm',se=TRUE,lwd=lwd_size, col=col_line) +
       facet_wrap(~Year, nrow = 2, scales="free_x") +
       scale_color_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
       scale_fill_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
       scale_shape_manual("Language region: ",values = c(15,16,17))+
-      ggtitle("Children aged 5−14 years")+
-      ylab("Relative Excess Mortality")+
-      xlab("Proportion of Children aged 5−14 years") +
+      ggtitle("Children aged 5-14 years")+
+      ylab("Normalized Relative Excess Mortality")+
+      xlab("Normalized Proportion of Children aged 5-14 years") +
       theme_bw() +
-      theme(
+      theme(aspect.ratio = 1,
         strip.text.x=element_text(size=15),
         axis.text.x=element_text(color="black",size=10),
         axis.title=element_text(size=15),
