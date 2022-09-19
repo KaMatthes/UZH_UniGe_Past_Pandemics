@@ -66,16 +66,18 @@ plot_excess <- tm_shape( bezirk_geo  ) +
   tm_borders(alpha = 0.5)+
   tm_facets(by="Year")+
   tm_layout(
-  #   main.title = "Relative excess deaths")
-  # main.title.position = "left",
-  # legend.text.size = legend_size_map,
-  # legend.width = 5,
-  # legend.height = 8,
-  # legend.position = c(0.7,0.8),
-  legend.outside.position = "bottom")
-  # legend.outside.size = .1)
-  # legend.title.size=legend_size_map,
-  # main.title.size = main_size_map)
+    #   main.title = "Relative excess deaths")
+    # main.title.position = "left",
+    legend.text.size = legend_size_map,
+    legend.title.size= legend_size_title_map,
+    # legend.width = 5,
+    # legend.height = 8,
+    # legend.position = c(0.7,0.8),
+    panel.label.size = panel_size_map,
+    legend.outside.position = "bottom")
+# legend.outside.size = .1)
+# legend.title.size=legend_size_map,
+# main.title.size = main_size_map)
 
       
 # plot_excess <- ggplot()+

@@ -33,56 +33,65 @@ knitr::opts_chunk$set(echo = FALSE)
 * Mortality data for each year, district, age group and sex
 * Population data for census of 1880, 1888, 1900, 1910, 1920 for all districts
 * Population data for sex and age group only  for year census 1888 and 1910
-* Years between were interpolated
+* The years in between were interpolated by district, sex and age
 
 ## Covid 19
 
 * Death and population data from 2014 - 2020 for each district, sex and age group
 
+## Maps
+
+* All districts are harmonised so that 1890, 1918 and 2020 have the same districts.
+* Many districts from 1879 - 1920 have been combined so that they are the same as 2014-2020.
+* Schauffhausen is only one district, as death data is only available for Schaffhausen as a whole.
+* In Solothurn, the districts are merged as in 1876 - 1920.
+* New shapefiles created via QGIS to have one map for all years (to make them comparable
+
 # Methods
+
+## Excess Mortality
+
 * Bayesian approach
 * INLA (Bayesian inference for Latent Gaussian Models)
-* Death data for $130$ districts of Switzerland for all three pandemics (1890, 1918, 2020)
-* Data $Y$ is given as the total number of death in fixed areas and in each year
-* Standard Poisson likelihood to model the counts $$ y_i \mid \eta_i\sim Po\left(E_i \exp(\eta_i)\right),$$
-where $E_i$ is the ``population at risk'' in region $i$.
-<br />
-<br />
+* Death data for 130 districts of Switzerland for all three pandemics (1890, 1918, 2020)
+* Data is given as the total number of death in fixed areas and in each year
+* Because of high number of zero and to avoid overdispersio - Zero inflated negative binomial to model the counts
 * classical disease mapping model; BYM model (Besag, York and Mollie proposed it)
-* The log relative risk, $\bf{\eta} = (\eta_1, \dots, \eta_n)^T$, is thus decomposed
-  into $$\bf{\eta} = \mu + \bf{u} + \bf{v} $$
-  +  $\mu$ is the overall intercept
-  +  $\bf{u}$ is a random effect with spatial structure following the Besag model
-  +  $\bf{v}$ represents a non-spatial overdispersion
-* ${\bf u}$ is "besag" modelled spatially structured with smoothing parameter $\kappa_u$.
-* ${\bf v}$ is unstructured with precision parameter $\kappa_v$, i.e.
-$\bf{v} \sim \mathcal{N}(0, \kappa_v^{-1}I)$.
-* The precision terms $\kappa_v$ and $\kappa_u$ are assigned the default
-gamma prior distributions of INLA
-$$
-\begin{aligned}
-  \kappa_u & \sim \textrm{Gamma}( \alpha_u, \beta_u ), \\
-  \kappa_v & \sim \textrm{Gamma}( \alpha_v, \beta_v ).
-\end{aligned}
-$$
-* The default values are $\alpha_u = \alpha_v = 1$ and $\beta_u = \beta_v = 0.00005$.
-<br />
-<br />
 
-* Year is modelled using independent and identically (iid)  Gaussian prior distribution
-with ${N}(0,  \tau_v^{-1})$
+<!-- * The log relative risk, $\bf{\eta} = (\eta_1, \dots, \eta_n)^T$, is thus decomposed -->
+<!--   into $$\bf{\eta} = \mu + \bf{u} + \bf{v} $$ -->
+<!--   +  $\mu$ is the overall intercept -->
+<!--   +  $\bf{u}$ is a random effect with spatial structure following the Besag model -->
+<!--   +  $\bf{v}$ represents a non-spatial overdispersion -->
+<!-- * ${\bf u}$ is "besag" modelled spatially structured with smoothing parameter $\kappa_u$. -->
+<!-- * ${\bf v}$ is unstructured with precision parameter $\kappa_v$, i.e. -->
+<!-- $\bf{v} \sim \mathcal{N}(0, \kappa_v^{-1}I)$. -->
+<!-- * The precision terms $\kappa_v$ and $\kappa_u$ are assigned the default -->
+<!-- gamma prior distributions of INLA -->
+<!-- $$ -->
+<!-- \begin{aligned} -->
+<!--   \kappa_u & \sim \textrm{Gamma}( \alpha_u, \beta_u ), \\ -->
+<!--   \kappa_v & \sim \textrm{Gamma}( \alpha_v, \beta_v ). -->
+<!-- \end{aligned} -->
+<!-- $$ -->
+<!-- * The default values are $\alpha_u = \alpha_v = 1$ and $\beta_u = \beta_v = 0.00005$. -->
+<!-- <br /> -->
+<!-- <br /> -->
+
+* Year is modelled using an independent and identically (iid)  Gaussian prior distribution
+
+<!-- with ${N}(0,  \tau_v^{-1})$ -->
 <br />
 * Calculation of expected values based on the mortality trend of the previous 4 years (1890 only 4 years possible)
 
 ```{r, echo=TRUE,message=FALSE, eval=FALSE}
- formula =
-    death ~ 1 + offset(log(population)) +
-    f(Region, model="bmy", graph="Bezirk_Inla", scale.model = TRUE)+
-    f(Year, model='iid', constr = TRUE)
+ formula <- death ~ 1 + offset(log(population)) +
+    f(Year, model='iid', constr = TRUE) +
+    f(Region, model="bym", graph="Bezirk_Inla", scale.model = TRUE)
 
 inla.mod = inla(formula,
                   data=reg_data,
-                  family="Poisson",
+                  family = "zeroinflatednbinomial0",
                   verbose = TRUE,
                   control.compute=list(config = TRUE),
                   control.mode=list(restart=T),
@@ -93,18 +102,17 @@ inla.mod = inla(formula,
 <br />
 <br />
 
-* 1000 samples from the posterior distribution
+* 1000 samples from the posterior distribution were sampled
 * Calculation of median and 95% CrI(Credible interval) of the 1000 samples
 * Excess mortality = observed death counts – expected death counts
 
-* Excess mortality is shown relatively in percentage (Excess mortality/expected death counts)
-* To compare the districts of each pandemic year the relative excess mortality was normalized
+##  Hotspots
+* Gi statistics
+* Represents as a Z-score
+* Greater values represent a greater intensity of clustering and the direction (positive or negative) indicates high or low clusters.
 
-* To find pattern and clusters: Moran’s I statistics ( LISA: Local Indicators of Spatial Association) were used for mapping statistically significant local cluster
 
-An alternative spatial statistics to detect spatial anomalies is the Getis and Ord’s G-statistics (Getis and Ord, 1972; Ord and Getis, 1995). It looks at neighbours within a defined proximity to identify where either high or low values clutser spatially. Here, statistically significant hot-spots are recognised as areas of high values where other areas within a neighbourhood range also share high values too.
-
-The Gi statistics is represented as a Z-score. Greater values represent a greater intensity of clustering and the direction (positive or negative) indicates high or low clusters.
+##  Co-factors
 
 
 # Results
@@ -125,7 +133,7 @@ function_hotspot(Year_Pan=2020)
 
 
 ### Sex
-In the pandemic 1890 no significant differences between sex, were observed. In the pandemic 1918 and 2020 higher excess mortality in men compared to women was estimated.
+In the pandemic 1890 no significant difference between sex was observed. In the pandemic 1918 and 2020 higher excess mortality in men compared to women was shown.
 
 <br />
 <br />
@@ -159,7 +167,7 @@ function_regression_mortality(VarTest = "Sex")[3]
 
 ### Age
 
-Because excess death is different in each pandemic year, and to better compare age groups per pandemic year, the divisions of relative excess death per year are different. Since the highest excess death in the 1918 pandemic was between 20 - 39 years, we further divided the age groups from 0-69 years into 3 additional groups for the 1918 pandemic. In the other pandemic years, this is not possible due to low death rates in the younger age groups.
+Since the highest excess death in the 1918 pandemic was between 20 - 39 years, we further divided the age groups from 0-69 years into 3 additional groups for the 1918 pandemic. In the other pandemics, this is not possible due to low death rates in the younger age groups.
 <br />
 <br />
 In 1890 no significant differences in excess mortality between age age groups.  1918 higher excess mortality for age group 0-69 years compared to > 70 years, in 2020 lower excess mortality for age group 0-69 years compared to < 70 years.
@@ -189,7 +197,7 @@ function_regression_mortality(VarTest = "Age")[3]
 ```
 
 1918
-Age groups 0-19, 20-39 and 40-69 show higher excess mortality compared to >70 years. The  highest excess mortality shows the age group 0-69.
+Age groups 0-19, 20-39 and 40-69 show higher excess mortality compared to >70 years. The  highest excess mortality shows the age group 20-39.
 
 ```{r, echo=FALSE,message=FALSE,fig.height = 12,  fig.width = 12}
 function_maps_age_1918()
