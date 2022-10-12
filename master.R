@@ -40,6 +40,7 @@ conflict_prefer("mutate", "dplyr")
 conflict_prefer("recode", "dplyr")
 conflict_prefer("filter", "dplyr")
 conflict_prefer("rename", "dplyr")
+conflict_prefer("summarise", "dplyr")
 
 
 # data
