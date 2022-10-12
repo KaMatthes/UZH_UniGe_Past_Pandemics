@@ -1,4 +1,4 @@
-function_cor_tbc <- function(Davos){
+function_cor_tbc <- function(){
 
     # load(paste0("../data/expected_death_inla1890.RData"))
     # Expected_death_Russian <-expected_deaths
@@ -62,23 +62,20 @@ Tbc_data <- Tbc %>%
              excess_perc_groups =  as.numeric(excess_percentage),
              significant_dummy = ifelse(death > LL & death <UL,0,1),
              significant_dummy = as.factor( significant_dummy ),
-             tbc_inc= Tbc_Bezirk/pop_sum *10000) %>%
-      group_by(Year) %>%
-      mutate(excess_norm = normalit(excess_percentage_o),
-             prop_norm = normalit(prop)) %>%
-      ungroup()
+             tbc_inc= Tbc_Bezirk/pop_sum *1000) %>%
+      group_by(Year) 
     
 
     plot_tbc <- ggplot(data=data_excess) +
       geom_point(aes(x=tbc_inc, y=excess_percentage, shape=Language,col=Language),  lwd=lwd_size_points ) +
-      geom_smooth(aes(x=tbc_inc, y=excess_percentage), method='lm',se=TRUE,lwd=lwd_size, col=col_line) +
-      facet_wrap(~Year, nrow = 2, scales="free_x") +
+      geom_smooth(aes(x=tbc_inc, y=excess_percentage), method='rlm',se=TRUE,lwd=lwd_size, col=col_line) +
+      facet_wrap(~Year, ncol=2, scales="free_x") +
       scale_color_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
       scale_fill_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
       scale_shape_manual("Language region: ",values = c(15,16,17))+
       ggtitle("Tuberculus mortality")+
       ylab("Relative Excess Mortality")+
-      xlab("Tbc mortality per 10'000 inhabitants") +
+      xlab("Tbc mortality per 1'000 inhabitants") +
       theme_bw() +
       theme(aspect.ratio = 1,
         strip.text.x=element_text(size=15),
@@ -189,7 +186,7 @@ function_test_tbc <- function(Year_Pan) {
     filter(Year==Year_Pan)
   # 
   # summary(gam(excess_percentage ~ s(tbc_inc),data=data_excess))
-  summary(lm(excess_percentage_o ~ tbc_inc,data=data_excess))
+  summary(rlm(excess_percentage_o ~ tbc_inc,data=data_excess))
   # summary(lm(excess_percentage ~ tbc_inc,data=data_excess))
 }
 

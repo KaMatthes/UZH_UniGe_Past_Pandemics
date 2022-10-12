@@ -74,13 +74,14 @@ function_cor_schoolkids <- function(){
     group_by(Year) %>%
     mutate(excess_norm = normalit(excess_percentage_o),
            prop_norm = normalit(prop)) %>%
-    ungroup()
+    ungroup() %>%
+    distinct(Year,Bezirk, .keep_all = TRUE)
   
              
     
     plot_schoolkids <- ggplot(data=data_excess) +
       geom_point(aes(x= prop_norm, y=excess_norm, shape=Language,col=Language),  lwd=lwd_size_points ) +
-      geom_smooth(aes(x= prop_norm, y=excess_norm), method='lm',se=TRUE,lwd=lwd_size, col=col_line) +
+      geom_smooth(aes(x= prop_norm, y=excess_norm), method='rlm',se=TRUE,lwd=lwd_size, col=col_line) +
       facet_wrap(~Year, nrow = 2, scales="free_x") +
       scale_color_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
       scale_fill_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
@@ -181,7 +182,7 @@ function_test_schoolkids <- function(Year_Pan) {
     filter(Year==Year_Pan)
   
   # summary(gam(excess_percentage ~ s(prop),data=data_excess))
-  summary(lm(excess_percentage ~ prop,data=data_excess))
+  summary(rlm(excess_percentage ~ prop,data=data_excess))
   
   
 }

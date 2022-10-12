@@ -1,40 +1,44 @@
-function_cor_gdp <- function(){
+function_cor_pandemic <- function(){
 
-# load(paste0("../data/expected_death_inla1890.RData"))
-# Expected_death_Russian <-expected_deaths
-# load(paste0("../data/expected_death_inla1918.RData"))
-# Expected_death_Spanish <- expected_deaths
-# load(paste0("../data/expected_death_inla2020.RData"))
-# Expected_death_Covid <- expected_deaths
-
-
+  normalit <-function(m){
+    (m - min(m))/(max(m)-min(m))
+  }
+  
   load("../data/data_total.RData")
   Canton <- data_total %>%
     dplyr::select(Canton, Bezirk) %>%
     distinct(Canton,Bezirk)
 
   load("../data/expected_death_inla1890.RData")
-  Expected_death_Russian <-expected_deaths
+  Expected_death_Russian <- expected_deaths %>%
+    filter(Year==1890) %>%
+    mutate( excess_percentage_o = ((death-fit)/fit)*100)
+  excess_norm <- c(normalit(Expected_death_Russian$excess_percentage_o))
+  Expected_death_Russian$excess_norm <- excess_norm 
+  
   load("../data/expected_death_inla1918.RData")
-  Expected_death_Spanish <- expected_deaths
-  load("../data/expected_death_inla2020.RData")
-  Expected_death_Covid <- expected_deaths
+  Expected_death_Spanish <- expected_deaths %>%
+    filter(Year==1918) %>%
+    mutate( excess_percentage_o = ((death-fit)/fit)*100)
+  excess_norm <- c(normalit(Expected_death_Spanish$excess_percentage_o))
+  Expected_death_Spanish$excess_norm <- excess_norm 
+
+
+  # load("../data/data_total.RData")
+  # Canton <- data_total %>%
+  #   dplyr::select(Canton, Bezirk) %>%
+  #   distinct(Canton,Bezirk)
+  # 
+  # load("../data/expected_death_inla1890.RData")
+  # Expected_death_Russian <-expected_deaths
+  # load("../data/expected_death_inla1918.RData")
+  # Expected_death_Spanish <- expected_deaths
 
   
-  load("../data/GDP_rel2.RData")
-  
- GDP_data <- GDP%>%
-    mutate(Year = recode(Year,
-                         "1888" ="1890",
-                         "1910" = "1918",
-                         "2008" = "2020"))
-    
-    data_excess <- rbind(Expected_death_Russian, Expected_death_Spanish,  Expected_death_Covid ) %>%
+  data_excess <- rbind(Expected_death_Russian, Expected_death_Spanish) %>%
       ungroup() %>%
       left_join(Canton) %>%
-      filter(Year == 1890 | Year == 1918 | Year == 2020) %>%
       mutate(Year=as.factor(Year)) %>%
-      full_join(GDP_data) %>%
       # left_join(prop_school_kids )%>%
       mutate(Language = Canton,
              Language = as.character(Language),
@@ -65,31 +69,33 @@ function_cor_gdp <- function(){
                                "VS" = "French",
                                "ZG" = "German",
                                "ZH" = "German"),
-             Language = as.factor(Language),
-             excess_percentage_o = ((death-fit)/fit)*100,
-             excess_percentage = round(((death-fit)/fit)*100,2),
-             excess_perc_groups =  as.numeric(excess_percentage),
-             significant_dummy = ifelse(death > LL & death <UL,0,1),
-             significant_dummy = as.factor( significant_dummy ),
-             death_inc = death/population *100000) %>%
-      filter(disp=="rel") %>%
-      group_by(Year) %>%
-      mutate(excess_norm = normalit(excess_percentage_o),
-             gdp_norm = normalit(GDP))%>%
-      distinct(Bezirk, Year, .keep_all = TRUE)
-
-    plot_GDP_rel <- ggplot(data=data_excess) +
-      geom_point(aes(x= gdp_norm, y=excess_norm, shape=Language,col=Language),  lwd=lwd_size_points ) +
-      geom_smooth(aes(x= gdp_norm, y=excess_norm),  method='rlm',se=TRUE,lwd=lwd_size, col=col_line) +
-      facet_wrap(~Year, nrow = 2,scales = "free") +
+             Language = as.factor(Language)) %>%
+    select(Region,Year, Language,excess_norm) 
+  
+  data_excess_1890 <- data_excess %>%
+    filter(Year==1890) %>%
+    select(-Year)%>%
+    rename(excess_norm_1890 = excess_norm)
+  
+  data_excess_1918 <- data_excess %>%
+    filter(Year==1918) %>%
+    select(-Year) %>%
+    rename(excess_norm_1918 = excess_norm) %>%
+    full_join(data_excess_1890)
+  
+  
+  plot_1890_1918 <- ggplot(data= data_excess_1918  ) +
+      geom_point(aes(x= excess_norm_1890, y=excess_norm_1918, shape=Language,col=Language),  lwd=lwd_size_points ) +
+      geom_smooth(aes(x= excess_norm_1890, y=excess_norm_1918),  method='rlm',se=TRUE,lwd=lwd_size, col=col_line) +
+    
       scale_color_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
       scale_fill_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
-      scale_shape_manual("Language region: ",values = c(15,16,17))+
-      ggtitle("Relative GDP per capita")+
-      ylab("Normalized Relative Excess Mortality")+
-      xlab("Normalized Relative GDP per Capita") +
+      scale_shape_manual("Language region: ",values = c(15,16,17)) +
+      ggtitle("Relation between 1890 and 1918 pandemics")+
+      ylab("Normalized Excess Mortality 1918")+
+      xlab("Normalized Excess Mortality 1890")+
       theme_bw() +
-      theme(aspect.ratio = 1, 
+      theme(aspect.ratio = 1,
         strip.text.x=element_text(size=15),
         axis.text.x=element_text(color="black",size=10),
         axis.title=element_text(size=15),
@@ -100,48 +106,48 @@ function_cor_gdp <- function(){
     
 # cowplot::save_plot("output/plot_GDP_rel.pdf",plot_GDP_rel,base_height=10,base_width=15)
 
-return(  plot_GDP_rel)
+return( plot_1890_1918)
 
 }
 
 
-function_test_gdp <- function(Year_Pan){
-  # 
-  # load(paste0("data/expected_death_inla1890.RData"))
-  # Expected_death_Russian <-expected_deaths
-  # load(paste0("data/expected_death_inla1918.RData"))
-  # Expected_death_Spanish <- expected_deaths
-  # load(paste0("data/expected_death_inla2020.RData"))
-  # Expected_death_Covid <- expected_deaths
-
+function_test_pandemic <- function(){
   
-  load(paste0("../data/data_total.RData"))
+  # load("data/data_total.RData")
+  # Canton <- data_total %>%
+  #   dplyr::select(Canton, Bezirk) %>%
+  #   distinct(Canton,Bezirk)
+  # 
+  # load("data/expected_death_inla1890.RData")
+  # Expected_death_Russian <-expected_deaths
+  # load("data/expected_death_inla1918.RData")
+  # Expected_death_Spanish <- expected_deaths
+  # 
+  
+  
+  load("../data/data_total.RData")
   Canton <- data_total %>%
     dplyr::select(Canton, Bezirk) %>%
     distinct(Canton,Bezirk)
   
-  load(paste0("../data/expected_death_inla1890.RData"))
-  Expected_death_Russian <-expected_deaths
-  load(paste0("../data/expected_death_inla1918.RData"))
-  Expected_death_Spanish <- expected_deaths
-  load(paste0("../data/expected_death_inla2020.RData"))
-  Expected_death_Covid <- expected_deaths
+  load("../data/expected_death_inla1890.RData")
+  Expected_death_Russian <- expected_deaths %>%
+    filter(Year==1890) %>%
+    mutate( excess_percentage_o = ((death-fit)/fit)*100)
+  excess_norm <- c(normalit(Expected_death_Russian$excess_percentage_o))
+  Expected_death_Russian$excess_norm <- excess_norm 
+  
+  load("../data/expected_death_inla1918.RData")
+  Expected_death_Spanish <- expected_deaths %>%
+    filter(Year==1918) %>%
+    mutate( excess_percentage_o = ((death-fit)/fit)*100)
+  excess_norm <- c(normalit(Expected_death_Spanish$excess_percentage_o))
+  Expected_death_Spanish$excess_norm <- excess_norm 
 
-  
-  load(paste0("../data/GDP_rel2.RData"))
-  
-  GDP_data <- GDP%>%
-    mutate(Year = recode(Year,
-                         "1888" ="1890",
-                         "1910" = "1918",
-                         "2008" = "2020"))
-  
-  data_excess <- rbind(Expected_death_Russian, Expected_death_Spanish,  Expected_death_Covid ) %>%
+  data_excess <- rbind(Expected_death_Russian, Expected_death_Spanish) %>%
     ungroup() %>%
     left_join(Canton) %>%
-    filter(Year == 1890 | Year == 1918 | Year == 2020) %>%
     mutate(Year=as.factor(Year)) %>%
-    full_join(GDP_data) %>%
     # left_join(prop_school_kids )%>%
     mutate(Language = Canton,
            Language = as.character(Language),
@@ -172,17 +178,23 @@ function_test_gdp <- function(Year_Pan){
                              "VS" = "French",
                              "ZG" = "German",
                              "ZH" = "German"),
-           Language = as.factor(Language),
-           excess_percentage_o = ((death-fit)/fit)*100,
-           excess_percentage = round(((death-fit)/fit)*100,2),
-           excess_perc_groups =  as.numeric(excess_percentage),
-           significant_dummy = ifelse(death > LL & death <UL,0,1),
-           significant_dummy = as.factor( significant_dummy ),
-           death_inc = death/population *100000) %>%
-    filter(disp=="rel") %>%
-    filter(Year==Year_Pan)
+           Language = as.factor(Language)) %>%
+    select(Region,Year, Language,excess_norm) %>%
+    distinct(Bezirk, .keep_all = TRUE)
   
-  # summary(gam(excess_percentage ~ s(GDP),data=data_excess))
-  summary(rlm(excess_percentage ~ GDP,data=data_excess))
+  
+  data_excess_1890 <- data_excess %>%
+    filter(Year==1890) %>%
+    select(-Year)%>%
+    rename(excess_norm_1890 = excess_norm)
+  
+  data_excess_1918 <- data_excess %>%
+    filter(Year==1918) %>%
+    select(-Year) %>%
+    rename(excess_norm_1918 = excess_norm) %>%
+    full_join(data_excess_1890)
+  
+  summary(rlm(excess_norm_1918 ~ excess_norm_1890,data=  data_excess_1918))
+  # summary(lm(excess_percentage ~ GDP,data=data_excess))
 }
 

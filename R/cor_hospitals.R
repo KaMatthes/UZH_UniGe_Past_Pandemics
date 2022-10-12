@@ -41,7 +41,9 @@ function_cor_hospitals <- function(){
               hosp_group = factor( hosp_group, levels = c("0", ">1"))) %>%
       group_by(Year) %>%
       mutate(excess_norm = normalit( excess_percentage_o)) %>%
-      ungroup()
+      ungroup() %>%
+      distinct(Year,Bezirk, .keep_all = TRUE)
+    
     
     
     plot_Hospitals <- ggplot(data=data_excess,aes(x=Year, y=excess_percentage_o, fill = hosp_group)) +

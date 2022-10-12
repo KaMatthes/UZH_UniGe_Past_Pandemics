@@ -8,6 +8,8 @@
 # Author: Stefano De Sabbata
 # Date: 23 November 2018
 
+
+
 library(sp)
 library(spdep)
 library(tmap)
@@ -116,7 +118,7 @@ bivariate_choropleth <- function (
   suppressWarnings(print( bivmap ))
   
   # Create the square legend
-  vp <- viewport(x=.1, y=.8, width=.3, height=.3)
+  vp <- viewport(x=0.1, y=.8, width=.3, height=.3)
   pushViewport(vp)
   print(levelplot(
     matrix(1:9, nrow=3), 

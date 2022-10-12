@@ -123,9 +123,11 @@ source("R/cor_area.R")
 source("R/cor_stations.R")
 source("R/cor_1890_1918.R")
 source("R/cor_age30_1918.R")
+source("R/cor_kfo_index.R")
 source("R/Regression.R")
 source("R/Hotspots.R")
 source("R/Hotspots_sex.R")
+source("R/Regression_model.R")
 
 
 

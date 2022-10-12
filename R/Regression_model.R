@@ -1,26 +1,26 @@
 function_regression <- function(Year_Pan) {
   
   
-  load("data/expected_death_inla1890.RData")
+  load("../data/expected_death_inla1890.RData")
   Expected_death_Russian <-expected_deaths
-  load("data/expected_death_inla1918.RData")
+  load("../data/expected_death_inla1918.RData")
   Expected_death_Spanish <- expected_deaths
-  load("data/expected_death_inla2020.RData")
+  load("../data/expected_death_inla2020.RData")
   Expected_death_Covid <- expected_deaths
   
-  load("data/data_total.RData")
+  load("../data/data_total.RData")
   Canton <- data_total %>%
     dplyr::select(Canton, Bezirk) %>%
     distinct(Canton,Bezirk)
   
   
-  load("data/prop_older30.RData")
+  load("../data/prop_older30.RData")
   prop_older30 <- prop_older30 %>%
     filter(Year==1918) %>%
     rename(prop30 = prop,
            prop30_norm = prop_norm)
   
-  load("data/GDP_rel2.RData")
+  load("../data/GDP_rel2.RData")
   GDP_data <- GDP %>%
     mutate(Year = recode(Year,
                          "1888" ="1890",
@@ -31,13 +31,13 @@ function_regression <- function(Year_Pan) {
     filter(disp=="rel") %>%
     select(-disp, -MapName)
   
-  load("data/Swiss_SEP.RData")
+  load("../data/Swiss_SEP.RData")
   Swiss_SEP <- Swiss_SEP %>%
     select(SEP_Bezirk, Bezirk) %>%
     mutate(Year =2020)
   
   
-  load("data/Hospitals.RData")
+  load("../data/Hospitals.RData")
   Hospitals_data <- Hospitals %>%
     mutate(Year = as.character(Year), 
            Year = recode(Year,
@@ -45,14 +45,14 @@ function_regression <- function(Year_Pan) {
            Year= as.numeric(Year)) %>%
     select(-MapName)
   
-  load("data/prop_school_kids.RData")
+  load("../data/prop_school_kids.RData")
   
   prop_school_kids <- prop_school_kids %>%
     rename(prop_kids=prop,
            prop_kids_norm=prop_norm)
     
     
-  load("data/child_mortality.RData")
+  load("../data/child_mortality.RData")
   child_mortality <- child_mortality%>%
     mutate(Year = as.factor(Year)) %>%
     select(Year, Bezirk, prop_child_death, prop_norm, death) %>%
@@ -65,7 +65,7 @@ function_regression <- function(Year_Pan) {
     rename(prop_child_death_norm=prop_norm) %>%
     select(-death)
   
-  load("data/Tbc.RData")
+  load("../data/Tbc.RData")
   Tbc_data <- Tbc %>%
     mutate(Year = as.factor(Year),
            Year = recode(Year,"1915" = "1918"),
@@ -73,7 +73,7 @@ function_regression <- function(Year_Pan) {
            Year= as.numeric(Year)) %>%
     select(-MapName)
   
-  load("data/Area.RData")
+  load("../data/Area.RData")
   area_data <- Area %>%
     mutate(Year = as.factor(Year),
            Year = as.character(Year),
@@ -82,7 +82,7 @@ function_regression <- function(Year_Pan) {
     select(-MapName)
   
   
-  load("data/Urbanity.RData")
+  load("../data/Urbanity.RData")
   Urbanity1 <- Urbanity %>%
     mutate(Year=1890)
   Urbanity2 <- Urbanity %>%
@@ -92,7 +92,7 @@ function_regression <- function(Year_Pan) {
   Urbanity <- rbind(Urbanity1,Urbanity2,Urbanity3) %>%
     select(-MapName)
   
-  load("data/Stations.RData")
+  load("../data/Stations.RData")
   Stations1 <- Stations %>%
     mutate(Year=1890)
   Stations2 <- Stations %>%
@@ -100,7 +100,7 @@ function_regression <- function(Year_Pan) {
   Stations <- rbind(Stations1, Stations2)
   
   
-  data_kfo <- read.csv("data_raw/Data2020/kof_data_export.csv", sep=",", fileEncoding="UTF-8-BOM") %>%
+  data_kfo <- read.csv("../data_raw/Data2020/kof_data_export.csv", sep=",", fileEncoding="UTF-8-BOM") %>%
     gather(., Canton, kfo, 2:28, factor_key=TRUE) %>%
     mutate(Canton = substr(Canton, 19,20 ),
            Canton = toupper(Canton),
@@ -252,7 +252,7 @@ else if(Year_Pan==1918) {
     full_join(res_uni) %>%
     select(Cofactor, Univariate, Multivariate)
   
-  return(results)
+  return(res_mul)
 
 
 }
@@ -294,7 +294,7 @@ else if(Year_Pan==2020) {
     full_join(res_uni) %>%
     select(Cofactor, Univariate, Multivariate)
   
-  return(results)
+  return(res_mul)
 }
 
 }

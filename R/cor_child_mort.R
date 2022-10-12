@@ -78,13 +78,15 @@ function_cor_child_mort <- function(){
       group_by(Year) %>%
       mutate(excess_norm = normalit(excess_percentage_o),
              death_norm = normalit(prop_child_death)) %>%
-      ungroup()
+      ungroup() %>%
+      distinct(Year,Bezirk, .keep_all = TRUE)
+    
     
     
   
     plot_child_mortality <- ggplot(data=data_excess) +
       geom_point(aes(x= death_norm, y=excess_norm, shape=Language,col=Language),  lwd=lwd_size_points ) +
-      geom_smooth(aes(x= death_norm, y=excess_norm),  method='lm',se=TRUE,lwd=lwd_size, col=col_line) +
+      geom_smooth(aes(x= death_norm, y=excess_norm),  method='rlm',se=TRUE,lwd=lwd_size, col=col_line) +
       facet_wrap(~Year, ncol = 2,scales = "free") +
       scale_color_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
       scale_fill_manual("Language region: ",values =  c(cbp1[2],cbp1[1],cbp1[3])) +
@@ -189,6 +191,6 @@ function_test_child_mort <- function(Year_Pan){
     filter(Year==Year_Pan)
   
   # summary(gam(excess_percentage ~ s(prop_child_death),data=data_excess))
-  summary(lm(excess_percentage ~ prop_child_death,data=data_excess))
+  summary(rlm(excess_percentage ~ prop_child_death,data=data_excess))
 }
 

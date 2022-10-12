@@ -108,7 +108,7 @@ data_excess <- rbind(Expected_death_Russian, Expected_death_Spanish, Expected_de
                    show.legend=TRUE) +
       scale_shape_manual("", 
                          values=c("median")) +
-      scale_fill_manual("Number of hopsitals: ",values = c(16,15))  +
+      scale_fill_manual("",values = c(16,15))  +
       ggtitle("Population density")+
       ylab("Relative Excess Mortality")+
       xlab("Year") +

@@ -1,16 +1,16 @@
-function_cor_sep <- function(){
+function_cor_kfo <- function(){
 
-load("data/expected_death_inla2020.RData")
+load("../data/expected_death_inla2020.RData")
   
 Expected_death_Covid <- expected_deaths %>%
   filter(Year ==2020) 
   
-data_canton <- read.xlsx("data/data_total.xlsx" ) %>%
+data_canton <- read.xlsx("../data/data_total.xlsx" ) %>%
   distinct(Bezirk, .keep_all = TRUE) %>%
   select(Canton, Bezirk) 
 
 
-data_kfo <- read.csv("data_raw/Data2020/kof_data_export.csv", sep=",", fileEncoding="UTF-8-BOM") %>%
+data_kfo <- read.csv("../data_raw/Data2020/kof_data_export.csv", sep=",", fileEncoding="UTF-8-BOM") %>%
   gather(., Canton, kfo, 2:28, factor_key=TRUE) %>%
   mutate(Canton = substr(Canton, 19,20 ),
          Canton = toupper(Canton),
@@ -70,7 +70,7 @@ data_excess <- Expected_death_Covid %>%
       scale_shape_manual("Language region: ",values = c(15,16,17))+
       ggtitle("KOF Stringency Indices")+
       ylab("Relative Excess Mortality")+
-      xlab("Mean KOF Stringency Indices (July - December)") +
+      xlab("Mean KOF Stringency Indices (mean July - December)") +
       theme_bw() +
       theme(aspect.ratio = 1,
         strip.text.x=element_text(size=15),
@@ -87,7 +87,7 @@ data_excess <- Expected_death_Covid %>%
 # summary(lm(excess_percentage~SEP_Bezirk*Language, data=data_excess))
 
 # plot_SEP_both <- list( plot_SEP , plot_SEP2)
-return( plot_SEP)
+return( plot_kfo)
 
 }
 
@@ -95,17 +95,17 @@ return( plot_SEP)
 
 function_test_kfo <- function(){
   
-  load("data/expected_death_inla2020.RData")
+  load("../data/expected_death_inla2020.RData")
   
   Expected_death_Covid <- expected_deaths %>%
     filter(Year ==2020) 
   
-  data_canton <- read.xlsx("data/data_total.xlsx" ) %>%
+  data_canton <- read.xlsx("../data/data_total.xlsx" ) %>%
     distinct(Bezirk, .keep_all = TRUE) %>%
     select(Canton, Bezirk) 
   
   
-  data_kfo <- read.csv("data_raw/Data2020/kof_data_export.csv", sep=",", fileEncoding="UTF-8-BOM") %>%
+  data_kfo <- read.csv("../data_raw/Data2020/kof_data_export.csv", sep=",", fileEncoding="UTF-8-BOM") %>%
     gather(., Canton, kfo, 2:28, factor_key=TRUE) %>%
     mutate(Canton = substr(Canton, 19,20 ),
            Canton = toupper(Canton),

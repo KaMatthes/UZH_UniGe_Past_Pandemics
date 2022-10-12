@@ -187,6 +187,6 @@ function_test_urbanity <-  function(Year_Pan)
          significant_dummy = as.factor( significant_dummy ))%>%
     filter(Year==Year_Pan)
 
-summary(lm(excess_percentage~city_bezirk,data_excess))
+summary(rlm(excess_percentage~city_bezirk,data_excess))
         
 }
