@@ -32,6 +32,7 @@ library(mgcv)
 library(cowplot)
 library(introdataviz)
 library(conflicted)
+library(rgeoda)
 
 
 #
@@ -86,6 +87,13 @@ panel_size_map <- 1.5
 legend_size_title_map <- 1.5
 
 
+strip_text <- 20
+size_axis_title <- 20
+legend_size <- 15
+legend_size_map <- 1
+legend_size_title <- 1
+main_size_map <- 1.5
+
 
 normalit <- function(m){
   (m - min(m))/(max(m)-min(m))
@@ -111,28 +119,28 @@ source("R/maps_age_1918_1890.R")
 source("R/maps_sep.R")
 source("R/maps_tbc.R")
 
-
-source("R/cor_child_mort.R")
-source("R/cor_schoolkids.R")
-source("R/cor_hospitals.R")
-source("R/cor_gdp.R")
-source("R/cor_sep.R")
-source("R/cor_urbanity.R")
-source("R/cor_tbc.R")
-source("R/cor_area.R")
-source("R/cor_stations.R")
-source("R/cor_1890_1918.R")
-source("R/cor_age30_1918.R")
-source("R/cor_kfo_index.R")
-source("R/Regression.R")
-source("R/Hotspots.R")
-source("R/Hotspots_sex.R")
-source("R/Regression_model.R")
-
-
-
-
-# render html
-# render(paste0("R/PastPandemics_Excess_Mortality_inla.Rmd"), output_file = paste0("../output/",today(),"_Report_PastPandemice_inla.html"))
-
-render(paste0("R/PastPandemics_Excess_Mortality_cofactors.Rmd"), output_file = paste0("../output/",today(),"_Report_PastPandemice_cofactors.html"))
+    
+    source("R/cor_child_mort.R")
+    source("R/cor_schoolkids.R")
+    source("R/cor_hospitals.R")
+    source("R/cor_gdp.R")
+    source("R/cor_sep.R")
+    source("R/cor_urbanity.R")
+    source("R/cor_tbc.R")
+    source("R/cor_area.R")
+    source("R/cor_stations.R")
+    source("R/cor_1890_1918.R")
+    source("R/cor_age30_1918.R")
+    source("R/cor_kfo_index.R")
+    source("R/Regression.R")
+    source("R/Hotspots.R")
+    source("R/Hotspots_sex.R")
+    source("R/Regression_model.R")
+    
+    
+    
+    
+    # render html
+    # render(paste0("R/PastPandemics_Excess_Mortality_inla.Rmd"), output_file = paste0("../output/",today(),"_Report_PastPandemice_inla.html"))
+    
+    render(paste0("R/PastPandemics_Excess_Mortality_cofactors.Rmd"), output_file = paste0("../output/",today(),"_Report_PastPandemice_cofactors.html"))
