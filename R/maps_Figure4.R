@@ -126,8 +126,8 @@ function_maps_age_1918 <- function(){
     tm_add_legend(title = "",labels ="Cantonal capital",type = "symbol", shape = 23, col="black") +
     tm_layout(
       frame =TRUE,
-      panel.label.size = 2.5,
-      panel.label.height = 0.6,
+      panel.label.size = 4,
+      panel.label.height = 0.3,
       # main.title=Year_Pan,
       # main.title.size = 1.5,
       # main.title.position = c(0.32),
