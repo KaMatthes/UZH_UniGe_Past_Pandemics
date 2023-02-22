@@ -20,7 +20,7 @@ region.names <- poly2nb(nc.sids, nc.sids$Bezirk) %>%
   mutate(Region = 1:130) 
 
 
-dat.excess <- data_mortality_rate_age2groups_sex %>%
+dat.excess <- data_mortality_rate_age_sex %>%
   mutate(Bezirk=as.character(Bezirk)) %>%
   full_join(region.names) %>%
   filter(Year >=Year_min & Year <=Year_max ) %>%
@@ -122,7 +122,7 @@ function_inla_sex_age(Year_Pan=1918, Year_max=1919, Year_min=1914, Age="0_19", N
 function_inla_sex_age(Year_Pan=2020, Year_max=2020, Year_min=2016, Age="0_19", Name="0_19", Sex="f")
 
 function_inla_sex_age(Year_Pan=1890, Year_max=1891, Year_min=1886, Age="20_39", Name="20_39", Sex="f")
-function_inla_sex_age(Year_Pan=1918, Year_max=1919, Year_min=1914, Age="20_39", Name="20_39", Sex="f")
+function_inla_sex_age(Year_Pan=1918, Year_max=1919, Year_min=1914, Age="20_29", Name="20_29", Sex="f")
 function_inla_sex_age(Year_Pan=2020, Year_max=2020, Year_min=2016, Age="20_39", Name="20_39", Sex="f")
 
 function_inla_sex_age(Year_Pan=1890, Year_max=1891, Year_min=1886, Age="40_69", Name="40_69", Sex="f")
@@ -139,7 +139,7 @@ function_inla_sex_age(Year_Pan=1918, Year_max=1919, Year_min=1914, Age="0_19", N
 function_inla_sex_age(Year_Pan=2020, Year_max=2020, Year_min=2016, Age="0_19", Name="0_19", Sex="m")
 
 function_inla_sex_age(Year_Pan=1890, Year_max=1891, Year_min=1886, Age="20_39", Name="20_39", Sex="m")
-function_inla_sex_age(Year_Pan=1918, Year_max=1919, Year_min=1914, Age="20_39", Name="20_39", Sex="m")
+function_inla_sex_age(Year_Pan=1918, Year_max=1919, Year_min=1914, Age="20_29", Name="20_29", Sex="m")
 function_inla_sex_age(Year_Pan=2020, Year_max=2020, Year_min=2016, Age="20_39", Name="20_39", Sex="m")
 
 function_inla_sex_age(Year_Pan=1890, Year_max=1891, Year_min=1886, Age="40_69", Name="40_69", Sex="m")

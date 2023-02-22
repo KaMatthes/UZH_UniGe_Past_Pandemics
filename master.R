@@ -1,12 +1,11 @@
-.libPaths(c("H:/Documents/R/win-library/4.1", "C:/Program Files/R/R-4.2.1/library"))
+.libPaths(c("C:/Users/kmatth/AppData/Local/R/win-library/4.2", "C:/Program Files/R/R-4.2.2/library"))
 
 library(plyr)
 library(readxl)
 library(openxlsx)
 library(lubridate)
 library(tidyverse)
-library(ggplot2)
-library(rgdal)
+# library(ggplot2)
 library(zoo)
 library(foreach)
 library(arsenal)
@@ -33,7 +32,10 @@ library(cowplot)
 library(introdataviz)
 library(conflicted)
 library(rgeoda)
-
+library(MASS)
+library(extrafont)
+library(raster)
+loadfonts(quiet = T)
 
 #
 conflict_prefer("select", "dplyr")
@@ -41,7 +43,12 @@ conflict_prefer("mutate", "dplyr")
 conflict_prefer("recode", "dplyr")
 conflict_prefer("filter", "dplyr")
 conflict_prefer("rename", "dplyr")
+conflict_prefer("summarize", "dplyr")
 conflict_prefer("summarise", "dplyr")
+conflict_prefer("arrange", "dplyr")
+conflict_prefer("rbind.fill", "plyr")
+conflict_prefer("group_by", "dplyr")
+
 
 
 # data
@@ -95,12 +102,49 @@ legend_size_title <- 1
 main_size_map <- 1.5
 
 
+strip_text <- 25
+lwd_size <- 2
+pch_type <- 19
+lwdline <- 1
+size_legend <- 15
+size_legend_title<- 15
+pd <-position_dodge(width=0.3)
+fatten_size <- 8
+plot_title <- 25
+
+size_axis <- 22
+size_axis_title <- 22
+size_plot_title <-15
+size_legend_text <- 20
+
+
 normalit <- function(m){
   (m - min(m))/(max(m)-min(m))
 }
 # source("R/prepare_data.R")
 # source("R/population.R")
 # source("R/mortality_rate.R")
+
+# maps_swiss <-  read_sf("data_raw/Map_Relief/g2k15.shp") 
+# relief <- raster("data_raw/Map_Relief/02-relief-ascii.asc") %>%
+#   mask(maps_swiss) 
+
+data_canton <- read_sf("data_raw/Map_Canton/swissBOUNDARIES3D_1_3_TLM_KANTONSGEBIET.shp") 
+
+data_centroiod <-st_as_sf(read_sf("data_raw/Map_data_1918/centroids.shp")) %>%
+  filter(District == "Aarau"  | District == "Appenzell IR" 
+         | District == "Basel"  |  District == "Bellinzona" 
+         | District == "Bern" |  District == "Delemont" 
+         |  District == "Frauenfeld"  |  District == "Geneve"
+         |  District == "Glarus"  |  District == "Lausanne"
+         |  District == "Liesthal"  |  District == "Luzern"
+         |  District == "Neuchatel" |  District == "Nidwalden"
+         |  District == "Obwalden"  |  District == "Plessur"
+         |  District == "Sarine"  |  District == "Schaffhausen"
+         |  District == "Schwyz"  |  District == "Sion"
+         |  District == "Solothurn-Lebern" |  District == "St. Gallen"
+         |  District == "Uri"  |  District == "Zug"
+         |  District == "Zürich")
 
 source("R/PerYear.R")
 source("R/PerYear_sex.R")

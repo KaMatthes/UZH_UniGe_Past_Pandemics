@@ -6,11 +6,11 @@ load(paste0("data/pop_total_age.RData"))
 
 pop_total_age2 <- pop_total_age %>%
   mutate(age_group= recode(age_group, 
-                           "20_29" = "20_39",
-                           "30_39" = "20_39",
+                           "20_29" = "20_29",
+                           "30_39" = "30_39",
                            "40_49" = "40_69",
-                           "50_59" = "40_69",
-                           "60_69" = "40_69")) %>%
+                           "50_59" = "50_59",
+                           "60_69" = "60_69")) %>%
   group_by(Year,Bezirk, age_group, sex) %>%
  summarize(population=sum(population))
 
@@ -18,11 +18,11 @@ data_mortality_rate_age_sex <- data_total %>%
   filter(sex =="f" | sex =="m") %>%
   filter(!age_group=="total") %>%
   mutate(age_group= recode(age_group, 
-                           "20_29" = "20_39",
-                           "30_39" = "20_39",
+                           "20_29" = "20_29",
+                           "30_39" = "30_39",
                            "40_49" = "40_69",
-                           "50_59" = "40_69",
-                           "60_69" = "40_69")) %>%
+                           "50_59" = "50_59",
+                           "60_69" = "60_69")) %>%
   mutate(Year = as.character(Year),
          Year = as.numeric(Year))%>%
   filter(Year > 1885) %>%

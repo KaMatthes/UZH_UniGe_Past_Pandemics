@@ -1,5 +1,6 @@
 suppressWarnings(function_prepare_data <- function() {
-read_excel_allsheets <- function(filename, tibble = FALSE) {
+
+  read_excel_allsheets <- function(filename, tibble = FALSE) {
   sheets <- readxl::excel_sheets(filename)
   x <- lapply(sheets, function(X) readxl::read_excel(filename, sheet = X))
   if(!tibble) x <- lapply(x, as.data.frame)
@@ -343,7 +344,7 @@ data_total <- rbind(alldata.2010,alldata.hist) %>%
 
 # save
 save(data_total ,file=paste0("data/data_total.RData"))
-write.xlsx(data_total,file=paste0("data/data_total.xlsx"),row.names=FALSE, overwrite = TRUE)
+write.xlsx(data_total,file=paste0("data/data_total.xlsx"),rowNames=FALSE, overwrite = TRUE)
 
 
 })

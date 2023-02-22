@@ -27,33 +27,33 @@ pop_age <- rbind(pop_1888_age,pop_1910_age) %>%
   gather(., sex, population, `Total`:`f_pop`, factor_key=TRUE) %>%
   dplyr::mutate(sex = str_sub(sex, 1,1)) %>%
   mutate(sex=replace(sex,sex=="T", "both")) %>%
-  mutate(age_group = replace(age_group, age_group=="0-4","0_29"),
-         age_group = replace(age_group, age_group=="5-9","0_29"),
-         age_group = replace(age_group, age_group=="10-14","0_29"),
-         age_group = replace(age_group, age_group=="15-19","0_29"),
-         age_group = replace(age_group, age_group=="20-24","0_29"),
-         age_group = replace(age_group, age_group=="25-29","0_29"),
-         age_group = replace(age_group, age_group=="20-29","0_29"),
-         age_group = replace(age_group, age_group=="30-34",">30"),
-         age_group = replace(age_group, age_group=="35-39",">30"),
-         age_group = replace(age_group, age_group=="40-44",">30"),
-         age_group = replace(age_group, age_group=="45-49",">30"),
-         age_group = replace(age_group, age_group=="50-54",">30"),
-         age_group = replace(age_group, age_group=="55-59",">30"),
-         age_group = replace(age_group, age_group=="60-64",">30"),
-         age_group = replace(age_group, age_group=="65-69",">30"),
-         age_group = replace(age_group, age_group=="70-74",">30"),
-         age_group = replace(age_group, age_group=="75-79",">30"),
-         age_group = replace(age_group, age_group=="80-84",">30"),
-         age_group = replace(age_group, age_group=="85-89",">30"),
-         age_group = replace(age_group, age_group=="90-95",">30"),
-         age_group = replace(age_group, age_group==">=80",">30"),
-         age_group = replace(age_group, age_group==">=95",">30"),
-         age_group = replace(age_group, age_group=="30-39",">30"),
-         age_group = replace(age_group, age_group=="40-49",">30"),
-         age_group = replace(age_group, age_group=="50-59",">30"),
-         age_group = replace(age_group, age_group=="60-69",">30"),
-         age_group = replace(age_group, age_group=="70-79",">30"),)%>%
+  mutate(age_group = replace(age_group, age_group=="0-4","0_39"),
+         age_group = replace(age_group, age_group=="5-9","0_39"),
+         age_group = replace(age_group, age_group=="10-14","0_39"),
+         age_group = replace(age_group, age_group=="15-19","0_39"),
+         age_group = replace(age_group, age_group=="20-24","0_39"),
+         age_group = replace(age_group, age_group=="25-29","0_39"),
+         age_group = replace(age_group, age_group=="20-29","0_39"),
+         age_group = replace(age_group, age_group=="30-34","0_39"),
+         age_group = replace(age_group, age_group=="35-39","0_39"),
+         age_group = replace(age_group, age_group=="40-44",">40"),
+         age_group = replace(age_group, age_group=="45-49",">40"),
+         age_group = replace(age_group, age_group=="50-54",">40"),
+         age_group = replace(age_group, age_group=="55-59",">40"),
+         age_group = replace(age_group, age_group=="60-64",">40"),
+         age_group = replace(age_group, age_group=="65-69",">40"),
+         age_group = replace(age_group, age_group=="70-74",">40"),
+         age_group = replace(age_group, age_group=="75-79",">40"),
+         age_group = replace(age_group, age_group=="80-84",">40"),
+         age_group = replace(age_group, age_group=="85-89",">40"),
+         age_group = replace(age_group, age_group=="90-95",">40"),
+         age_group = replace(age_group, age_group==">=80",">40"),
+         age_group = replace(age_group, age_group==">=95",">40"),
+         age_group = replace(age_group, age_group=="30-39",">40"),
+         age_group = replace(age_group, age_group=="40-49",">40"),
+         age_group = replace(age_group, age_group=="50-59",">40"),
+         age_group = replace(age_group, age_group=="60-69",">40"),
+         age_group = replace(age_group, age_group=="70-79",">40"),)%>%
   mutate(MapName=dplyr::recode(MapName,"Aarberg"="Seeland",
                                "Aarwangen" = "Oberaargau",
                                "Aelen" ="Aigle",
@@ -97,6 +97,7 @@ pop_age <- rbind(pop_1888_age,pop_1910_age) %>%
                                "Jouxthal"= "Jura-Nord vaudois",
                                "Konolfingen" = "Bern-Mittelland",
                                "Landbezirk"= "Basel-Stadt",
+                               "Stadtbezirk_BS"= "Basel-Stadt",
                                "La Chaux-de-Fonds"= "Neuchâtel",
                                "LaVallée" = "Jura-Nord vaudois",
                                "La Vallée" = "Jura-Nord vaudois",
@@ -160,7 +161,7 @@ pop_age <- rbind(pop_1888_age,pop_1910_age) %>%
                                "Sargans" = "Sarganserland",
                                "Schwarzenburg" = "Bern-Mittelland",
                                "Schwiz" = "Schwyz",
-                               "See" = "See-Gaster",
+                               "See" = "Lac",
                                "Seftigen"	= "Thun",
                                "Siders"	= "Sierre",
                                "Signau"	= "Emmental",
@@ -197,7 +198,7 @@ pop_age <- rbind(pop_1888_age,pop_1910_age) %>%
                                "Wifflisburg" = "Broye-Vully",
                                "Schleitheim"	= "Kanton Schaffhausen",
                                "Schaffhausen"	= "Kanton Schaffhausen",
-                               "Seebezirk"	= "Lac",
+                               "Seebezirk"	= "See-Gaster",
                                "Stein"	= "Kanton Schaffhausen",
                                "St-Maurice"	= "Saint-Maurice",
                                "Yverdon"	= "Jura-Nord vaudois",
@@ -262,7 +263,7 @@ pop_extrapolate_age <- rbind(pop_age_extrapolate_tmp1,pop_age_extrapolate_tmp2) 
   group_by(Year, Bezirk, age_group, MapName,population) %>%
   mutate(pop_age_s = sum( pop_age)) %>%
   ungroup() %>%
-  filter(age_group==">30") %>%
+  filter(age_group==">40") %>%
   distinct(Bezirk, Year, .keep_all = TRUE) %>%
   select(-sex, -pop_age) %>%
   mutate(prop_both =pop_age_s/population) %>%
@@ -273,7 +274,7 @@ pop_extrapolate_age <- rbind(pop_age_extrapolate_tmp1,pop_age_extrapolate_tmp2) 
   mutate(prop_norm = normalit(prop)) %>%
   ungroup()
 
-prop_older30 <- pop_extrapolate_age 
+prop_older40 <- pop_extrapolate_age 
 
-write.xlsx(prop_older30 ,file=paste0("data/prop_older30.xlsx"),row.names=FALSE, overwrite = TRUE)
-save(prop_older30,file=paste0("data/prop_older30.RData"))
+write.xlsx(prop_older40 ,file=paste0("data/prop_older40.xlsx"),row.names=FALSE, overwrite = TRUE)
+save(prop_older40,file=paste0("data/prop_older40.RData"))

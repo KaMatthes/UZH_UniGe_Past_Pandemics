@@ -58,23 +58,46 @@ bezirk_geo.gi <- cbind(bezirk_geo, as.matrix(gi.fixed)) %>%
   rename(gstat=as.matrix.gi.fixed.)
 
 
-plot_hotspot <- tm_shape(bezirk_geo.gi) +
+plot_hotspot <- 
+  tm_shape(data_canton)  +
+  tm_fill()+
+  tm_shape(bezirk_geo.gi) +
   tm_fill(col = "gstat", 
           style = "pretty",
           palette="-RdBu",
           title = "local Gi",
           midpoint = 0) +
-  tm_borders(alpha = 0.5) +
+  tm_borders(alpha = 1, lwd=0.8, lty="dashed",col="grey20") +
+  tm_shape(data_centroiod ) + 
+  tm_dots(title = "Cantonal capital",palette = "black", size = 0.6, shape=23, jitter=0.15, legend.show = TRUE) +
+  # tm_add_legend(title = "",labels ="Cantonal capital",type = "symbol", shape = 23, col="black") +
+  tm_shape(data_canton)  +
+  tm_borders(col = "grey20", lwd = 1.5) +
+  # tm_layout(
+  #   # asp=1,
+  #   main.title = paste0(Year_Pan), 
+  #   main.title.position = "left",
+  #   legend.text.size = legend_size_map,
+  #   # legend.width = 5,
+  #   # legend.height = 8,
+  #   legend.position = c(0.85,0.7),
+  #   legend.title.size=legend_size_title,
+  #   main.title.size = main_size_map)
   tm_layout(
-    asp=1,
-    main.title = paste0(Year_Pan), 
-    main.title.position = "left",
-    legend.text.size = legend_size_map,
-    # legend.width = 5,
-    # legend.height = 8,
-    legend.position = c(0.85,0.7),
-    legend.title.size=legend_size_title,
-    main.title.size = main_size_map)
+    frame =TRUE,
+    main.title=Year_Pan,
+    main.title.size = 2,
+    main.title.position = c(0.0,0.7),
+    # title.position = c(0.1,0.95),
+    # legend.title.size=legend_size_title,
+    # legend.show=TRUE)  +
+    legend.outside = TRUE,
+    # legend.text.size = legend_size_map,
+    legend.outside.position = "right",
+    
+    legend.title.size=1.8,
+    legend.text.size =1.2)
+    # legend.position = c(0.5,0.1))
 
 return(plot_hotspot)
 
