@@ -91,16 +91,17 @@ plot_excess <-
   
   # tm_shape( data_lake  ) + 
   # tm_fill(col = "azure3") +
-  tm_shape(data_centroiod ) + 
-  tm_dots(title = "Cantonal capital",palette = "black", size = 0.6, shape=23, jitter=0.15, legend.show = TRUE) +
+  # tm_shape(data_centroiod ) + 
+  # tm_dots(title = "Cantonal capital",palette = "black", size = 0.6, shape=23, jitter=0.15, legend.show = TRUE) +
  
   tm_shape(data_canton)  +
   tm_borders(col = "grey20", lwd = 1.5) +
   tm_shape(data_sig) + 
-  tm_dots(title = "",col="significant_dummy", palette=c(non='#00FF00', significant='#6666FF'),size =0.5, shape=21)+
+  # tm_dots(title = "",col="significant_dummy", palette=c(non='#00FF00', significant='#6666FF'),size =0.5, shape=21)+
+  tm_dots(title = "",col="significant_dummy", palette=c(non=NA, significant='#373737'),border.lwd = 1.5,border.col = "black",size =0.4, shape=21)+
   tm_add_legend(title = "",labels ="District boundaries",type = "line", lty="dashed", col="black") +
   tm_add_legend(title = "",labels ="Cantonal boundaries",type = "line", lty="solid", col="black") +
-  tm_add_legend(title = "",labels ="Cantonal capital",type = "symbol", shape = 23, col="black") +
+  # tm_add_legend(title = "",labels ="Cantonal capital",type = "symbol", shape = 23, col="black") +
   tm_layout(
     frame =TRUE,
     main.title=Year_Pan,

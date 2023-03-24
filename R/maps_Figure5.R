@@ -84,8 +84,8 @@ plot_excess <-
   tm_facets(by="sex", ncol=2)+
   # tm_shape( data_lake  ) + 
   # tm_fill(col = "azure3") +
-  tm_shape(data_centroiod ) + 
-  tm_dots(title = "Cantonal capital",palette = "black", size = 2, shape=23, legend.show = TRUE) +
+  # tm_shape(data_centroiod ) + 
+  # tm_dots(title = "Cantonal capital",palette = "black", size = 2, shape=23, legend.show = TRUE) +
   
   tm_shape(data_canton)  +
   tm_borders(col = "grey20", lwd = 1.5) +
@@ -93,7 +93,7 @@ plot_excess <-
   # tm_dots(title = "",col="significant_dummy", palette=c(non='#00FF00', significant='#6666FF'),size =2, shape=21)+
   tm_add_legend(title = "",labels ="District boundaries",type = "line", lty="dashed", col="black") +
   tm_add_legend(title = "",labels ="Cantonal boundaries",type = "line", lty="solid", col="black") +
-  tm_add_legend(title = "",labels ="Cantonal capital",type = "symbol", shape = 23, col="black") +
+  # tm_add_legend(title = "",labels ="Cantonal capital",type = "symbol", shape = 23, col="black") +
   tm_layout(
     frame =TRUE,
     panel.label.size = 3.5,
@@ -104,7 +104,7 @@ plot_excess <-
     legend.outside = TRUE,
     legend.outside.position = "left",
     # legend.outside.size = 2,
-    legend.position = c(0.7,0.1),
+    legend.position = c(0.5,0.1),
     legend.title.size=1.2,
     legend.text.size =0.8)
 
