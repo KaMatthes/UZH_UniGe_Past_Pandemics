@@ -33,7 +33,7 @@ library(introdataviz)
 library(conflicted)
 library(rgeoda)
 library(MASS)
-library(extrafont)
+# library(extrafont)
 library(raster)
 loadfonts(quiet = T)
 
