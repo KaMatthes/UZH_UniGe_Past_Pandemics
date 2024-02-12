@@ -1,4 +1,4 @@
-.libPaths(c("C:/Users/kmatth/AppData/Local/R/win-library/4.2", "C:/Program Files/R/R-4.2.2/library"))
+# .libPaths(c("C:/Users/kmatth/AppData/Local/R/win-library/4.2", "C:/Program Files/R/R-4.2.2/library"))
 
 library(plyr)
 library(readxl)
@@ -35,7 +35,7 @@ library(rgeoda)
 library(MASS)
 # library(extrafont)
 library(raster)
-loadfonts(quiet = T)
+# loadfonts(quiet = T)
 
 #
 conflict_prefer("select", "dplyr")
@@ -108,7 +108,7 @@ pch_type <- 19
 lwdline <- 1
 size_legend <- 15
 size_legend_title<- 15
-pd <-position_dodge(width=0.3)
+pd <-position_dodge(width=0.4)
 fatten_size <- 8
 plot_title <- 25
 
@@ -146,45 +146,3 @@ data_centroiod <-st_as_sf(read_sf("data_raw/Map_data_1918/centroids.shp")) %>%
          |  District == "Uri"  |  District == "Zug"
          |  District == "Zürich")
 
-source("R/PerYear.R")
-source("R/PerYear_sex.R")
-source("R/PerYear_age.R")
-# source("R/maps.R")
-source("R/maps_inla.R")
-source("R/maps_sex_inla.R")
-source("R/maps_age_inla.R")
-source("R/maps_age_inla.R")
-source("R/maps_age_1918_inla.R")
-# source("R/maps_age_sex_inla.R")
-source("R/maps_age_sex_1918_inla.R")
-source("R/maps_age_1918.R")
-source("R/maps_1890_1918.R")
-source("R/maps_age_1918_1890.R")
-source("R/maps_sep.R")
-source("R/maps_tbc.R")
-
-    
-    source("R/cor_child_mort.R")
-    source("R/cor_schoolkids.R")
-    source("R/cor_hospitals.R")
-    source("R/cor_gdp.R")
-    source("R/cor_sep.R")
-    source("R/cor_urbanity.R")
-    source("R/cor_tbc.R")
-    source("R/cor_area.R")
-    source("R/cor_stations.R")
-    source("R/cor_1890_1918.R")
-    source("R/cor_age30_1918.R")
-    source("R/cor_kfo_index.R")
-    source("R/Regression.R")
-    source("R/Hotspots.R")
-    source("R/Hotspots_sex.R")
-    source("R/Regression_model.R")
-    
-    
-    
-    
-    # render html
-    # render(paste0("R/PastPandemics_Excess_Mortality_inla.Rmd"), output_file = paste0("../output/",today(),"_Report_PastPandemice_inla.html"))
-    
-    render(paste0("R/PastPandemics_Excess_Mortality_cofactors.Rmd"), output_file = paste0("../output/",today(),"_Report_PastPandemice_cofactors.html"))
