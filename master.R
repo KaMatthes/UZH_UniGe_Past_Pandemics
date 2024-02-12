@@ -121,9 +121,6 @@ size_legend_text <- 20
 normalit <- function(m){
   (m - min(m))/(max(m)-min(m))
 }
-# source("R/prepare_data.R")
-# source("R/population.R")
-# source("R/mortality_rate.R")
 
 # maps_swiss <-  read_sf("data_raw/Map_Relief/g2k15.shp") 
 # relief <- raster("data_raw/Map_Relief/02-relief-ascii.asc") %>%
