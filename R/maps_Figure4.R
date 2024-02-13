@@ -1,19 +1,19 @@
 function_maps_age_1918 <- function(){
 
   
-  load(paste0("data/expected_death_inla0_19_1918.RData"))
+  load("data/expected_death_inla0_19_1918.RData")
   death_1918_0_19 <- expected_deaths
 
-  load(paste0("data/expected_death_inla20_29_1918.RData"))
+  load("data/expected_death_inla20_29_1918.RData")
   death_1918_20_29 <- expected_deaths
 
-  load(paste0("data/expected_death_inla30_39_1918.RData"))
+  load("data/expected_death_inla30_39_1918.RData")
   death_1918_30_39 <- expected_deaths
 
-  load(paste0("data/expected_death_inla40_69_1918.RData"))
+  load("data/expected_death_inla40_69_1918.RData")
   death_1918_40_69 <- expected_deaths
   
-  load(paste0("data/expected_death_inla70_1918.RData"))
+  load("data/expected_death_inla70_1918.RData")
   death_1918_70 <- expected_deaths
 
 

@@ -1,5 +1,5 @@
 function_inla_total <- function(Year_Pan,Year_max, Year_min) {
-load(paste0("data/data_mortality_rate.RData"))
+load("data/data_mortality_rate.RData")
 
 
 nc.sids <- sf::st_read("data_raw/Map_2020/Maps_dissolved/Maps_dissolved_2020.shp") %>%

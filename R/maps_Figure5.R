@@ -1,9 +1,9 @@
 function_maps_sex_age_1918 <- function(){
   
-  load(paste0("data/expected_death_inla_20_29_f_1918.RData"))
+  load("data/expected_death_inla_20_29_f_1918.RData")
   death_1918_20_39_f <- expected_deaths
 
-  load(paste0("data/expected_death_inla_20_29_m_1918.RData"))
+  load("data/expected_death_inla_20_29_m_1918.RData")
   death_1918_20_39_m <- expected_deaths
 
   data_excess <- rbind(death_1918_20_39_f,death_1918_20_39_m)%>%

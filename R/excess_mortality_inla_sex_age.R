@@ -1,5 +1,5 @@
 function_inla_sex_age <- function(Year_Pan,Year_max, Year_min, Age, Name, Sex) {
-  load(paste0("data/data_mortality_rate_age_sex.RData"))
+  load("data/data_mortality_rate_age_sex.RData")
 
 nc.sids <- sf::st_read("data_raw/Map_2020/Maps_dissolved/Maps_dissolved_2020.shp") %>%
   filter(!(  BEZIRKSNUM=="1110" |BEZIRKSNUM=="1101" | BEZIRKSNUM=="1102"  | BEZIRKSNUM=="1103" | BEZIRKSNUM=="1104" | BEZIRKSNUM=="1105"

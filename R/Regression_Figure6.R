@@ -431,15 +431,3 @@ data_all <- rbind(Expected_death_Russian, Expected_death_Spanish,  Expected_deat
   
   
   
-  # 
-  # data_mat <-  data_all %>%
-  #   filter(Year==1890) %>%
-  #   select(excess_percentage_o_o,GDP,SEP_Bezirk,hospitals_inc, prop_kids_norm, prop_70_norm, prop_child_death_norm, tbc_inc,station_area)
-  # 
-  # cor_mat <- round(cor( data_mat, use="pairwise.complete.obs"), 2) 
-  #   
-  # 
-  # library(corrplot) 
-  # 
-  # corrplot(cor_mat, method="circle", diag=FALSE,tl.col="black")
-  # 

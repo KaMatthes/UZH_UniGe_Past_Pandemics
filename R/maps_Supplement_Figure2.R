@@ -1,10 +1,10 @@
-function_maps_inla <- function(Year_Pan){
+function_maps_crude <- function(Year_Pan){
 
-    load("data/expected_death_inla1890.RData")
+    load(paste0("data/expected_death_inla1890.RData"))
     Expected_death_Russian <-expected_deaths
-    load("data/expected_death_inla1918.RData")
+    load(paste0("data/expected_death_inla1918.RData"))
     Expected_death_Spanish <- expected_deaths
-    load("data/expected_death_inla2020.RData")
+    load(paste0("data/expected_death_inla2020.RData"))
     Expected_death_Covid <- expected_deaths
 
     data_excess <- rbind(Expected_death_Russian, Expected_death_Spanish, Expected_death_Covid)
@@ -13,12 +13,20 @@ data_excess <- data_excess %>%
   ungroup() %>%
   mutate(excess_death = death - fit,
          excess_rate = (excess_death/population)*10000,
+         mortality = death/population*10000,
          Bezirk = as.factor(Bezirk)) %>%
   filter(Year=="2020"  |Year=="1918" |Year=="1890") %>%
   mutate(significant_dummy = ifelse(death > LL & death < UL,"non-significant","significant"),
-         significant_dummy = as.factor( significant_dummy ))
+         significant_dummy = as.factor( significant_dummy )) %>%
+  group_by(Year) %>%
+  mutate(Total_death = sum(death),
+         Total_population = sum(population)) %>%
+  ungroup() %>%
+  mutate(Total_mortality = Total_death/Total_population *10000)
 
-
+data_mort <- data_excess %>%
+  distinct(Year, .keep_all = TRUE) %>%
+  select(Year, Total_mortality)
 
 # sf::sf_use_s2(TRUE)
 
@@ -37,9 +45,9 @@ bezirk_geo <- read_sf("data_raw/Map_2020/Maps_dissolved/Maps_dissolved_2020.shp"
           excess_percentage_o = ifelse(excess_percentage_o <0,0, excess_percentage_o))
     
 
-jenks_breaks <- c(0,natural_breaks(k=5, bezirk_geo['excess_percentage_o']),max(bezirk_geo$excess_percentage_o))
+jenks_breaks <- c(0,natural_breaks(k=5, bezirk_geo['mortality']),max(bezirk_geo$mortality))
 bezirk_geo <- bezirk_geo %>%
-  mutate(excess_jenk = cut(excess_percentage_o,
+  mutate(mortality_jenk = cut(mortality,
                            breaks=jenks_breaks,
                            include.lowest = TRUE, right = FALSE)) %>%
   
@@ -65,7 +73,7 @@ plot_excess <-
   tm_shape(data_canton)  +
   tm_fill()+
   tm_shape( bezirk_geo  ) + 
-  tm_fill("excess_jenk", title = "Excess Mortality",
+  tm_fill("mortality_jenk", title = "Mortality",
            palette = "YlOrBr", 
           style = "fixed",
           legend.format=)+
@@ -74,14 +82,15 @@ plot_excess <-
 
   tm_shape(data_canton)  +
   tm_borders(col = "grey20", lwd = 1.5) +
-  tm_shape(data_sig) + 
+  # tm_shape(data_sig) + 
   # tm_dots(title = "",col="significant_dummy", palette=c(non='#00FF00', significant='#6666FF'),size =0.5, shape=21)+
-  tm_dots(title = "",col="significant_dummy", palette=c(non=NA, significant='#373737'),border.lwd = 1.5,border.col = "black",size =0.4, shape=21)+
+  # tm_dots(title = "",col="significant_dummy", palette=c(non=NA, significant='#373737'),border.lwd = 1.5,border.col = "black",size =0.4, shape=21)+
   tm_add_legend(title = "",labels ="District boundaries",type = "line", lty="dashed", col="black") +
   tm_add_legend(title = "",labels ="Cantonal boundaries",type = "line", lty="solid", col="black") +
   # tm_add_legend(title = "",labels ="Cantonal capital",type = "symbol", shape = 23, col="black") +
   tm_layout(
     frame =TRUE,
+    legend.show=FALSE,
     main.title=Year_Pan,
     main.title.size = 2,
     main.title.position = c(0.32),

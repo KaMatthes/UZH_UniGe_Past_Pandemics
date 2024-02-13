@@ -1,7 +1,4 @@
-function_population_age <- function() {
-
-# load population total
-load(paste0("data/data_total.RData"))
+load("data/data_total.RData")
 Bezirke_nr <- data_total %>%
   dplyr::select(MapName, Bezirk) %>%
   distinct(Bezirk, .keep_all=TRUE)
@@ -259,8 +256,6 @@ pop_age_extrapolate_tmp2 <- pop_hist %>%
 pop_extrapolate_age <- rbind(pop_age_extrapolate_tmp1,pop_age_extrapolate_tmp2) %>%
   select(-population) %>%
   rename(population=pop_age)
-# 
-# write.xlsx(pop_age ,file=paste0("data/pop_age.xlsx"),row.names=FALSE, overwrite = TRUE)
 
 
 pop_2014_2020_age <- readxl::read_excel(paste0("data_raw/Data2020/Population_Age2014_2020.xlsx")) %>%
@@ -479,6 +474,3 @@ pop_total_age <- rbind(pop_extrapolate_age, pop_2014_2020_age) %>%
   filter(!is.na(population))
 save(pop_total_age,file=paste0("data/pop_total_age.RData"))
 write.xlsx(pop_total_age,file=paste0("data/pop_total_age.xlsx"),row.names=FALSE, overwrite = TRUE)
-
-
-}

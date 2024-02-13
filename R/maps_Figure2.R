@@ -1,22 +1,22 @@
 function_maps_sex <- function(Year_Pan){
 
 
-  load(paste0("data/expected_death_inlaf_1890.RData"))
+  load("data/expected_death_inlaf_1890.RData")
   death_1890_f <- expected_deaths
 
-  load(paste0("data/expected_death_inlaf_1918.RData"))
+  load("data/expected_death_inlaf_1918.RData")
   death_1918_f <- expected_deaths
 
-  load(paste0("data/expected_death_inlaf_2020.RData"))
+  load("data/expected_death_inlaf_2020.RData")
   death_2020_f <- expected_deaths
 
-  load(paste0("data/expected_death_inlam_1890.RData"))
+  load("data/expected_death_inlam_1890.RData")
   death_1890_m <- expected_deaths
 
-  load(paste0("data/expected_death_inlam_1918.RData"))
+  load("data/expected_death_inlam_1918.RData")
   death_1918_m <- expected_deaths
 
-  load(paste0("data/expected_death_inlam_2020.RData"))
+  load("data/expected_death_inlam_2020.RData")
   death_2020_m <- expected_deaths
 
 data_excess <- rbind(death_1890_m,death_1918_m, death_2020_m,

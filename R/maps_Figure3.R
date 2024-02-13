@@ -1,21 +1,21 @@
 function_maps_age <- function(Year_Pan){
 
-  load(paste0("data/expected_death_inla0_69_1890.RData"))
+  load("data/expected_death_inla0_69_1890.RData")
   death_1890_0_69 <- expected_deaths
 
-  load(paste0("data/expected_death_inla70_1890.RData"))
+  load("data/expected_death_inla70_1890.RData")
   death_1890_70 <- expected_deaths
 
-  load(paste0("data/expected_death_inla70_1918.RData"))
+  load("data/expected_death_inla70_1918.RData")
   death_1918_70 <- expected_deaths
 
-  load(paste0("data/expected_death_inla0_69_1918.RData"))
+  load("data/expected_death_inla0_69_1918.RData")
   death_1918_0_69 <- expected_deaths
 
-  load(paste0("data/expected_death_inla0_69_2020.RData"))
+  load("data/expected_death_inla0_69_2020.RData")
   death_2020_0_69<- expected_deaths
 
-  load(paste0("data/expected_death_inla70_2020.RData"))
+  load("data/expected_death_inla70_2020.RData")
   death_2020_70  <- expected_deaths
   # 
   data_excess <- rbind(death_1890_0_69,death_1918_0_69,death_2020_0_69,

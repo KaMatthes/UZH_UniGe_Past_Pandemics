@@ -1,7 +1,7 @@
 function_inla_sex <- function(Year_Pan,Year_max, Year_min, Sex) {
   
   
-  load(paste0("data/data_mortality_rate_sex.RData"))
+  load("data/data_mortality_rate_sex.RData")
   
 
 
