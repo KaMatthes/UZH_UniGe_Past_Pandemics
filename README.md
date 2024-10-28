@@ -6,7 +6,6 @@ Katarina L Matthes, Joël Floris, Aziza Merzouki, Christoph Junker, Rolf Weitkun
 <br >
 <sub>* Equal contribution</sub>
 <br >
-<br >
 [https://doi.org/10.1101/2024.02.13.24302701](https://www.sciencedirect.com/science/article/pii/S1877584524000649)
 
 
