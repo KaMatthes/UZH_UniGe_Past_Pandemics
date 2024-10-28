@@ -1,13 +1,13 @@
 # Spatial pattern of all cause excess mortality in Swiss districts during the pandemic years 1890, 1918 and 2020
 
-## Paper (preprint)
+## Paper
 <br >
 Katarina L Matthes, Joël Floris, Aziza Merzouki, Christoph Junker, Rolf Weitkunat, Frank Rühli, Olivia Keiser*, Kaspar Staub *
 <br >
 <sub>* Equal contribution</sub>
 
- <i> medRxiv </i> 
-https://doi.org/10.1101/2024.02.13.24302701
+
+[https://doi.org/10.1101/2024.02.13.24302701](https://www.sciencedirect.com/science/article/pii/S1877584524000649)
 
 
 ## Data
